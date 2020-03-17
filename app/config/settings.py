@@ -25,11 +25,7 @@ STATIC_URL = '/static/'
 # secret.json 불러오기
 SECRETS_FULL = json.load(open(os.path.join(ROOT_DIR, 'secrets.json')))
 SECRETS = SECRETS_FULL['base']
-<<<<<<< HEAD
 SECRET_KEY = SECRETS['SECRET_KEY']
-=======
-SECRET_KET = SECRETS['SECRET_KEY']
->>>>>>> c4221813453c7e7c42a103edc4c5e6737f0e1e04
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
