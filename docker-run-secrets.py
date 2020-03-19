@@ -12,10 +12,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('cmd', type=str, nargs=argparse.REMAINDER, default='')
 args = parser.parse_args()
 
-DOCKER_OPTION = [
+DOCKER_OPTIONS = [
     ('--rm', ''),
     ('-it', ''),
-    #background로 실행하는 옵션 추카
+    # background로 실행하는 옵션 추가
     ('-d', ''),
     ('-p', '8000:80'),
     ('--name', 'wps_dabangapi'),
@@ -32,9 +32,9 @@ subprocess.run(f'docker build -t {DOCKER_IMAGE_TAG} -f Dockerfile .', shell=True
 subprocess.run(f'docker stop wps_dabangapi', shell=True)
 
 # secrets.json이 없는 이미지를 docker run으로 bash를 daemon(background)모드로 실행
-subprocess.run('docker run {option} {tag} /bin/bash'.format(
-    option=' '.join([
-        f'{key} {value}' for key, value in DOCKER_OPTION
+subprocess.run('docker run {options} {tag} /bin/bash'.format(
+    options=' '.join([
+        f'{key} {value}' for key, value in DOCKER_OPTIONS
     ]),
     tag=DOCKER_IMAGE_TAG,
 ), shell=True)
