@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from requests import Response
+from rest_framework import viewsets
 from rest_framework.views import APIView
 
 from config.settings import SECRET_KEY, KAKAO_APP_ID
@@ -114,7 +115,7 @@ def kakao_login(request):
     #  front 에서 받아야 할 역할 완료 /
     data = kakao_reponse.json()
     access_token = data['access_token']
-
+    print(access_token)
     url = 'https://kapi.kakao.com/v2/user/me'
 
     headers = {
@@ -155,3 +156,7 @@ def kakao_login(request):
     # return redirect('login-page')
     return HttpResponse(f'username: {kakao_id} token:{jwt_token}')
 
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
