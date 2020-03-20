@@ -42,7 +42,7 @@ def facebook_login(request):
     # request token을 access token으로 교환
     params = {
         'client_id': settings.FACEBOOK_APP_ID,
-        'redirect_uri': 'http://localhost:8000/members/facebook-login/',
+        'redirect_uri': 'https://moonpeter.com/members/facebook-login/',
         'client_secret': settings.FACEBOOK_APP_SECRET,
         'code': code,
     }
@@ -67,18 +67,6 @@ def facebook_login(request):
     facebook_id = data['id']
     first_name = data['first_name']
     last_name = data['last_name']
-    url_image = data['picture']['data']['url']
-    # http get 요청의 응답을 받아와서, binary data 를 img_data 에 할당
-    img_response = requests.get(url_image)
-    img_data = img_response.content
-
-    # 응답의 binary data를 사용해서, in-memory binary stream(file) 객체를 생성,
-    # f = io.ByteIO(img_response.content)
-
-    # FileField가 지원하는 InMemoryUploadedFile 객체를 사용하기,
-    # imghdr 모듈을 사용해서 페이스북에서 받은 파일 확장자를 확인
-    ext = imghdr.what('', h=img_data)
-    f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
 
     jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
@@ -92,9 +80,7 @@ def facebook_login(request):
             username=facebook_id,
             first_name=first_name,
             last_name=last_name,
-            img_profile=f,
         )
-    print(jwt_token)
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return HttpResponse(f'id: {facebook_id}, jwt: {jwt_token}')
 
@@ -108,11 +94,12 @@ def kakao_login(request):
     body = {
         'grant_type': 'authorization_code',
         'client_id': KAKAO_APP_ID,
-        'redirect_url': 'http://localhost:8000/members/kakao-login/',
+        'redirect_url': 'https://moonpeter.com/members/kakao-login/',
         'code': kakao_access_code
     }
     kakao_reponse = requests.post(url, headers=headers, data=body)
     #  front 에서 받아야 할 역할 완료 /
+
     data = kakao_reponse.json()
     access_token = data['access_token']
     print(access_token)
@@ -131,27 +118,21 @@ def kakao_login(request):
     user_first_name = user_username[1:]
     user_last_name = user_username[0]
 
-    kakao_user_image = user_data['properties']['profile_image']
-    img_response = requests.get(kakao_user_image)
-    img_data = img_response.content
-    ext = imghdr.what('', h=img_data)
-    f = SimpleUploadedFile(f'{kakao_id}.{ext}', img_response.content)
-
     jwt_token = jwt.encode({'id': kakao_id, 'username': kakao_id, }, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
     try:
         user = User.objects.get(username=kakao_id)
-        first_name = user_first_name
-        last_name = user_last_name
-        user.save()
+
     except User.DoesNotExist:
         user = User.objects.create_user(
             username=kakao_id,
             first_name=user_first_name,
             last_name=user_last_name,
-            # img_profile=f,
         )
-
+    data = {
+        'token': jwt_token,
+        'user': UserSerializer
+    }
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     # return redirect('login-page')
     return HttpResponse(f'username: {kakao_id} token:{jwt_token}')

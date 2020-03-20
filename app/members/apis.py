@@ -29,7 +29,7 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
-        jwt_token = jwt.encode({'id': kakao_id, 'username': kakao_id, }, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+        jwt_token = jwt.encode({'username': kakao_id }, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
         try:
             user = User.objects.get(username=kakao_id)
@@ -106,17 +106,3 @@ class MyProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AuthToken(APIView):
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        user = authenticate(username=username, password=password)
-        if user:
-            token, _ = Token.objects.get_or_create(user=user)
-            data = {
-                'token':token.key,
-            }
-            return Response(data)
-        raise AuthenticationFailed()
