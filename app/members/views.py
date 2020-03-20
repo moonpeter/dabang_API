@@ -97,15 +97,6 @@ def facebook_login(request):
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return HttpResponse(f'id: {facebook_id}, jwt: {jwt_token}')
 
-    # return user
-    #
-    # if user:
-    #     login(request, user)
-    #     context = {
-    #         'user': user,
-    #     }
-    #     return render(request, 'login.html', context)
-
 
 def kakao_login(request):
     kakao_access_code = request.GET.get('code')
