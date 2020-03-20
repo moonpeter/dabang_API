@@ -11,3 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
             'pk',
             'username',
         )
+
+# class UserProfileSerializer(serializers.ModelSerializer):
+    # class Meta:
+        # model = US
