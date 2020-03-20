@@ -6,9 +6,11 @@ authors = ["moonpeter <moonpeter@kakao.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-django = "^3.0.4"
+django = "<3.0"
 djangorestframework = "^3.11.0"
 notebook = "^6.0.3"
+gunicorn = "^20.0.4"
+supervisor = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 
