@@ -27,6 +27,9 @@ SECRETS_FULL = json.load(open(os.path.join(ROOT_DIR, 'secrets.json')))
 SECRETS = SECRETS_FULL['base']
 SECRET_KEY = SECRETS['SECRET_KEY']
 
+FACEBOOK_APP_ID = SECRETS["FACEBOOK_APP_ID"]
+FACEBOOK_APP_SECRET = SECRETS["FACEBOOK_APP_SECRET"]
+KAKAO_APP_ID = SECRETS['KAKAO_APP_ID']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
