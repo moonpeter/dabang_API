@@ -11,5 +11,5 @@ urlpatterns_members = [
     path('django-logout/', views.user_logout),
     path('kakaoToken/', apis.KakaoJwtTokenView.as_view()),
     path('', include(router.urls)),
-    path('authToken/', apis.AuthToken.as_view()),
+    # path('authToken/', apis.AuthToken.as_view()),
 ]
