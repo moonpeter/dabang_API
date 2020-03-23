@@ -1,10 +1,10 @@
 import jwt
 import requests
 from django.contrib.auth import get_user_model, authenticate
-from requests import Response
 from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.settings import SECRET_KEY
@@ -16,6 +16,7 @@ User = get_user_model()
 
 class KakaoJwtTokenView(APIView):
     def post(self, request):
+        access_token = request.POST.get('access_token')
         url = 'https://kapi.kakao.com/v2/user/me'
         access_token = request.data.get('access_token')
         headers = {
@@ -29,7 +30,7 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
-        jwt_token = jwt.encode({'username': kakao_id }, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+        jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
         try:
             user = User.objects.get(username=kakao_id)
@@ -53,7 +54,8 @@ class FacebookJwtToken(APIView):
     api_get_access_token = f'{api_base}/oauth/access_token'
     api_me = f'{api_base}/me'
 
-    def post(self, request, access_token):
+    def post(self, request):
+        access_token = request.POST.get('access_token')
         params = {
             'access_token': access_token,
             'fields': ','.join([

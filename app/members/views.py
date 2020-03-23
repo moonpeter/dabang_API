@@ -42,7 +42,7 @@ def facebook_login(request):
     # request token을 access token으로 교환
     params = {
         'client_id': settings.FACEBOOK_APP_ID,
-        'redirect_uri': 'https://moonpeter.com/members/facebook-login/',
+        'redirect_uri': 'http://localhost:8000/members/facebook-login/',
         'client_secret': settings.FACEBOOK_APP_SECRET,
         'code': code,
     }
@@ -52,13 +52,14 @@ def facebook_login(request):
     # response_object = json.loads(response.text)
     data = response.json()
     access_token = data['access_token']
+    print('access token', access_token)
     params = {
         'access_token': access_token,
         'fields': ','.join([
             'id',
             'first_name',
             'last_name',
-            'picture.type(large)',
+            # 'picture.type(large)',
         ])
     }
     response = requests.get(api_me, params)
