@@ -1,10 +1,10 @@
 import jwt
 import requests
 from django.contrib.auth import get_user_model, authenticate
-from requests import Response
 from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.settings import SECRET_KEY
@@ -15,7 +15,9 @@ User = get_user_model()
 
 
 class KakaoJwtTokenView(APIView):
-    def post(self, request, access_token):
+    def post(self, request):
+        access_token = request.POST.get('access_token')
+
         url = 'https://kapi.kakao.com/v2/user/me'
 
         headers = {
