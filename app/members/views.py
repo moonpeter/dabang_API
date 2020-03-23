@@ -83,7 +83,7 @@ def facebook_login(request):
             last_name=last_name,
         )
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-    return HttpResponse(f'id: {facebook_id}, jwt: {jwt_token}')
+    return HttpResponse(f'id: {facebook_id}, jwt: {jwt_token}, access_token: {access_token}')
 
 
 def kakao_login(request):
@@ -136,7 +136,7 @@ def kakao_login(request):
     }
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     # return redirect('login-page')
-    return HttpResponse(f'username: {kakao_id} token:{jwt_token}')
+    return HttpResponse(f'username: {kakao_id} token:{jwt_token} access_token:{access_token}')
 
 
 class UserViewSet(viewsets.ModelViewSet):
