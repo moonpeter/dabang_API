@@ -31,7 +31,7 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
-        jwt_token = jwt.encode({'username': kakao_id }, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+        jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
         try:
             user = User.objects.get(username=kakao_id)
@@ -55,7 +55,8 @@ class FacebookJwtToken(APIView):
     api_get_access_token = f'{api_base}/oauth/access_token'
     api_me = f'{api_base}/me'
 
-    def post(self, request, access_token):
+    def post(self, request):
+        access_token = request.POST.get('access_token')
         params = {
             'access_token': access_token,
             'fields': ','.join([
