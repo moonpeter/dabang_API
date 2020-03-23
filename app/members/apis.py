@@ -2,8 +2,7 @@ import jwt
 import requests
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import permissions, status
-from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import AuthenticationFailed
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -88,7 +87,7 @@ class FacebookJwtToken(APIView):
             'token': jwt_token,
             'user': UserSerializer(user).data,
         }
-        return Response(access_token)
+        return Response(data)
 
 
 class MyProfileView(APIView):
@@ -123,3 +122,13 @@ class UserJwtToken(APIView):
                 'user': UserSerializer(user).data
             }
             return Response(data)
+
+        message = {
+            "message": "올바르지 않은 유저 정보입니다."
+        }
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+class changePassword(APIView):
+    def post(self, request):
+        pass
