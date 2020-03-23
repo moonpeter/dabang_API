@@ -14,5 +14,6 @@ urlpatterns_members = [
     path('kakaoToken/', apis.KakaoJwtTokenView.as_view()),
     path('facebookToken/', apis.FacebookJwtToken.as_view()),
     path('', include(router.urls)),
+    path('SignUpView/', apis.SignUpView.as_view()),
     # path('authToken/', apis.AuthToken.as_view()),
 ]
