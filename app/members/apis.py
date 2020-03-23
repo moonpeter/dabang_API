@@ -15,9 +15,9 @@ User = get_user_model()
 
 
 class KakaoJwtTokenView(APIView):
-    def post(self, request, access_token):
+    def post(self, request):
         url = 'https://kapi.kakao.com/v2/user/me'
-
+        access_token = request.data.get('access_token')
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
