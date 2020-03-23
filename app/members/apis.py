@@ -88,7 +88,7 @@ class FacebookJwtToken(APIView):
             'token': jwt_token,
             'user': UserSerializer(user).data,
         }
-        return Response(data)
+        return Response(access_token)
 
 
 class MyProfileView(APIView):
@@ -109,3 +109,17 @@ class MyProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserJwtToken(APIView):
+    def post(self, request):
+        username = request.POST.get('email')
+        userpass = request.POST.get('password')
+        user = authenticate(username=username, password=userpass)
+        jwt_token = jwt.encode({'username': username}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+        if user is not None:
+            data = {
+                'jwt': jwt_token,
+                'user': UserSerializer(user).data
+            }
+            return Response(data)
