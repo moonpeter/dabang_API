@@ -37,6 +37,7 @@ class KakaoJwtTokenView(APIView):
 
         except User.DoesNotExist:
             user = User.objects.create_user(
+
                 username=kakao_id,
                 first_name=user_first_name,
                 last_name=user_last_name,
