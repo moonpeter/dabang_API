@@ -1,14 +1,14 @@
 import jwt
 import requests
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework import permissions, status
+from rest_framework import permissions, statuslop
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.settings import SECRET_KEY
 from members.permissions import IsOwnerOrReadOnly
-from members.serializers import UserSerializer, UserProfileSerializer
+from members.serializers import UserSerializer, UserProfileSerializer, SignUpViewSerializer
 
 User = get_user_model()
 
@@ -16,9 +16,8 @@ User = get_user_model()
 class KakaoJwtTokenView(APIView):
     def post(self, request):
         access_token = request.POST.get('access_token')
-
         url = 'https://kapi.kakao.com/v2/user/me'
-
+        access_token = request.data.get('access_token')
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -124,12 +123,19 @@ class UserJwtToken(APIView):
             }
             return Response(data)
 
-        message = {
-            "message": "올바르지 않은 유저 정보입니다."
-        }
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-
-class changePassword(APIView):
+class SignUpView(APIView):
     def post(self, request):
-        pass
+        serializer = SignUpViewSerializer(data=request.data)
+        if serializer.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            email = request.POST.get('email')
+            User.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
