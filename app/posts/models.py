@@ -11,6 +11,10 @@ class PostRoom(models.Model):
     )
     title = models.CharField(max_length=20, verbose_name='제목', )
     description = models.TextField(max_length=1000, verbose_name='설명', )
+    address = models.OneToOneField(
+        'PostAddress',
+        on_delete=models.CASCADE,
+    )
     salesForm = models.OneToOneField(
         'SalesForm',
         on_delete=models.CASCADE,
@@ -40,6 +44,11 @@ class PostRoom(models.Model):
     securitySafety = models.ManyToManyField(
         'SecuritySafetyFacilities',
     )
+
+
+class PostAddress(models.Model):
+    loadAddress = models.CharField(max_length=50, )
+    detailAddress = models.CharField(max_length=50, )
 
 
 class SalesForm(models.Model):
