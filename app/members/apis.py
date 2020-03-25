@@ -1,7 +1,8 @@
 import jwt
 import requests
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework import permissions, status
+from rest_framework import permissions, statuslop
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -35,6 +36,7 @@ class KakaoJwtTokenView(APIView):
 
         except User.DoesNotExist:
             user = User.objects.create_user(
+
                 username=kakao_id,
                 first_name=user_first_name,
                 last_name=user_last_name,
