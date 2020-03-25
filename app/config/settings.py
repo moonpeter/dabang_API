@@ -44,7 +44,9 @@ AUTH_USER_MODEL = 'members.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'posts.apps.PostsConfig',
     'members',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

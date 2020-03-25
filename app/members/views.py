@@ -1,19 +1,13 @@
-import imghdr
-
 import jwt
 import requests
-from django.conf import settings
-from django.contrib.auth import get_user_model, login, logout
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth import logout, login, get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-
-# Create your views here.
-from requests import Response
 from rest_framework import viewsets
-from rest_framework.views import APIView
 
+from config import settings
 from config.settings import SECRET_KEY, KAKAO_APP_ID
+
 from members.serializers import UserSerializer
 
 User = get_user_model()
