@@ -1,6 +1,5 @@
+from django.conf import settings
 from django.db import models
-
-from members.models import User
 
 
 class PostRoom(models.Model):
@@ -82,5 +81,5 @@ class SecuritySafetyFacilities(models.Model):
 
 class PostLike(models.Model):
     post = models.ForeignKey(PostRoom, on_delete=models.CASCADE, )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, )
     created_at = models.DateTimeField(auto_now_add=True, )
