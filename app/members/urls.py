@@ -7,7 +7,7 @@ router = DefaultRouter()
 router.register('viewset', views.UserViewSet)
 
 urlpatterns_members = [
-    path('changePassword/', apis.changePassword.as_view()),
+    # path('changePassword/', apis.changePassword.as_view()),
     path('get-token/', apis.UserJwtToken.as_view()),
     path('kakao-login/', views.kakao_login),
     path('facebook-login/', views.facebook_login),

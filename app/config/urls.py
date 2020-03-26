@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
+from config import settings
 from members import views
 from members.urls import urlpatterns_members
 
@@ -28,3 +29,9 @@ urlpatterns = [
     path('members/', include(urlpatterns_members)),
     path('login/', views.login_page, name='login-page'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
