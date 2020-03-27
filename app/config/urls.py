@@ -26,5 +26,4 @@ urlpatterns = [
     path('api/token/verify/', verify_jwt_token),  # jwt Token verify
     path('admin/', admin.site.urls),
     path('members/', include(urlpatterns_members)),
-    path('login/', views.login_page, name='login-page'),
 ]

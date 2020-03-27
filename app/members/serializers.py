@@ -9,7 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username',
-            # 'password',
             'introduce',
         ]
 
@@ -31,6 +30,6 @@ class SignUpViewSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username',
-            'e-mail',
+            'email',
             'password',
         ]
