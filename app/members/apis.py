@@ -1,12 +1,13 @@
 import jwt
 import requests
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework import permissions, statuslop
+from rest_framework import permissions, status
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.settings import SECRET_KEY
+from members.models import SocialLogin
 from members.permissions import IsOwnerOrReadOnly
 from members.serializers import UserSerializer, UserProfileSerializer, SignUpViewSerializer
 
@@ -17,7 +18,6 @@ class KakaoJwtTokenView(APIView):
     def post(self, request):
         access_token = request.POST.get('access_token')
         url = 'https://kapi.kakao.com/v2/user/me'
-        access_token = request.data.get('access_token')
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -33,14 +33,15 @@ class KakaoJwtTokenView(APIView):
 
         try:
             user = User.objects.get(username=kakao_id)
-
         except User.DoesNotExist:
             user = User.objects.create_user(
-
                 username=kakao_id,
                 first_name=user_first_name,
                 last_name=user_last_name,
+
             )
+        kakao = SocialLogin.objects.filter(type='kakao')[0]
+        user.social.add(kakao)
         data = {
             'token': jwt_token,
             'user': UserSerializer(user).data,
@@ -81,8 +82,9 @@ class FacebookJwtToken(APIView):
                 username=facebook_id,
                 first_name=first_name,
                 last_name=last_name,
-                # img_profile=f,
             )
+        facebook = SocialLogin.objects.filter(type='facebook')[0]
+        user.social.add(facebook)
         data = {
             'token': jwt_token,
             'user': UserSerializer(user).data,

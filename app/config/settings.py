@@ -23,6 +23,7 @@ STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
 STATIC_URL = '/static/'
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
+POST_DIR = os.path.join(BASE_DIR, 'posts')
 # secret.json 불러오기
 SECRETS_FULL = json.load(open(os.path.join(ROOT_DIR, 'secrets.json')))
 SECRETS = SECRETS_FULL['base']
@@ -45,7 +46,7 @@ AUTH_USER_MODEL = 'members.User'
 
 INSTALLED_APPS = [
     'posts.apps.PostsConfig',
-    'members',
+    'members.apps.MembersConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
