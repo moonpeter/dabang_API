@@ -6,7 +6,7 @@ Examples:
 Function views
     1. Add an import:  from my_app import views
     2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
+Class-based viewsUserLoginView
     1. Add an import:  from other_app.views import Home
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
@@ -19,6 +19,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify
 
 from members import views
 from members.urls import urlpatterns_members
+from members.views import UserLoginView
 
 urlpatterns = [
     path('api/token/', obtain_jwt_token),  # jwt Token get it
