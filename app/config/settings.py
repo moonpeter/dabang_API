@@ -59,6 +59,7 @@ AUTH_USER_MODEL = 'members.User'
 INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'members',
+    'salesinlots.apps.SalesinlotsConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
