@@ -42,6 +42,16 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
+# django-storages
+# Django의 FileStorage로 S3Boto3Storage(AWS의 S3)를 사용
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_SECRETS = SECRETS_FULL['AWS']
+AWS_ACCESS_KEY_ID = AWS_SECRETS['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = AWS_SECRETS['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = 'wpsdabangapi'
+AWS_AUTO_CREATE_BUCKET = True
+AWS_S3_REGION_NAME = 'ap-northeast-2'
+
 AUTH_USER_MODEL = 'members.User'
 
 # Application definition
