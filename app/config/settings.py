@@ -71,6 +71,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'debug_toolbar',
     'psycopg2',
+    'selenium',
+    'pandas',
 ]
 
 MIDDLEWARE = [
