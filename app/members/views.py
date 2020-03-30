@@ -54,7 +54,7 @@ class UserLoginView(RetrieveAPIView):
 
 class UserProfileView(RetrieveAPIView):
     permission_classes = (IsAuthenticated, )
-    authentication_classes = JSONWebTokenAuthentication
+    authentication_classes = [JSONWebTokenAuthentication]
 
     def get(self, request):
         try:
