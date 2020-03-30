@@ -25,3 +25,6 @@ try:
 except CoolsmsException as e:
     print("Error Code : %s" % e.code)
     print("Error Message : %s" % e.msg)
+
+
+test    
