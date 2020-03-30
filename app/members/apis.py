@@ -5,6 +5,7 @@ from rest_framework import permissions, status
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.settings import api_settings
 
 from config.settings import SECRET_KEY
 from members.models import SocialLogin
@@ -12,6 +13,9 @@ from members.permissions import IsOwnerOrReadOnly
 from members.serializers import UserSerializer, UserProfileSerializer, SignUpViewSerializer
 
 User = get_user_model()
+
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 class KakaoJwtTokenView(APIView):
@@ -29,7 +33,7 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
-        jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+        # jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
         try:
             user = User.objects.get(username=kakao_id)
@@ -40,6 +44,9 @@ class KakaoJwtTokenView(APIView):
                 last_name=user_last_name,
 
             )
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
+
         kakao = SocialLogin.objects.filter(type='kakao')[0]
         user.social.add(kakao)
         data = {
@@ -73,7 +80,7 @@ class FacebookJwtToken(APIView):
         first_name = data['first_name']
         last_name = data['last_name']
 
-        jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+        # jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
         try:
             user = User.objects.get(username=facebook_id)
@@ -83,6 +90,8 @@ class FacebookJwtToken(APIView):
                 first_name=first_name,
                 last_name=last_name,
             )
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
         facebook = SocialLogin.objects.filter(type='facebook')[0]
         user.social.add(facebook)
         data = {
@@ -117,7 +126,9 @@ class UserJwtToken(APIView):
         username = request.POST.get('email')
         userpass = request.POST.get('password')
         user = authenticate(username=username, password=userpass)
-        jwt_token = jwt.encode({'username': username}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+        # jwt_token = jwt.encode({'username': username}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
         if user is not None:
             data = {
                 'jwt': jwt_token,

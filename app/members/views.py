@@ -7,7 +7,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from members.permissions import IsOwnerOrReadOnly
 
-from members.serializers import UserSerializer, UserProfileSerializer, UserLoginSerializer
+from members.serializers import UserSerializer, UserLoginSerializer
 
 User = get_user_model()
 
@@ -26,12 +26,6 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
-
-    # def get_serializer_class(self):
-    #     if self.action == 'create':
-    #         serializer_class = UserSerializer
-    #     else:
-    #         serializer_class = UserProfileSerializer
 
 
 class UserLoginView(RetrieveAPIView):
