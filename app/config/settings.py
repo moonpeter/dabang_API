@@ -57,8 +57,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'sentry_sdk',
     'rest_framework',
     'debug_toolbar',
+    'psycopg2',
 ]
 
 MIDDLEWARE = [
@@ -123,8 +125,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'wpsdabangapi',
+        'USER': 'moonpeter',
+        'PASSWORD': 'admin123',
+        'HOST': 'wps12th-dabang.cahxsb1yyuko.ap-northeast-2.rds.amazonaws.com',
+        'PORT': 5432,
     }
 }
 
