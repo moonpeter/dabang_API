@@ -122,10 +122,6 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': None,
 }
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.IsAdminUser',
-    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
@@ -155,17 +151,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'wpsdabangapi',
-        'USER': 'moonpeter',
-        'PASSWORD': 'admin123',
-        'HOST': 'wps12th-dabang.cahxsb1yyuko.ap-northeast-2.rds.amazonaws.com',
-        'PORT': 5432,
+     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'wpsdabangapi',
+#         'USER': 'moonpeter',
+#         'PASSWORD': 'admin123',
+#         'HOST': 'wps12th-dabang.cahxsb1yyuko.ap-northeast-2.rds.amazonaws.com',
+#         'PORT': 5432,
+#     }
+# }
 
 sentry_sdk.init(
     dsn="https://3d93f78103834761aeba8a0dec24c31e@sentry.io/5175838",
@@ -201,7 +203,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'ko-KR'
+LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
 

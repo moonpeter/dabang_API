@@ -61,7 +61,7 @@ class SalesForm(models.Model):
 class MaintenanceFee(models.Model):
     postRoom = models.ForeignKey(PostRoom, verbose_name='해당 매물', on_delete=models.CASCADE, )
     controlPoint = models.ForeignKey('ControlPoint', verbose_name='포함 항목', on_delete=models.CASCADE, )
-    totalFee = models.IntegerField(max_length=1024, verbose_name='관리비 합계')
+    totalFee = models.IntegerField(verbose_name='관리비 합계')
 
 
 # 관리비 포함 항목
