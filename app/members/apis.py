@@ -1,20 +1,20 @@
-import jwt
 import requests
-from django.contrib.auth import get_user_model, authenticate
-from rest_framework import permissions, status
-
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
 from members.models import SocialLogin
-from members.permissions import IsOwnerOrReadOnly
-from members.serializers import UserSerializer, UserProfileSerializer, SignUpViewSerializer
+from members.serializers import UserSerializer
 
 User = get_user_model()
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
+
+"""
+ 소셜로그인 라이브러리 사용할 예정
+"""
 
 
 class KakaoJwtTokenView(APIView):
@@ -32,8 +32,6 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
-        # jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
-
         try:
             user = User.objects.get(username=kakao_id)
         except User.DoesNotExist:
@@ -79,8 +77,6 @@ class FacebookJwtToken(APIView):
         first_name = data['first_name']
         last_name = data['last_name']
 
-        # jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
-
         try:
             user = User.objects.get(username=facebook_id)
         except User.DoesNotExist:
@@ -98,5 +94,3 @@ class FacebookJwtToken(APIView):
             'user': UserSerializer(user).data,
         }
         return Response(data)
-
-
