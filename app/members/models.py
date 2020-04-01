@@ -1,7 +1,11 @@
 from django.contrib.auth.models import AbstractUser
+
+import posts
+
+
 from django.db import models
 
-from posts.models import PostRoom
+from posts.models import PostLike
 
 
 class User(AbstractUser):
@@ -10,7 +14,8 @@ class User(AbstractUser):
         'SocialLogin',
     )
     post = models.ManyToManyField(
-        PostRoom,
+        posts.models.PostRoom,
+        through=PostLike,
     )
 
 
