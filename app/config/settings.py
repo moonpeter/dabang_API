@@ -62,6 +62,7 @@ AUTH_USER_MODEL = 'members.User'
 
 INSTALLED_APPS = [
     'posts.apps.PostsConfig',
+    'salesinlots.apps.SalesinlotsConfig',
     'members.apps.MembersConfig',
 
     'django.contrib.admin',
@@ -75,6 +76,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'debug_toolbar',
     'psycopg2',
+    'selenium',
+    'pandas',
     'django_extensions',
 ]
 
