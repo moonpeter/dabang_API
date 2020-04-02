@@ -26,3 +26,11 @@ class SocialLogin(models.Model):
 
     def __repr__(self):
         return self.type
+
+    @staticmethod
+    def start():
+        socials = ['kakao', 'facebook', 'apple']
+        for i in socials:
+            SocialLogin.objects.create(
+                type=i,
+            )

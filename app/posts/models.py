@@ -56,6 +56,14 @@ class SalesForm(models.Model):
     monthly = models.IntegerField(null=True, verbose_name='월세', )  # 월세
     salePrice = models.IntegerField(null=True, verbose_name='매매 가격', )  # 매매가격
 
+    @staticmethod
+    def start():
+        type_list = ['매매', '전세', '월세']
+        for i in type_list:
+            SalesForm.objects.create(
+                type=i,
+            )
+
 
 # 관리비 테이블
 class MaintenanceFee(models.Model):

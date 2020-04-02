@@ -21,6 +21,11 @@ class UserModelViewSet(viewsets.ModelViewSet):
     # 함수들을 오버라이딩 하는 경우 상속받는 기능의 코드를 이해한 상태에서 건드려야 생산성과 유지보수의 이점을 둘 다 가져가는 듯 하다.
     # 각 함수를 오버라이딩 할 때 어떤 모듈의 함수인지 이해하는 지식 필요할 듯
 
+    추후 추가할 기능들
+     - 유저 프로필 페이지 최근 본 게시글 목록, 찜한 게시글 목록
+     - 회원가입 시 유저 아이디 중복 체크
+     - 유저 패스워드 변경
+     - 특정 상황에 따른 푸쉬알림
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer

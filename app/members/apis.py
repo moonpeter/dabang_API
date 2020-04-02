@@ -1,11 +1,12 @@
 import requests
 from django.contrib.auth import get_user_model
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
 from members.models import SocialLogin
-from members.serializers import UserSerializer
+from members.serializers import UserSerializer, SignUpViewSerializer
 
 User = get_user_model()
 
@@ -15,6 +16,23 @@ JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 """
  소셜로그인 라이브러리 사용할 예정
 """
+
+
+class SignUpView(APIView):
+    def post(self, request):
+        serializer = SignUpViewSerializer(data=request.data)
+        if serializer.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            email = request.POST.get('email')
+            User.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+            )
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class KakaoJwtTokenView(APIView):
