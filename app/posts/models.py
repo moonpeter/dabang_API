@@ -28,10 +28,9 @@ class PostRoom(models.Model):
         'ControlPoint',
         through='MaintenanceFee',
     )
-    parking = models.BooleanField(verbose_name='주차 유무', )
-    parkingFee = models.IntegerField(verbose_name='주차 비용', )
+    parkingFee = models.IntegerField(verbose_name='주차 비용', null=True)
     moveIn = models.DateTimeField(verbose_name='입주 가능 날짜')
-    option = models.ManyToManyField('OptionItem', verbose_name='옵션 항')
+    option = models.ManyToManyField('OptionItem', verbose_name='옵션 항목')
     heatingType = models.CharField('난방 종류', choices=HEATING_ZONE, max_length=10)
     pet = models.BooleanField('반려 동물', )
     elevator = models.BooleanField('엘레베이터', )
@@ -47,7 +46,6 @@ class PostRoom(models.Model):
 
 class PostAddress(models.Model):
     loadAddress = models.CharField(max_length=50, )
-    detailAddress = models.CharField(max_length=50, )
 
 
 class SalesForm(models.Model):
@@ -65,7 +63,6 @@ class SalesForm(models.Model):
             )
 
 
-# 관리비 테이블
 class MaintenanceFee(models.Model):
     postRoom = models.ForeignKey(PostRoom, verbose_name='해당 매물', on_delete=models.CASCADE, )
     controlPoint = models.ForeignKey('ControlPoint', verbose_name='포함 항목', on_delete=models.CASCADE, )
