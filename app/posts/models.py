@@ -12,11 +12,11 @@ class PostRoom(models.Model):
     description = models.TextField(max_length=1000, verbose_name='설명', )
     address = models.OneToOneField(
         'PostAddress',
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, null=True
     )
     salesForm = models.OneToOneField(
         'SalesForm',
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, null=True
     )
 
     floor = models.IntegerField(null=True, verbose_name='층 수', )
@@ -30,9 +30,9 @@ class PostRoom(models.Model):
     )
     parking = models.BooleanField(verbose_name='주차 유무', )
     parkingFee = models.IntegerField(verbose_name='주차 비용', )
-    moveIn = models.DateTimeField(verbose_name='입주 가능 날짜')
-    option = models.ManyToManyField('OptionItem', verbose_name='옵션 항')
-    heatingType = models.CharField('난방 종류', choices=HEATING_ZONE, max_length=10)
+    # moveIn = models.DateTimeField(verbose_name='입주 가능 날짜')
+    option = models.ManyToManyField('OptionItem', verbose_name='옵션 항', null=True)
+    heatingType = models.CharField('난방 종류', choices=HEATING_ZONE, max_length=10, null=True)
     pet = models.BooleanField('반려 동물', )
     elevator = models.BooleanField('엘레베이터', )
     multiFloor = models.BooleanField('복층', )
@@ -41,7 +41,7 @@ class PostRoom(models.Model):
     veranda = models.BooleanField('베란다/발코니', )
     depositLoan = models.BooleanField('전세 자금 대출', )
     securitySafety = models.ManyToManyField(
-        'SecuritySafetyFacilities',
+        'SecuritySafetyFacilities', null=True,
     )
 
 
@@ -75,7 +75,7 @@ class OptionItem(models.Model):
 
 
 class SecuritySafetyFacilities(models.Model):
-    name = models.CharField('보안/안전 시설 아이템', max_length=10, )
+    name = models.CharField('보안/안전 시설 아이템', max_length=10, null=True)
     image = models.ImageField('시설 이미지', null=True, )
 
 
