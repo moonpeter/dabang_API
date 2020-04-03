@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 from members.models import SocialLogin
-from posts.models import SalesForm, ControlPoint
+from posts.models import SalesForm, ControlPoint, PostAddress, SecuritySafetyFacilities
 
 User = get_user_model()
 
@@ -21,15 +21,5 @@ class SocialLoginAdmin(admin.ModelAdmin):
     list_display = ['pk', 'type']
 
 
-class SalesFormAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'type']
-
-
-class ControlPointAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name' ]
-
-
 admin.site.register(User, UserAdmin)
 admin.site.register(SocialLogin, SocialLoginAdmin)
-admin.site.register(SalesForm, SalesFormAdmin)
-admin.site.register(ControlPoint, ControlPointAdmin)

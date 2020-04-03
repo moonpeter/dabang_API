@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from config import settings
 
@@ -19,25 +20,27 @@ class PostRoom(models.Model):
         on_delete=models.CASCADE,
     )
 
-    floor = models.IntegerField(null=True, verbose_name='층 수', )
-    totalFloor = models.IntegerField(null=True, verbose_name='건물 층 수', )
-    area = models.IntegerField(verbose_name='전용 면적', )
-    supplyArea = models.IntegerField(verbose_name='공급 면적', )
+    floor = models.CharField(null=True, verbose_name='층 수', max_length=5)
+    totalFloor = models.CharField(null=True, verbose_name='건물 층 수', max_length=5)
+    area = models.CharField(verbose_name='전용 면적', max_length=10)
+    supplyArea = models.CharField(verbose_name='공급 면적', max_length=10)
     shortRent = models.BooleanField()
     management = models.ManyToManyField(
         'ControlPoint',
         through='MaintenanceFee',
     )
-    parkingFee = models.IntegerField(verbose_name='주차 비용', null=True)
+    parkingFee = models.CharField(verbose_name='주차 비용', null=True, max_length=10)
     living_expenses = models.CharField('생활비', null=True, max_length=15, )
     living_expenses_detail = models.CharField('생활비 항목', null=True, max_length=20, )
-    moveIn = models.DateTimeField(verbose_name='입주 가능 날짜')
+
+    textMoveIn = models.CharField('크롤링용 입주날짜', null=True, max_length=10)
+    moveIn = models.DateTimeField(verbose_name='입주 가능 날짜', null=True, )
     option = models.ManyToManyField('OptionItem', verbose_name='옵션 항목')
     heatingType = models.CharField('난방 종류', choices=HEATING_ZONE, max_length=10)
     pet = models.BooleanField('반려 동물', )
     elevator = models.BooleanField('엘레베이터', )
-    multiFloor = models.BooleanField('복층', )
-    pointRoom = models.BooleanField('1.5 룸, 주방 분리형')
+    multiFloor = models.BooleanField('복층', null=True, )
+    pointRoom = models.BooleanField('1.5 룸, 주방 분리형', null=True, )
     builtIn = models.BooleanField('빌트 인', )
     veranda = models.BooleanField('베란다/발코니', )
     depositLoan = models.BooleanField('전세 자금 대출', )
@@ -50,6 +53,7 @@ class PostRoom(models.Model):
         from selenium import webdriver
         from selenium.common.exceptions import NoSuchElementException
         import collections
+        import time
 
         dabang_url = 'https://www.dabangapp.com/search#/map?filters=%7B%22multi_room_type%22%3A%5B2%2C1%2C0%5' \
                      'D%2C%22selling_type%22%3A%5B0%2C1%2C2%5D%2C%22deposit_range%22%3A%5B0%2C999999%5D%2C%22price' \
@@ -67,7 +71,6 @@ class PostRoom(models.Model):
                      '5D%2C%22zoom%22%3A6%7D&search=%7B%22id%22%3A%2211200114%22%2C%22type%22%3A%22region%22%2C%22nam' \
                      'e%22%3A%22%EC%84%B1%EC%88%98%EB%8F%991%EA%B0%80%22%7D&tab=all'
         driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-        driver.implicitly_wait(3)
 
         driver.get(dabang_url)
         seongsoo_1dong_detail_list = driver.find_elements_by_xpath(
@@ -81,9 +84,11 @@ class PostRoom(models.Model):
         for url in bang_url_list:
             driver.get(url)
             driver.implicitly_wait(3)
+            time.sleep(3)
 
             try:
-                driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/div/div/button").click()
+                button = driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/div/div/button")
+                driver.execute_script("arguments[0].click();", button)
             except NoSuchElementException:
                 pass
 
@@ -95,11 +100,14 @@ class PostRoom(models.Model):
                                                            'pointRoom', 'builtIn', 'veranda', 'depositLoan',
                                                            'securitySafety',
                                                            ])
-
-            unrefined_securitySafety = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[3]/div[2]/div')
-            security = unrefined_securitySafety[0].get_attribute('innerText')
-            security = security.split('\n\n')
+            try:
+                unrefined_securitySafety = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[3]/div[2]/div')
+                security = unrefined_securitySafety[0].get_attribute('innerText')
+                security = security.split('\n\n')
             # security MTM
+            except IndexError:
+                pass
 
             try:
                 unrefined_option = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[3]/div[1]/div')
@@ -111,8 +119,8 @@ class PostRoom(models.Model):
             # option은 옵션테이블 MTM
 
             unrefined_description = driver.find_elements_by_xpath("/html/body/div[1]/div/div[4]/div/div")
-            unrefined_description[0].get_attribute("innerText")
-            variable.description = unrefined_description.replace("\n", "")
+            description = unrefined_description[0].get_attribute("innerText")
+            description.replace("\n", "")
 
             unrefined_address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div/div/p')
             variable.address = unrefined_address[0].get_attribute("innerText")
@@ -126,7 +134,13 @@ class PostRoom(models.Model):
             # SalesForm OTO relation
             variable.salesForm_type = salesForm[0]
             variable.salesForm_deposit = salesForm[1]
-            variable.salesForm_monthly = salesForm[2]
+            try:
+                textPay = salesForm[2]
+                salesForm_monthly = variable.textPay.split('만')
+                salesForm_monthly = salesForm_monthly[0]
+            except IndexError:
+
+                salesForm_monthly = None
 
             unrefined_floor = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[1]/div')
             total_floor = unrefined_floor[0].get_attribute('innerText')
@@ -140,7 +154,10 @@ class PostRoom(models.Model):
             unrefined_area = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/span')
             area = unrefined_area[0].get_attribute('innerText')
             variable.area = area
-            driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/button').click()
+
+            button = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/button')
+            driver.execute_script("arguments[0].click();", button)
+
             unrefined_area = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/span')
             supplyArea = unrefined_area[0].get_attribute('innerText')
             variable.supplyArea = supplyArea
@@ -165,7 +182,9 @@ class PostRoom(models.Model):
             unrefined_management = unrefined_management.replace(',', ' ')
             unrefined_management = unrefined_management.split(' ')
             # 관리비 금액
+
             management = unrefined_management.pop(0)
+
             totalPay = management.split('만')
             detailPay = totalPay[0]
             # 관리비 인스턴스로 생성
@@ -199,34 +218,62 @@ class PostRoom(models.Model):
 
             unrefined_pet = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[6]/div')
             pet = unrefined_pet[0].get_attribute('innerText')
+            if pet == "불가능":
+                pet = False
+            else:
+                pet = True
             variable.pet = pet
 
             unfined_elevator = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[5]/div')
             elevator = unfined_elevator[0].get_attribute('innerText')
+            if elevator == "없음":
+                elevator = False
+            else:
+                elevator = True
             variable.elevator = elevator
 
             unrefined_builtIn = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[4]/div')
             builtIn = unrefined_builtIn[0].get_attribute('innerText')
+            if builtIn == "아님":
+                builtIn = False
+            else:
+                builtIn = True
             variable.builtIn = builtIn
 
             unrefined_veranda = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[7]/div')
             veranda = unrefined_veranda[0].get_attribute('innerText')
+            if veranda == "없음":
+                veranda = False
+            else:
+                veranda = True
             variable.veranda = veranda
 
             unrefined_depositLoan = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[8]/div')
             depositLoan = unrefined_depositLoan[0].get_attribute('innerText')
+
+            if depositLoan == "가능":
+                depositLoan = True
+            else:
+                depositLoan = False
             variable.depositLoan = depositLoan
 
             # 주소 인스턴스 생성
-            address_instance = PostAddress.objects.create(
+            address_instance = PostAddress.objects.get_or_create(
                 loadAddress=variable.address
             )
-            # 판매 유형 인스턴스 생
-            salesform = SalesForm.objects.get_or_create(
-                type=variable.salesForm_type,
-                deposit=variable.salesForm_deposit,
-                monthly=variable.salesForm_monthly,
-            )
+            # 판매 유형 인스턴스 생성
+            if salesForm_monthly is not None:
+                salesform = SalesForm.objects.get_or_create(
+                    type=variable.salesForm_type,
+                    deposit=variable.salesForm_deposit,
+                    monthly=salesForm_monthly,
+                )
+            else:
+                salesform = SalesForm.objects.get_or_create(
+                    type=variable.salesForm_type,
+                    deposit=variable.salesForm_deposit,
+                )
+
 
             # 관리비 인스턴스 생성 MTM
             management_list = []
@@ -238,12 +285,16 @@ class PostRoom(models.Model):
                 management_list.append(instance)
 
             # 안전 시설 인스턴스 생성 MTM
+
             security_list = []
-            for obj in security:
-                instance = SecuritySafetyFacilities.objects.create(
-                    name=obj,
-                )
-                security_list.append(instance)
+            try:
+                for obj in security:
+                    instance = SecuritySafetyFacilities.objects.get_or_create(
+                        name=obj,
+                    )
+                    security_list.append(instance)
+            except UnboundLocalError:
+                pass
 
             # 옵션 시설 인스턴스 생성 MTM
             option_list = []
@@ -254,19 +305,21 @@ class PostRoom(models.Model):
                 option_list.append(instance)
 
             # objects create
-            post = PostRoom.objects.create(
+            address_instance = PostAddress.objects.get(loadAddress=variable.address)
+            salesForm = SalesForm.objects.get(type=variable.salesForm_type)
+            post = PostRoom.objects.get_or_create(
                 description=variable.description,
                 address=address_instance,
-                salesForm=salesform,
+                salesForm=salesform[0],
                 floor=variable.floor,
-                totalfloor=variable.totalFloor,
+                totalFloor=variable.totalFloor,
                 area=variable.area,
                 supplyArea=variable.supplyArea,
                 shortRent=variable.shortRent,
                 living_expenses=variable.living_expenses,
                 living_expenses_detail=variable.living_expenses_detail,
                 parkingFee=variable.parkingFee,
-                moveIn=variable.moveIn,
+                textMoveIn=variable.moveIn,
                 heatingType=variable.heatingType,
                 pet=variable.pet,
                 elevator=variable.elevator,
@@ -276,20 +329,28 @@ class PostRoom(models.Model):
             )
 
             # 관리비 항목 관계 정립
-            controlPoint = ControlPoint.objects.get(name=obj)
-            maintenance = MaintenanceFee.objects.create(
-                postRoom=post,
-                controlPoint=controlPoint,
-                totalFee=detailPay,
-            )
-            for obj in management_list[1:]:
-                maintenance.controlPoint.add(obj)
+            try:
+                controlPoint = ControlPoint.objects.get(name=obj)
+                maintenance = MaintenanceFee.objects.create(
+                    postRoom=post[0],
+                    controlPoint=controlPoint,
+                    totalFee=detailPay,
+                )
+            except ObjectDoesNotExist:
+                pass
+            try:
+                for obj in management_list[1:]:
+                    maintenance.controlPoint.add(obj)
+            except UnboundLocalError:
+                pass
 
             for obj in security_list:
                 post.securitySafety.add(obj)
-
-            for obj in option_list:
-                post.option.add(obj)
+            try:
+                for obj in option_list:
+                    post.option.add(obj)
+            except AttributeError:
+                pass
 
 
 class PostAddress(models.Model):
@@ -297,10 +358,12 @@ class PostAddress(models.Model):
 
 
 class SalesForm(models.Model):
+    # 우선 크롤링 코드 되는지만 확인 이후 인티저로 바꿀건데 그건 좀 생각하고 짜야 할
     type = models.CharField(max_length=10)
-    deposit = models.IntegerField(null=True, verbose_name='보증금', )  # 보증금
-    monthly = models.IntegerField(null=True, verbose_name='월세', )  # 월세
-    salePrice = models.IntegerField(null=True, verbose_name='매매 가격', )  # 매매가격
+    deposit = models.CharField(null=True, verbose_name='보증금', max_length=10)  # 보증금
+    monthly = models.CharField(null=True, verbose_name='월세', max_length=10)  # 월세
+    salePrice = models.CharField(null=True, verbose_name='매매 가격', max_length=10, blank=True)  # 매매가격
+    PriceText = models.CharField('만원 포함가격', null=True, max_length=20)
 
     @staticmethod
     def start():
