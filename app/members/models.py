@@ -2,14 +2,13 @@ from django.contrib.auth.models import AbstractUser
 
 import posts
 
-
 from django.db import models
 
 from posts.models import PostLike
 
 
 class User(AbstractUser):
-    introduce = models.TextField(max_length=100)
+    introduce = models.TextField(max_length=100, null=True)
     social = models.ManyToManyField(
         'SocialLogin',
     )
@@ -27,3 +26,11 @@ class SocialLogin(models.Model):
 
     def __repr__(self):
         return self.type
+
+    @staticmethod
+    def start():
+        socials = ['kakao', 'facebook', 'apple']
+        for i in socials:
+            SocialLogin.objects.create(
+                type=i,
+            )

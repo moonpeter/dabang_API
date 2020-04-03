@@ -1,76 +1,76 @@
-from django.contrib.auth import get_user_model
-from rest_framework import viewsets, status
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth import get_user_model, authenticate
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from members.serializers import UserSerializer, UserProfileSerializer
+from rest_framework_jwt.settings import api_settings
 
-from members.permissions import IsOwnerOrReadOnly
-
-from members.serializers import UserSerializer, UserLoginSerializer
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserModelViewSet(viewsets.ModelViewSet):
     """
-    Generic API View 를 상속하며, .list(), .retrieve(), .create(), .update(), .partial_update(), .destroy() action 지원.
+    viewsets.ModelViewSet 특징
+    'list', 'create', 'retrieve', 'update', 'destroy' 기능 자동 지원, 별도의 함수 작성 가능 api코드 간소화
+
+    # 함수들을 오버라이딩 하는 경우 상속받는 기능의 코드를 이해한 상태에서 건드려야 생산성과 유지보수의 이점을 둘 다 가져가는 듯 하다.
+    # 각 함수를 오버라이딩 할 때 어떤 모듈의 함수인지 이해하는 지식 필요할 듯
+
+    추후 추가할 기능들
+     - 유저 프로필 페이지 최근 본 게시글 목록, 찜한 게시글 목록
+     - 회원가입 시 유저 아이디 중복 체크
+     - 유저 패스워드 변경
+     - 특정 상황에 따른 푸쉬알림
     """
     queryset = User.objects.all()
-    permission_classes = [AllowAny]
     serializer_class = UserSerializer
 
-    def get_permissions(self):
-        if self.action == 'partial_update':
-            permission_classes = [IsOwnerOrReadOnly]
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def get_serializer_class(self):
+        if self.action in "create":
+            serializer_class = UserSerializer
+            return serializer_class
         else:
-            permission_classes = [AllowAny]
+            serializer_class = UserProfileSerializer
+            return serializer_class
+        serializer_class = (super().get_serializer_class(),)
+        return serializer_class
+
+    def get_permissions(self):
+        if self.action == ("retrieve", "partial_update", "update", "destroy"):
+            permission_classes = [IsAuthenticated()]
+            return permission_classes
+        elif self.action == "list":
+            # 모든 유저의 목록을 보여주고 싶지 않아서
+            permission_classes = [IsAdminUser()]
+            return permission_classes
+        else:
+            permission_classes = [AllowAny()]
+            return permission_classes
+        permission_classes = super().get_permissions()
         return [permission() for permission in permission_classes]
 
+    def get_authenticate_header(self, request):
+        authentication_classes = [JSONWebTokenAuthentication]
+        return [authentication() for authentication in authentication_classes]
 
-class UserLoginView(RetrieveAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = UserLoginSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        response = {
-            'success': 'True',
-            'status code': status.HTTP_200_OK,
-            'message': 'User logged in  successfully',
-            'token': serializer.data['token'],
-        }
-        status_code = status.HTTP_200_OK
-
-        return Response(response, status=status_code)
-
-
-class UserProfileView(RetrieveAPIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = [JSONWebTokenAuthentication]
-
-    def get(self, request):
-        try:
-            user = User.objects.get(username=request.user.username)
-            status_code = status.HTTP_200_OK
-            response = {
-                'success': 'true',
-                'status code': status_code,
-                'message': 'User profile fetched successfully',
-                'data': [{
-                    'username': user.username,
-                    'email': user.email,
-                    'introduce': user.introduce,
-                }]
+    @action(detail=False, methods=['POST'])
+    def jwt(self, request):
+        username = request.POST.get('email')
+        userpass = request.POST.get('password')
+        user = authenticate(username=username, password=userpass)
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
+        if user is not None:
+            data = {
+                'jwt': jwt_token,
+                'user': UserSerializer(user).data
             }
-
-        except Exception as e:
-            status_code = status.HTTP_400_BAD_REQUEST
-            response = {
-                'success': 'false',
-                'status code': status.HTTP_400_BAD_REQUEST,
-                'message': 'User does not exists',
-                'error': str(e)
-            }
-        return Response(response, status=status_code)
+            return Response(data)
