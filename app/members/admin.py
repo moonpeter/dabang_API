@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 from members.models import SocialLogin
+from posts.models import SalesForm, ControlPoint, PostAddress, SecuritySafetyFacilities
 
 User = get_user_model()
 
