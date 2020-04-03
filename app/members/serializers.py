@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework import serializers, permissions
+from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
 User = get_user_model()
@@ -35,9 +36,14 @@ class SignUpViewSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username',
-            'email',
             'password',
+            'email',
         ]
+
+    def create(self, validated_data):
+        user = User.objects.create(**validated_data)
+        user.save()
+        return user
 
 
 class UserLoginSerializer(serializers.Serializer):
