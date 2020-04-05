@@ -33,7 +33,7 @@ class PostRoom(models.Model):
     # areaInt는 api로 작성 시 필요, areaChar 는 크롤링 부분에서 사용. area까진 정수로 변경해주지 않는다. 필터링에서 사용하지 않기 때문
     # supplyArea는 api에서 사용 , supplyArea char는 크롤링에서 사용, 필터링에 사용하므로 int형으로 변환
     # 공급면적을 기준으로 변환한다.
-    shortRent = models.BooleanField()
+    shortRent = models.BooleanField(null=True, )
     management = models.ManyToManyField(
         'AdministrativeDetail',
         through='MaintenanceFee',
@@ -45,7 +45,7 @@ class PostRoom(models.Model):
 
     MoveInChar = models.CharField('크롤링용 입주날짜', null=True, max_length=10)
     moveInDate = models.DateTimeField(verbose_name='입주 가능 날짜', null=True, )
-    option = models.ManyToManyField('OptionItem', verbose_name='옵션 항목')
+    option = models.ManyToManyField('OptionItem', through='RoomOption', verbose_name='옵션 항목')
     heatingType = models.CharField('난방 종류', max_length=10)
     # choice field 쓰는게 지금 좀 애매해서 되나 제가 따로 해볼게요
     pet = models.BooleanField('반려 동물', )
@@ -57,6 +57,8 @@ class PostRoom(models.Model):
     depositLoan = models.BooleanField('전세 자금 대출', )
     securitySafety = models.ManyToManyField(
         'SecuritySafetyFacilities',
+        through='RoomSecurity',
+
     )
 
     @staticmethod
@@ -125,7 +127,8 @@ class PostRoom(models.Model):
                     salesdepositInt = salesdepositInt + salesmonthlyInt
                     salesDepositChar = salesDepositChar + salesmonthlyChar
             except IndexError:
-                monthlyChar = salesmonthlyChar,
+                salesmonthlyInt = 0
+                salesmonthlyChar = ''
 
             salesform = SalesForm.objects.create(
                 type=salesType,
@@ -157,15 +160,18 @@ class PostRoom(models.Model):
             supplyAreaInt = supplyAreaInt.strip()
             supplyAreaInt = int(supplyAreaInt)
 
-            unrefined_shortRent = driver.find_elements_by_xpath(
-                '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[5]/p')
-            shortRent = unrefined_shortRent[0].get_attribute('innerText')
-            shortRent = shortRent
+            try:
+                unrefined_shortRent = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[5]/p')
+                shortRent = unrefined_shortRent[0].get_attribute('innerText')
+                shortRent = shortRent
 
-            if shortRent == '불가능':
-                shortRent = False
-            else:
-                shortRent = True
+                if shortRent == '불가능':
+                    shortRent = False
+                else:
+                    shortRent = True
+            except IndexError:
+                print('매매 url: ', url)
 
             unrefined_management = driver.find_elements_by_xpath(
                 '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[3]')
@@ -285,7 +291,7 @@ class PostRoom(models.Model):
                     instance = SecuritySafetyFacilities.objects.get_or_create(
                         name=obj,
                     )
-                    security_list.append(instance)
+                    security_list.append(instance[0])
             except UnboundLocalError:
                 pass
             except NameError:
@@ -307,10 +313,10 @@ class PostRoom(models.Model):
             # 옵션 시설 인스턴스 생성 MTM
             option_list = []
             for obj in option:
-                instance = OptionItem.objects.create(
+                instance = OptionItem.objects.get_or_create(
                     name=obj,
                 )
-                option_list.append(instance)
+                option_list.append(instance[0])
 
             # objects create
 
@@ -342,6 +348,20 @@ class PostRoom(models.Model):
                     postRoom=post[0],
                     totalFee=totalFee,
                     admin=ins[0],
+                )
+
+            for ins in option_list:
+                RoomOption.objects.create(
+                    postRoom=post[0],
+                    option=ins,
+
+                )
+
+            for ins in security_list:
+                RoomSecurity.objects.create(
+                    postRoom=post[0],
+                    security=ins,
+
                 )
 
 
@@ -394,4 +414,16 @@ class PostLike(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    created_at = models.DateTimeField(auto_now_add=True, )
+
+
+class RoomOption(models.Model):
+    postRoom = models.ForeignKey(PostRoom, verbose_name='해당 매물', on_delete=models.CASCADE, )
+    option = models.ForeignKey(OptionItem, verbose_name='해당 옵션', on_delete=models.CASCADE, )
+    created_at = models.DateTimeField(auto_now_add=True, )
+
+
+class RoomSecurity(models.Model):
+    postRoom = models.ForeignKey(PostRoom, verbose_name='해당 매물', on_delete=models.CASCADE, )
+    security = models.ForeignKey(SecuritySafetyFacilities, verbose_name='보안 안전 시설', on_delete=models.CASCADE, )
     created_at = models.DateTimeField(auto_now_add=True, )
