@@ -44,8 +44,8 @@ class UserModelViewSet(viewsets.ModelViewSet):
         else:
             serializer_class = UserProfileSerializer
             return serializer_class
-        serializer_class = (super().get_serializer_class(),)
-        return serializer_class
+        # serializer_class = (super().get_serializer_class(),)
+        # return serializer_class
 
     def get_permissions(self):
         if self.action == ("retrieve", "partial_update", "update", "destroy"):
@@ -58,8 +58,8 @@ class UserModelViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [AllowAny()]
             return permission_classes
-        permission_classes = super().get_permissions()
-        return [permission() for permission in permission_classes]
+        # permission_classes = super().get_permissions()
+        # return [permission() for permission in permission_classes]
 
     def get_authenticate_header(self, request):
         authentication_classes = [JSONWebTokenAuthentication]
