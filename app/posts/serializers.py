@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
-from .models import PostRoom
+from .models import PostTest
 
 
-class PostCreateSerializer(serializers.ModelSerializer):
+class PostListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PostRoom
-        fields = '__all__'
+        model = PostTest
+        fields = (
+            'testtitle',
+        )

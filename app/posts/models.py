@@ -402,3 +402,7 @@ class PostLike(models.Model):
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True, )
+
+
+class PostTest(models.Model):
+    testtitle = models.CharField(max_length=20, verbose_name='제목', null=True, )

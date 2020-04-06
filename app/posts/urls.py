@@ -1,7 +1,8 @@
 from django.urls import path
 
-from posts import apis, views
+from posts import apis
 
 urlpatterns_posts = [
-    path('create/', views.PostListAPIView.as_view()),
+    path('', apis.PostList.as_view()),
+    path('<int:pk>/', apis.PostDetail.as_view()),
 ]
