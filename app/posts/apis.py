@@ -26,6 +26,27 @@ class PostList(APIView):
 class PostDetail(APIView):
     def get_object(self, pk):
         try:
-            return PostRoom.objects.get(pk=pk)
-        except PostRoom.DoseNoteExist:
+            return PostTest.objects.get(pk=pk)
+        except PostTest.DoseNoteExist:
             raise Http404
+
+    # 특정 게시물 조회 : /posts/{pk}/
+    def get(self, request, pk):
+        posttest = self.get_object(pk)
+        serializer = PostListSerializer(posttest)
+        return Response(serializer.data)
+
+    # 특정 게시물 수정 : /posts/{pk}/
+    def put(self, request, pk, format=None):
+        posttest = self.get_object(pk)
+        serializer = PostListSerializer(posttest, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # 특정 게시물 삭제 : /posts/{pk}/
+    def delete(self, request, pk, format=None):
+        posttest = self.get_object(pk)
+        posttest.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
