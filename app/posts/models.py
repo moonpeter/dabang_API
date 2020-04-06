@@ -13,11 +13,11 @@ class PostRoom(models.Model):
     description = models.TextField(max_length=1000, verbose_name='설명', )
     address = models.OneToOneField(
         'PostAddress',
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, null=True
     )
     salesForm = models.OneToOneField(
         'SalesForm',
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, null=True
     )
 
     floor = models.CharField(null=True, verbose_name='층 수', max_length=5)
@@ -45,7 +45,7 @@ class PostRoom(models.Model):
     veranda = models.BooleanField('베란다/발코니', )
     depositLoan = models.BooleanField('전세 자금 대출', )
     securitySafety = models.ManyToManyField(
-        'SecuritySafetyFacilities',
+        'SecuritySafetyFacilities', null=True,
     )
 
     @staticmethod
@@ -391,7 +391,7 @@ class OptionItem(models.Model):
 
 
 class SecuritySafetyFacilities(models.Model):
-    name = models.CharField('보안/안전 시설 아이템', max_length=10, )
+    name = models.CharField('보안/안전 시설 아이템', max_length=10, null=True)
     image = models.ImageField('시설 이미지', null=True, )
 
 
@@ -402,3 +402,7 @@ class PostLike(models.Model):
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True, )
+
+
+class PostTest(models.Model):
+    testtitle = models.CharField(max_length=20, verbose_name='제목', null=True, )
