@@ -406,3 +406,4 @@ class PostLike(models.Model):
 
 class PostTest(models.Model):
     testtitle = models.CharField(max_length=20, verbose_name='제목', null=True, )
+    testdesc = models.TextField(null=True)
