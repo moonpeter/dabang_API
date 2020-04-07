@@ -2,38 +2,19 @@ import time
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+
+from posts.crawling.find_urls import find_urls
 from ..models import SalesForm, PostAddress, AdministrativeDetail, SecuritySafetyFacilities, OptionItem, \
     MaintenanceFee, RoomOption, RoomSecurity, PostRoom, Broker
 
 
 def postFind():
-    dabang_url = 'https://www.dabangapp.com/search#/map?filters=%7B%22multi_room_type%22%3A%5B2%2C1%2C0%5' \
-                 'D%2C%22selling_type%22%3A%5B0%2C1%2C2%5D%2C%22deposit_range%22%3A%5B0%2C999999%5D%2C%22price' \
-                 '_range%22%3A%5B0%2C999999%5D%2C%22trade_range%22%3A%5B0%2C999999%5D%2C%22maintenance_cost_rang' \
-                 'e%22%3A%5B0%2C999999%5D%2C%22include_maintenance_option1%22%3Atrue%2C%22room_size%22%3A%5B0' \
-                 '%2C999999%5D%2C%22supply_space_range%22%3A%5B0%2C999999%5D%2C%22room_floor_multi%22%3A%5B1%2C2' \
-                 '%2C3%2C4%2C7%2C6%2C5%5D%2C%22division%22%3Afalse%2C%22duplex%22%3Afalse%2C%22room_' \
-                 'type%22%3A%5B1%2C2%5D%2C%22enter_date_range%22%3A%5B0%2C999999%5D%2C%22parking_avera' \
-                 'ge_range%22%3A%5B0%2C999999%5D%2C%22household_num_range%22%3A%5B0%2C999999%5D%2C%22park' \
-                 'ing%22%3Afalse%2C%22animal%22%3Afalse%2C%22short_lease%22%3Afalse%2C%22full_option%22%3Af' \
-                 'alse%2C%22built_in%22%3Afalse%2C%22elevator%22%3Afalse%2C%22balcony%22%3Afalse%2C%22loan%22' \
-                 '%3Afalse%2C%22safety%22%3Afalse%2C%22pano%22%3Afalse%2C%22deal_type%22%3A%5B0%2C1%5D%7D&po' \
-                 'sition=%7B%22location%22%3A%5B%5B127.03782637531295%2C37.518247186167436%5D%2C%5B127.0778725' \
-                 '3873349%2C37.56435875152705%5D%5D%2C%22center%22%3A%5B127.05784328891325%2C37.541304716670695%' \
-                 '5D%2C%22zoom%22%3A6%7D&search=%7B%22id%22%3A%2211200114%22%2C%22type%22%3A%22region%22%2C%22nam' \
-                 'e%22%3A%22%EC%84%B1%EC%88%98%EB%8F%991%EA%B0%80%22%7D&tab=all'
     driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
 
-    driver.get(dabang_url)
-    seongsoo_1dong_detail_list = driver.find_elements_by_xpath(
-        "/html/body/div[1]/div/div[2]/div[1]/div/div[2]/ul/li/div/a")
-    seongsoo_1dong_detail_list[0].get_attribute("href")
-    bang_url_list = []
-
-    [bang_url_list.append(url.get_attribute('href')) for url in seongsoo_1dong_detail_list]
+    url_all_list = find_urls()
 
     # 각 게시글 조회 시작
-    for i, url in enumerate(bang_url_list):
+    for i, url in enumerate(url_all_list):
         driver.get(url)
         driver.implicitly_wait(3)
         time.sleep(3)
