@@ -61,10 +61,6 @@ class UserModelViewSet(viewsets.ModelViewSet):
         permission_classes = super().get_permissions()
         return [permission() for permission in permission_classes]
 
-    def get_authenticate_header(self, request):
-        authentication_classes = [JSONWebTokenAuthentication]
-        return [authentication() for authentication in authentication_classes]
-
     @action(detail=False, methods=['POST'])
     def jwt(self, request):
         username = request.POST.get('email')
