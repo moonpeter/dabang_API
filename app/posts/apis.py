@@ -27,7 +27,7 @@ class PostDetail(APIView):
     def get_object(self, pk):
         try:
             return PostTest.objects.get(pk=pk)
-        except PostTest.DoseNoteExist:
+        except PostTest.DoesNotExist:
             raise Http404
 
     # 특정 게시물 조회 : /posts/{pk}/
