@@ -10,7 +10,7 @@ from posts.models import PostLike
 class User(AbstractUser):
     introduce = models.TextField(max_length=100, null=True)
     social = models.ManyToManyField(
-        'SocialLogin',
+        'members.SocialLogin',
     )
     post = models.ManyToManyField(
         posts.models.PostRoom,
