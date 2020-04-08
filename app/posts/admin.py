@@ -1,7 +1,9 @@
 from django.contrib import admin
 
 # Register your models here.
-from posts.models import SalesForm, ControlPoint, PostAddress, SecuritySafetyFacilities, PostRoom, PostTest
+
+from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostRoom, AdministrativeDetail, \
+    MaintenanceFee, RoomOption, RoomSecurity, PostTest
 
 
 class PostRoomAdmin(admin.ModelAdmin):
@@ -9,10 +11,10 @@ class PostRoomAdmin(admin.ModelAdmin):
 
 
 class SalesFormAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'type', 'deposit', 'monthly', 'PriceText']
+    list_display = ['pk', 'type', 'depositChar', 'monthlyChar', 'depositInt', 'monthlyInt', ]
 
 
-class ControlPointAdmin(admin.ModelAdmin):
+class AdministrativeDetailAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
 
 
@@ -24,13 +26,31 @@ class SecuritySafetyFacilitiesAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
 
 
+class MaintenanceFeeAdmin(admin.ModelAdmin):
+    list_display = ['pk', ]
+
+
+class RoomOptionAdmin(admin.ModelAdmin):
+    list_display = ['pk']
+
+
+class RoomSecurityAdmin(admin.ModelAdmin):
+    list_display = ['pk']
+
+
 class PostTestAdmin(admin.ModelAdmin):
     list_display = ['pk', 'testtitle'
                     ]
 
+
 admin.site.register(PostRoom, PostRoomAdmin)
 admin.site.register(SalesForm, SalesFormAdmin)
-admin.site.register(ControlPoint, ControlPointAdmin)
 admin.site.register(PostAddress, PostAddressAdmin)
 admin.site.register(SecuritySafetyFacilities, SecuritySafetyFacilitiesAdmin)
+
+admin.site.register(AdministrativeDetail, AdministrativeDetailAdmin)
+admin.site.register(MaintenanceFee, MaintenanceFeeAdmin)
+admin.site.register(RoomOption, RoomOptionAdmin)
+admin.site.register(RoomSecurity, RoomSecurityAdmin)
+
 admin.site.register(PostTest, PostTestAdmin)

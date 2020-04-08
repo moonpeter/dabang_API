@@ -10,7 +10,7 @@ params = dict()
 params['type'] = 'sms'  # Message type ( sms, lms, mms, ata )
 params['to'] = '01053487869'  # Recipients Number '01000000000,01000000001'
 params['from'] = '01044321237'  # Sender number
-params['text'] = 'Test Message'  # Message
+params['text'] = 'RoomOption Message'  # Message
 
 cool = Message(api_key, api_secret)
 try:

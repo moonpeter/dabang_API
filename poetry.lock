@@ -758,7 +758,7 @@ tornado = ">=4"
 
 [[package]]
 category = "main"
-description = "Test utilities for code working with files and commands"
+description = "RoomOption utilities for code working with files and commands"
 name = "testpath"
 optional = false
 python-versions = "*"
