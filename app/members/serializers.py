@@ -24,10 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    queryset = User.objects.all()
-    serializers_class = UserSerializer
-    permissions_classes = (permissions.IsAuthenticated,)
-
     class Meta:
         model = User
         fields = [
