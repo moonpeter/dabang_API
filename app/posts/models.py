@@ -1,6 +1,7 @@
 from django.db import models
 
 from config import settings
+from posts.crawling.find_urls import find_apartment_urls
 
 
 class PostRoom(models.Model):
@@ -14,6 +15,7 @@ class PostRoom(models.Model):
         ('Division', '개별'),
         ('Area', '지역'),
     )
+    type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=200, verbose_name='설명', )
     address = models.OneToOneField(
         'posts.PostAddress',
@@ -23,7 +25,6 @@ class PostRoom(models.Model):
         'posts.SalesForm',
         on_delete=models.CASCADE,
     )
-    type = models.CharField('매물 종류', max_length=10, null=True, )
     floor = models.CharField(null=True, verbose_name='층 수', max_length=5)
     totalFloor = models.CharField(null=True, verbose_name='건물 층 수', max_length=5)
     areaInt = models.IntegerField(verbose_name='정수형 전용 면적', null=True, )
@@ -52,9 +53,12 @@ class PostRoom(models.Model):
     elevator = models.BooleanField('엘레베이터', )
     multiFloor = models.BooleanField('복층', null=True, )
     pointRoom = models.BooleanField('1.5 룸, 주방 분리형', null=True, )
-    builtIn = models.BooleanField('빌트 인', )
-    veranda = models.BooleanField('베란다/발코니', )
-    depositLoan = models.BooleanField('전세 자금 대출', )
+    builtIn = models.BooleanField('빌트 인', null=True, )
+    veranda = models.BooleanField('베란다/발코니', null=True, )
+    depositLoan = models.BooleanField('전세 자금 대출', null=True, )
+    totalCitizen = models.CharField('총 세대 수', max_length=10, null=True, )
+    parkingAccumulation = models.CharField('세대당 주차 대수', max_length=10, null=True, )
+    complete = models.CharField('준공 년 월', max_length=10, null=True, )
     securitySafety = models.ManyToManyField(
         'posts.SecuritySafetyFacilities',
         through='RoomSecurity',
@@ -64,8 +68,8 @@ class PostRoom(models.Model):
     @staticmethod
     def project_crawling_start():
         from posts.crawling.postFind import postFind
-
-        postFind()
+        post_type = input('아파트면 아파트 입력, 아니면 그냥 엔터')
+        postFind(post_type)
 
 
 class PostAddress(models.Model):

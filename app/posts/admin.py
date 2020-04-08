@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostRoom, AdministrativeDetail, \
-    MaintenanceFee, RoomOption, RoomSecurity
+    MaintenanceFee, RoomOption, RoomSecurity, Broker
 
 
 class PostRoomAdmin(admin.ModelAdmin):
@@ -26,7 +26,7 @@ class SecuritySafetyFacilitiesAdmin(admin.ModelAdmin):
 
 
 class MaintenanceFeeAdmin(admin.ModelAdmin):
-    list_display = ['pk', ]
+    list_display = ['pk', 'postRoom', 'admin', 'totalFee']
 
 
 class RoomOptionAdmin(admin.ModelAdmin):
@@ -37,6 +37,10 @@ class RoomSecurityAdmin(admin.ModelAdmin):
     list_display = ['pk']
 
 
+class BrokerAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name', 'address', 'manager', 'tel']
+
+
 admin.site.register(PostRoom, PostRoomAdmin)
 admin.site.register(SalesForm, SalesFormAdmin)
 admin.site.register(PostAddress, PostAddressAdmin)
@@ -45,3 +49,4 @@ admin.site.register(AdministrativeDetail, AdministrativeDetailAdmin)
 admin.site.register(MaintenanceFee, MaintenanceFeeAdmin)
 admin.site.register(RoomOption, RoomOptionAdmin)
 admin.site.register(RoomSecurity, RoomSecurityAdmin)
+admin.site.register(Broker, BrokerAdmin)

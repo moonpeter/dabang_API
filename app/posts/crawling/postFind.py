@@ -3,15 +3,18 @@ import time
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
-from posts.crawling.find_urls import find_urls
+from posts.crawling.find_urls import find_urls, find_apartment_urls
 from ..models import SalesForm, PostAddress, AdministrativeDetail, SecuritySafetyFacilities, OptionItem, \
     MaintenanceFee, RoomOption, RoomSecurity, PostRoom, Broker
 
 
-def postFind():
+def postFind(post_style):
     driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
 
-    url_all_list = find_urls()
+    if post_style == '아파트':
+        url_all_list = find_apartment_urls()
+    else:
+        url_all_list = find_urls()
 
     # 각 게시글 조회 시작
     for i, url in enumerate(url_all_list):
@@ -20,38 +23,76 @@ def postFind():
         time.sleep(3)
 
         #  상세 설명보기
+
+        post_type = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[1]/p/span')
+        post_type = post_type.get_attribute('innerText')
+
+        #  상세 설명보기
         try:
             button = driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/div/div/button")
             driver.execute_script("arguments[0].click();", button)
         except NoSuchElementException:
             pass
 
-        post_type = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[1]/p/span')
-        post_type = post_type.get_attribute('innerText')
+        unrefined_description = driver.find_elements_by_xpath("/html/body/div[1]/div/div[4]/div/div")
+        description = unrefined_description[0].get_attribute("innerText")
+        description.replace("\n", "")
+        print('description 설명 :', description)
+
+        if post_type == "아파트":
+            unrefined_address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[5]/div/p')
+        else:
+            unrefined_address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[4]/div/p')
+
+        print(unrefined_address)
+        addressLoad = unrefined_address[0].get_attribute("innerText")
+        print('address Load 도로명주소 :', addressLoad)
+
+        if post_type == '아파트':
+            complete = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[4]/div')
+            complete = complete.get_attribute('innerText')
+            builtIn = None
+        else:
+            unrefined_builtIn = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[4]/div')
+            builtIn = unrefined_builtIn[0].get_attribute('innerText')
+            complete = None
 
         unrefined_description = driver.find_elements_by_xpath("/html/body/div[1]/div/div[4]/div/div")
         description = unrefined_description[0].get_attribute("innerText")
         description.replace("\n", "")
+        print('description 설명 :', description)
 
-        unrefined_address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div/div/p')
+        if post_type == "아파트":
+            unrefined_address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[5]/div/p')
+        else:
+            unrefined_address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[4]/div/p')
+
+        print(unrefined_address)
         addressLoad = unrefined_address[0].get_attribute("innerText")
+        print('address Load 도로명주소 :', addressLoad)
 
         unrefined_salesform = driver.find_elements_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[1]/div')
+
         salesForm = unrefined_salesform[0].get_attribute("innerText")
         salesForm = salesForm.replace('/', ' ')
         salesForm = salesForm.replace('\n', '')
         salesForm = salesForm.split()
         salesType = salesForm[0]  # sales type
+        print('salesType: 매물 종류는>>', salesType)
         salesDepositChar = salesForm[1]
         if salesDepositChar.find('원'):
             salesDepositChar = salesDepositChar.replace('원', '')
+            print('salesDepositChar: ', salesDepositChar)
         salesdepositInt = salesDepositChar.replace('억', '00000000')
         salesdepositInt = int(salesdepositInt)
+        print('salesdepositInt: ', salesdepositInt)
 
         try:
             salesmonthlyChar = salesForm[2]
+            print('salesmonthlyChar: ', salesmonthlyChar)
             salesmonthlyInt = salesmonthlyChar.replace('만원', '0000')
             salesmonthlyInt = int(salesmonthlyInt)
+            print('salesmonthlyInt: ', salesmonthlyInt)
             if salesType == '전세':
                 salesdepositInt = salesdepositInt + salesmonthlyInt
                 salesDepositChar = salesDepositChar + salesmonthlyChar
@@ -72,26 +113,38 @@ def postFind():
         total_floor = total_floor.split('/')
         floor = total_floor[0]
         floor = floor
+        print('floor>>', floor)
         totalFloor = total_floor[1]
         totalFloor = totalFloor.replace(' ', '')
         totalFloor = totalFloor
+        print('totalFloor >> ', totalFloor)
 
         unrefined_area = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/span')
         area = unrefined_area[0].get_attribute('innerText')
+        print('area >>', area)
         areaChar = area
+        print('areaChar >> ', areaChar)
 
         driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/button').click()
 
         unrefined_area = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[2]/div/span')
         supplyAreaChar = unrefined_area[0].get_attribute('innerText')
+        print('supplyAreaChar >> ', supplyAreaChar)
         supplyAreaInt = supplyAreaChar.split('/')
         supplyAreaInt = supplyAreaInt[1].replace('평', '')
+
         supplyAreaInt = supplyAreaInt.strip()
+
         supplyAreaInt = int(supplyAreaInt)
+        print('supplyAreaInt >> ', supplyAreaInt)
 
         try:
-            unrefined_shortRent = driver.find_elements_by_xpath(
-                '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[5]/p')
+            if post_type == '아파트':
+                unrefined_shortRent = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[5]/p')
+            else:
+                unrefined_shortRent = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[5]/p')
             shortRent = unrefined_shortRent[0].get_attribute('innerText')
             shortRent = shortRent
 
@@ -99,13 +152,20 @@ def postFind():
                 shortRent = False
             else:
                 shortRent = True
+
         except IndexError:
             print('매매 url 값 이상하게 들어갈걸?: ', url)
         try:
-            unrefined_management = driver.find_elements_by_xpath(
-                '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[3]'
-
-            )
+            if post_type == "아파트":
+                unrefined_management = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[3]')
+            else:
+                if salesType == "매매":
+                    unrefined_management = driver.find_elements_by_xpath(
+                        '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[2]/p')
+                else:
+                    unrefined_management = driver.find_elements_by_xpath(
+                        '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[3]')
             unrefined_management = unrefined_management[0].get_attribute('innerText')
             unrefined_management = unrefined_management.replace('\n', '')
             unrefined_management = unrefined_management.replace(' ', '')
@@ -145,17 +205,24 @@ def postFind():
             )
             unrefined_living_expenses_detail = driver.find_elements_by_xpath(
                 '/html/body/div[1]/div/div[5]/div[3]/div/div/div/span')
+            unrefined_living_expenses = unrefined_living_expenses[0].get_attribute('innerText')
+            living_expenses = unrefined_living_expenses.replace(' ', '')
+            living_expenses_detail = unrefined_living_expenses_detail[0].get_attribute('innerText')
 
         unrefined_parking = driver.find_elements_by_xpath(
             "/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[4]/p"
         )
+
         try:
             parkingDetail = unrefined_parking[0].get_attribute('innerText')
         except IndexError:
             unrefined_parking = driver.find_elements_by_xpath(
                 '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p'
             )
-            parkingDetail = unrefined_parking[0].get_attribute('innerText')
+            if unrefined_parking:
+                parkingDetail = unrefined_parking[0].get_attribute('innerText')
+            else:
+                parkingDetail = "불가"
 
         if parkingDetail == '불가':
             parkingTF = False
@@ -311,6 +378,7 @@ def postFind():
             description=description,
             address=address_instance,
             type=post_type,
+            complete=complete,
             salesForm=salesform,
             floor=floor,
             totalFloor=totalFloor,
@@ -352,3 +420,4 @@ def postFind():
 
             )
         print('게시글 하나 크롤링 완성 pk:', i)
+    driver.close()
