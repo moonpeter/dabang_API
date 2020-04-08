@@ -9,7 +9,8 @@ from ..models import SalesForm, PostAddress, AdministrativeDetail, SecuritySafet
 
 
 def postFind():
-    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
 
     url_all_list = find_urls()
 
