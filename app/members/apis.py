@@ -1,11 +1,16 @@
 import requests
-from django.contrib.auth import get_user_model, authenticate
-from rest_framework import status, viewsets
+from django.contrib.auth import  authenticate
+from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.settings import api_settings
 
 from members.models import SocialLogin
@@ -70,23 +75,6 @@ class UserModelViewSet(viewsets.ModelViewSet):
                 'user': UserSerializer(user).data
             }
             return Response(data)
-
-
-class SignUpView(APIView):
-    def post(self, request):
-        serializer = SignUpViewSerializer(data=request.data)
-        if serializer.is_valid():
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            email = request.POST.get('email')
-            User.objects.create_user(
-                username=username,
-                password=password,
-                email=email,
-            )
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class KakaoJwtTokenView(APIView):
@@ -166,3 +154,24 @@ class FacebookJwtToken(APIView):
             'user': UserSerializer(user).data,
         }
         return Response(data)
+
+
+class SignUpView(APIView):
+    queryset = User.objects.all()
+    serializer_class = SignUpViewSerializer
+
+    def post(self, request):
+        serializer = SignUpViewSerializer(data=request.data)
+        if serializer.is_valid():
+            instance = serializer.save()
+            instance.set_password(instance.password)
+            instance.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, format=None):
+        queryset = User.objects.all()
+        serializer = SignUpViewSerializer(queryset, many=True)
+        return Response(serializer.data)
+
