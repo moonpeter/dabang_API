@@ -19,11 +19,15 @@ def postFind():
         driver.implicitly_wait(3)
         time.sleep(3)
 
+        #  상세 설명보기
         try:
             button = driver.find_element_by_xpath("/html/body/div[1]/div/div[4]/div/div/button")
             driver.execute_script("arguments[0].click();", button)
         except NoSuchElementException:
             pass
+
+        post_type = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[1]/p/span')
+        post_type = post_type.get_attribute('innerText')
 
         unrefined_description = driver.find_elements_by_xpath("/html/body/div[1]/div/div[4]/div/div")
         description = unrefined_description[0].get_attribute("innerText")
@@ -306,6 +310,7 @@ def postFind():
             broker=broker_ins[0],
             description=description,
             address=address_instance,
+            type=post_type,
             salesForm=salesform,
             floor=floor,
             totalFloor=totalFloor,

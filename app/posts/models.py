@@ -1,4 +1,5 @@
 from django.db import models
+
 from config import settings
 
 
@@ -22,7 +23,7 @@ class PostRoom(models.Model):
         'posts.SalesForm',
         on_delete=models.CASCADE,
     )
-
+    type = models.CharField('매물 종류', max_length=10, null=True, )
     floor = models.CharField(null=True, verbose_name='층 수', max_length=5)
     totalFloor = models.CharField(null=True, verbose_name='건물 층 수', max_length=5)
     areaInt = models.IntegerField(verbose_name='정수형 전용 면적', null=True, )
@@ -55,7 +56,7 @@ class PostRoom(models.Model):
     veranda = models.BooleanField('베란다/발코니', )
     depositLoan = models.BooleanField('전세 자금 대출', )
     securitySafety = models.ManyToManyField(
-    'posts.SecuritySafetyFacilities',
+        'posts.SecuritySafetyFacilities',
         through='RoomSecurity',
 
     )
