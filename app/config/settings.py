@@ -74,6 +74,7 @@ INSTALLED_APPS = [
 
     'sentry_sdk',
     'rest_framework',
+    'rest_framework.authtoken',
     'debug_toolbar',
     'psycopg2',
     'selenium',
