@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from posts.models import PostRoom, PostTest
-from posts.serializers import PostListSerializer, PostListTestSerializer
+from posts.models import PostRoom
+from posts.serializers import PostListSerializer
 
 
 class PostList(APIView):
@@ -49,50 +49,4 @@ class PostDetail(APIView):
     def delete(self, request, pk, format=None):
         postroom = self.get_object(pk)
         postroom.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# Test API  #####################################
-class PostListTest(APIView):
-    # 게시물 생성 : /posts/posttest/
-    def post(self, request, format=None):
-        serializer = PostListTestSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # 게시물 조회 : /posts/posttest/
-    def get(self, request, format=None):
-        queryset = PostTest.objects.all()
-        serializer = PostListTestSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class PostDetailTest(APIView):
-    def get_object(self, pk):
-        try:
-            return PostTest.objects.get(pk=pk)
-        except PostTest.DoesNotExist:
-            raise Http404
-
-    # 특정 게시물 조회 : /posts/posttest/{pk}/
-    def get(self, request, pk):
-        posttest = self.get_object(pk)
-        serializer = PostListTestSerializer(posttest)
-        return Response(serializer.data)
-
-    # 특정 게시물 수정 : /posts/posttest/{pk}/
-    def put(self, request, pk, format=None):
-        posttest = self.get_object(pk)
-        serializer = PostListTestSerializer(posttest, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # 특정 게시물 삭제 : /posts/posttest/{pk}/
-    def delete(self, request, pk, format=None):
-        posttest = self.get_object(pk)
-        posttest.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
