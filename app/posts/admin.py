@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
+
 from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostRoom, AdministrativeDetail, \
     MaintenanceFee, RoomOption, RoomSecurity, Broker, PostImage
 
@@ -49,6 +50,7 @@ admin.site.register(PostRoom, PostRoomAdmin)
 admin.site.register(SalesForm, SalesFormAdmin)
 admin.site.register(PostAddress, PostAddressAdmin)
 admin.site.register(SecuritySafetyFacilities, SecuritySafetyFacilitiesAdmin)
+
 admin.site.register(AdministrativeDetail, AdministrativeDetailAdmin)
 admin.site.register(MaintenanceFee, MaintenanceFeeAdmin)
 admin.site.register(RoomOption, RoomOptionAdmin)

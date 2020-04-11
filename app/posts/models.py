@@ -106,7 +106,7 @@ class OptionItem(models.Model):
 
 
 class SecuritySafetyFacilities(models.Model):
-    name = models.CharField('보안/안전 시설 아이템', max_length=10, )
+    name = models.CharField('보안/안전 시설 아이템', max_length=10, null=True)
     image = models.ImageField('시설 이미지', null=True, )
 
 
@@ -136,6 +136,7 @@ class Broker(models.Model):
     address = models.CharField('주소', max_length=20, null=True, )
     manager = models.CharField('중개인', max_length=10, null=True, )
     tel = models.CharField('전화번호', max_length=13, null=True, )
+
 
 
 class PostImage(models.Model):

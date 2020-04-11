@@ -19,6 +19,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify
 
 from config import settings
 from members.urls import urlpatterns_members
+from posts.urls import urlpatterns_posts
 
 urlpatterns = [
     path('api/token/', obtain_jwt_token),  # jwt Token get it
@@ -26,7 +27,7 @@ urlpatterns = [
     path('api/token/verify/', verify_jwt_token),  # jwt Token verify
     path('admin/', admin.site.urls),
     path('members/', include(urlpatterns_members)),
-
+    path('posts/', include(urlpatterns_posts)),
 ]
 
 if settings.DEBUG:
