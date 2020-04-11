@@ -94,6 +94,14 @@ version = "0.4.3"
 
 [[package]]
 category = "main"
+description = "A CSS Cascading Style Sheets library for Python"
+name = "cssutils"
+optional = false
+python-versions = "*"
+version = "1.0.2"
+
+[[package]]
+category = "main"
 description = "Decorators for Humans"
 name = "decorator"
 optional = false
@@ -758,7 +766,7 @@ tornado = ">=4"
 
 [[package]]
 category = "main"
-description = "RoomOption utilities for code working with files and commands"
+description = "Test utilities for code working with files and commands"
 name = "testpath"
 optional = false
 python-versions = "*"
@@ -834,7 +842,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "fae3d9cbf7019866cf03e037fc4dcb2a0fc341c5e1398d7d189975bb7a3e52aa"
+content-hash = "a1de64cc5e767a7d856f37d70deff8a444dfde44eae3bb6b97c94a04b22c1c37"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -873,6 +881,10 @@ chardet = [
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
+]
+cssutils = [
+    {file = "cssutils-1.0.2-py3-none-any.whl", hash = "sha256:c74dbe19c92f5052774eadb15136263548dd013250f1ed1027988e7fef125c8d"},
+    {file = "cssutils-1.0.2.tar.gz", hash = "sha256:a2fcf06467553038e98fea9cfe36af2bf14063eb147a70958cfcaa8f5786acaf"},
 ]
 decorator = [
     {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
