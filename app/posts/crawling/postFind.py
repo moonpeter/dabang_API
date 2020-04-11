@@ -1,11 +1,16 @@
+import os
+import re
 import time
+import urllib
 
+from django.core.files import File
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
-from posts.crawling.find_urls import find_urls, find_apartment_urls
-from ..models import SalesForm, PostAddress, AdministrativeDetail, SecuritySafetyFacilities, OptionItem, \
-    MaintenanceFee, RoomOption, RoomSecurity, PostRoom, Broker
+from config.settings import MEDIA_ROOT
+from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionItem, \
+    MaintenanceFee, RoomOption, RoomSecurity, PostRoom, Broker, PostImage
+from bs4 import BeautifulSoup
 
 
 def postFind():
@@ -43,24 +48,21 @@ def postFind():
 
             name = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[1]/div[1]/h1')
             name = name.get_attribute('innerText')
-            print(name)
+
             address = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[1]/div[1]/p')
             address = address.get_attribute('innerText')
-            print(address)
+
             manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/div[2]/p[1]')
             manager = manager.get_attribute('innerText')
-            print(manager)
+
             tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/div[2]/p[2]')
             tel = tel.get_attribute('innerText')
-            print(tel)
-            print(name, address, manager, tel)
         except NoSuchElementException:
             manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[1]')
             manager = manager.get_attribute('innerText')
+
             tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[2]')
             tel = tel.get_attribute('innerText')
-            print(manager)
-            print(tel)
         button = driver.find_element_by_xpath("/html/body/div[4]/div/div/header/button")
         driver.execute_script("arguments[0].click();", button)
 
@@ -135,7 +137,7 @@ def postFind():
             address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[4]/div/p')
         if not address:
             address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div/div/p')
-        print(address)
+
         address = address[0].get_attribute('innerText')
 
         address_ins = PostAddress.objects.create(
@@ -517,5 +519,55 @@ def postFind():
                     security=ins,
 
                 )
+        html = driver.page_source
+        soup = BeautifulSoup(html, 'html.parser')
+
+        div_list = driver.find_elements_by_xpath('/html/body/div[1]/div/div[3]/div/div[2]/div')
+
+        image_list = []
+
+        for i, url in enumerate(div_list):
+            cls_name = url.get_attribute('class')
+            cls_name = cls_name.split(' ')
+            cls_name = cls_name[1]
+            photo = driver.execute_script(
+                f'return window.getComputedStyle(document.querySelector(".{cls_name}"),":after").getPropertyValue("background")')
+
+            test_url = re.findall(r'"(.*?)"', photo)
+            print('test_url >>', test_url[0])
+            if test_url[0]:
+                if 'dabang' in test_url[0]:
+                    pass
+                else:
+                    image_list.append(test_url[0])
+            else:
+                print('빈 리스트')
+
+        POSTS_DIR = os.path.join(MEDIA_ROOT, '.posts')
+
+        if not os.path.exists(POSTS_DIR):
+            os.makedirs(POSTS_DIR, exist_ok=True)
+        print('이미지 업로드 시작')
+        print(image_list)
+        if image_list:
+            for index, image_url in enumerate(image_list):
+                print('image_url>> ', image_url)
+                try:
+                    POSTS_IMAGE_DIR = os.path.join(MEDIA_ROOT, f'.posts/{post[0].pk}/')
+                    if not os.path.exists(POSTS_IMAGE_DIR):
+                        os.makedirs(POSTS_IMAGE_DIR, exist_ok=True)
+                    image_save_name = os.path.join(POSTS_IMAGE_DIR, f'{index}.jpg')
+                    urllib.request.urlretrieve(image_url, image_save_name)
+                    f = open(os.path.join(POSTS_IMAGE_DIR, f'{index}.jpg'), 'rb')
+                    PostImage.objects.get_or_create(
+                        image=File(f),
+                        post=post[0],
+                    )
+                    f.close()
+                except FileExistsError:
+                    print('이미 존재하는 파일')
+
+        print('이미지 업로드 끝')
+
         print('게시글 하나 크롤링 완성 pk:', i)
     driver.close()

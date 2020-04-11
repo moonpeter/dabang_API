@@ -1,7 +1,11 @@
 from django.db import models
 
 from config import settings
-from posts.crawling.find_urls import find_apartment_urls
+
+
+def post_image_path(instance, filename):
+    a = f'{instance}'
+    return a
 
 
 class PostRoom(models.Model):
@@ -132,3 +136,12 @@ class Broker(models.Model):
     address = models.CharField('주소', max_length=20, null=True, )
     manager = models.CharField('중개인', max_length=10, null=True, )
     tel = models.CharField('전화번호', max_length=13, null=True, )
+
+
+class PostImage(models.Model):
+    image = models.ImageField(upload_to=post_image_path, verbose_name='방 이미지', null=True, )
+    post = models.ForeignKey(
+        'posts.postRoom',
+        verbose_name='해당 게시글',
+        on_delete=models.CASCADE,
+    )
