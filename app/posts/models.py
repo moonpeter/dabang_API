@@ -72,6 +72,9 @@ class PostAddress(models.Model):
     loadAddress = models.CharField(max_length=50, )
     detailAddress = models.CharField(max_length=30, null=True, )
 
+    def __str__(self):
+        return '{}, {}'.format(self.loadAddress, self.detailAddress)
+
 
 class SalesForm(models.Model):
     type = models.CharField(max_length=10, verbose_name='매물 종류', )
@@ -79,6 +82,10 @@ class SalesForm(models.Model):
     monthlyChar = models.CharField(null=True, verbose_name='문자형 월세', max_length=10)  # 월세
     depositInt = models.IntegerField('정수형 매매-보증금', null=True, )
     monthlyInt = models.IntegerField('정수형 월세', null=True, )
+
+    def __str__(self):
+        return '{}, {}, {}, {}, {}'.format(self.type, self.depositChar, self.monthlyChar, self.depositInt,
+                                           self.monthlyInt)
 
     @staticmethod
     def start():
@@ -94,20 +101,32 @@ class MaintenanceFee(models.Model):
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
     totalFee = models.IntegerField(verbose_name='관리비 합계')
 
+    def __str__(self):
+        return self.totalFee
+
 
 # 관리비 포함 항목
 class AdministrativeDetail(models.Model):
     name = models.CharField(max_length=10, verbose_name='포함 항목 물품')
+
+    def __str__(self):
+        return self.name
 
 
 class OptionItem(models.Model):
     name = models.CharField('옵션 항목 아이템', max_length=10)
     image = models.ImageField('옵션 이미지', null=True, )
 
+    def __str__(self):
+        return '{}, {}'.format(self.name, self.image)
+
 
 class SecuritySafetyFacilities(models.Model):
     name = models.CharField('보안/안전 시설 아이템', max_length=10, null=True)
     image = models.ImageField('시설 이미지', null=True, )
+
+    def __str__(self):
+        return self.name
 
 
 class PostLike(models.Model):
@@ -137,6 +156,8 @@ class Broker(models.Model):
     manager = models.CharField('중개인', max_length=10, null=True, )
     tel = models.CharField('전화번호', max_length=13, null=True, )
 
+    def __str__(self):
+        return '{}, {}, {}, {}'.format(self.name, self.address, self.manager, self.tel)
 
 
 class PostImage(models.Model):

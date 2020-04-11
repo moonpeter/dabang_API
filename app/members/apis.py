@@ -1,14 +1,13 @@
 import requests
-from django.contrib.auth import  authenticate
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
-
 from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import AllowAny
-
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
@@ -175,3 +174,17 @@ class SignUpView(APIView):
         serializer = SignUpViewSerializer(queryset, many=True)
         return Response(serializer.data)
 
+
+class AuthTokenView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            token, __ = Token.objects.get_or_create(user=user)
+            data = {
+                # 데이터의 형태로 담아서 보내줌.
+                'token': token.key,
+            }
+            return Response(data)
+        raise AuthenticationFailed()

@@ -14,7 +14,8 @@ from bs4 import BeautifulSoup
 
 
 def postFind():
-    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
 
     # 다방 성수동 매물 url
     # url_all_list = find_apartment_urls()
