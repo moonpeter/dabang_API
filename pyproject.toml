@@ -23,6 +23,9 @@ pandas = "^1.0.3"
 bs4 = "^0.0.1"
 lxml = "^4.5.0"
 cssutils = "^1.0.2"
+boto3 = "^1.12.39"
+storage = "^0.0.4"
+django-storages = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 
