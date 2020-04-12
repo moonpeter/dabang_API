@@ -4,8 +4,8 @@ from selenium import webdriver
 
 
 def find_apartment_urls():
-    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     driver.get('https://www.dabangapp.com/search#/map')
 
     driver.find_element_by_name('keyword').send_keys('성수동1가')
@@ -56,13 +56,13 @@ def find_apartment_urls():
     apart_urls = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/ul/li/div/a')
     for url in apart_urls:
         apt_list.append(url.get_attribute('href'))
-
+    driver.close()
     return apt_list
 
 
 def find_urls():
-    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     driver.implicitly_wait(3)
     driver.get('https://www.dabangapp.com/search#/map')
     driver.find_element_by_name('keyword').send_keys('성수동1가')

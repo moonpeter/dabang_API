@@ -4,7 +4,7 @@ from config import settings
 
 
 def post_image_path(instance, filename):
-    a = f'{instance}'
+    a = f'{instance.id}/{filename}'
     return a
 
 
@@ -99,7 +99,7 @@ class SalesForm(models.Model):
 class MaintenanceFee(models.Model):
     postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE, )
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
-    totalFee = models.IntegerField(verbose_name='관리비 합계')
+    totalFee = models.FloatField(verbose_name='관리비 합계')
 
     def __str__(self):
         return self.totalFee

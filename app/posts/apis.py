@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from posts.models import PostRoom
-from posts.serializers import PostListSerializer
+from posts.models import PostRoom, PostImage
+from posts.serializers import PostListSerializer, PostImageSerializer
 
 
 class PostList(APIView):
@@ -50,3 +50,10 @@ class PostDetail(APIView):
         postroom = self.get_object(pk)
         postroom.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PostImageView(APIView):
+    def get(self, request):
+        queryset = PostImage.objects.all()
+        serializer = PostImageSerializer(queryset, many=True)
+        return Response(serializer.data)
