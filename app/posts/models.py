@@ -8,6 +8,11 @@ def post_image_path(instance, filename):
     return a
 
 
+def security_image_path(instance, filename):
+    a = f'{instance.id}/{filename}'
+    return a
+
+
 class PostRoom(models.Model):
     broker = models.ForeignKey(
         'posts.Broker',
@@ -123,7 +128,7 @@ class OptionItem(models.Model):
 
 class SecuritySafetyFacilities(models.Model):
     name = models.CharField('보안/안전 시설 아이템', max_length=10, null=True)
-    image = models.ImageField('시설 이미지', null=True, )
+    image = models.ImageField('시설 이미지', null=True, upload_to=security_image_path, )
 
     def __str__(self):
         return self.name

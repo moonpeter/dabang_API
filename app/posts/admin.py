@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 
 from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostRoom, AdministrativeDetail, \
-    MaintenanceFee, RoomOption, RoomSecurity, Broker, PostImage
+    MaintenanceFee, RoomOption, RoomSecurity, Broker, PostImage, OptionItem
 
 
 class PostRoomAdmin(admin.ModelAdmin):
@@ -46,6 +46,12 @@ class PostImageAdmin(admin.ModelAdmin):
     list_display = ['pk', 'post', 'image']
 
 
+class OptionItemAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name', 'image']
+
+
+
+
 admin.site.register(PostRoom, PostRoomAdmin)
 admin.site.register(SalesForm, SalesFormAdmin)
 admin.site.register(PostAddress, PostAddressAdmin)
@@ -57,3 +63,5 @@ admin.site.register(RoomOption, RoomOptionAdmin)
 admin.site.register(RoomSecurity, RoomSecurityAdmin)
 admin.site.register(Broker, BrokerAdmin)
 admin.site.register(PostImage, PostImageAdmin)
+admin.site.register(OptionItem, OptionItemAdmin)
+
