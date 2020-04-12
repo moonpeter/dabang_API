@@ -6,7 +6,7 @@ Examples:
 Function views
     1. Add an import:  from my_app import views
     2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based viewsUserLoginView
+Class-based views
     1. Add an import:  from other_app.views import Home
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
@@ -17,9 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
-from config import settings
+from members import views
 from members.urls import urlpatterns_members
-from posts.urls import urlpatterns_posts
 
 urlpatterns = [
     path('api/token/', obtain_jwt_token),  # jwt Token get it
@@ -27,21 +26,5 @@ urlpatterns = [
     path('api/token/verify/', verify_jwt_token),  # jwt Token verify
     path('admin/', admin.site.urls),
     path('members/', include(urlpatterns_members)),
-    path('posts/', include(urlpatterns_posts)),
-]
-
-if settings.DEBUG:
-    import debug_toolbar
-
-    urlpatterns = [
-                      path('__debug__/', include(debug_toolbar.urls)),
-                  ] + urlpatterns
-
-
-def trigger_error(request):
-    division_by_zero = 1 / 0
-
-
-urlpatterns += [
-    path('sentry-debug/', trigger_error),
+    path('login/', views.login_page, name='login-page'),
 ]
