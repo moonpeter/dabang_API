@@ -12,8 +12,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import datetime
 import json
 import os
+from datetime import timedelta
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -22,6 +27,10 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
 STATIC_URL = '/static/'
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
+MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
+MEDIA_URL = '/media/'
+
 
 # secret.json 불러오기
 SECRETS_FULL = json.load(open(os.path.join(ROOT_DIR, 'secrets.json')))
@@ -32,6 +41,7 @@ FACEBOOK_APP_ID = SECRETS["FACEBOOK_APP_ID"]
 FACEBOOK_APP_SECRET = SECRETS["FACEBOOK_APP_SECRET"]
 KAKAO_APP_ID = SECRETS['KAKAO_APP_ID']
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -39,12 +49,25 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
+# django-storages
+# Django의 FileStorage로 S3Boto3Storage(AWS의 S3)를 사용
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_SECRETS = SECRETS_FULL['AWS']
+AWS_ACCESS_KEY_ID = AWS_SECRETS['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = AWS_SECRETS['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = 'wpsdabangapi'
+AWS_AUTO_CREATE_BUCKET = True
+AWS_S3_REGION_NAME = 'ap-northeast-2'
+
 AUTH_USER_MODEL = 'members.User'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'members',
+    'posts.apps.PostsConfig',
+    'salesinlots.apps.SalesinlotsConfig',
+    'members.apps.MembersConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,7 +75,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'sentry_sdk',
     'rest_framework',
+    'rest_framework.authtoken',
+    'debug_toolbar',
+    'psycopg2',
+    'selenium',
+    'pandas',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -63,26 +93,46 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY,
-    'JWT_ALGORITHM': 'HS256',
-    # JWT 검증 시, 만료 기간을 확인
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_ALLOW_REFRESH': True,
-    # access token 만료 기간 설정 7일이 지나면 만료
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    # refresh token 만료 기간 28일 설정, Access token이 만료 되기 전까지 계속하여 갱신이 가능하지만, 28일이 지나면 갱신 불가.
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
-}
+    'JWT_ENCODE_HANDLER':
+        'rest_framework_jwt.utils.jwt_encode_handler',
+    'JWT_DECODE_HANDLER':
+        'rest_framework_jwt.utils.jwt_decode_handler',
+    'JWT_PAYLOAD_HANDLER':
+        'rest_framework_jwt.utils.jwt_payload_handler',
+    'JWT_PAYLOAD_GET_USER_ID_HANDLER':
+        'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+        'rest_framework_jwt.utils.jwt_response_payload_handler',
 
+    'JWT_SECRET_KEY': 'SECRET_KEY',
+    'JWT_GET_USER_SECRET_KEY': None,
+    'JWT_PUBLIC_KEY': None,
+    'JWT_PRIVATE_KEY': None,
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LEEWAY': 0,
+    'JWT_EXPIRATION_DELTA': timedelta(days=30),
+    'JWT_AUDIENCE': None,
+    'JWT_ISSUER': None,
+    'JWT_ALLOW_REFRESH': False,
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_AUTH_COOKIE': None,
+}
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-    ),
+    )
 }
 
 ROOT_URLCONF = 'config.urls'
@@ -109,13 +159,33 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
-    'default': {
+     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'wpsdabangapi',
+#         'USER': 'moonpeter',
+#         'PASSWORD': 'admin123',
+#         'HOST': 'wps12th-dabang.cahxsb1yyuko.ap-northeast-2.rds.amazonaws.com',
+#         'PORT': 5432,
+#     }
+# }
+
+sentry_sdk.init(
+    dsn="https://3d93f78103834761aeba8a0dec24c31e@sentry.io/5175838",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # <- 디폴트 모델 백엔드
 
@@ -141,7 +211,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'ko-KR'
+LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
 
