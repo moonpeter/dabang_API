@@ -26,7 +26,7 @@ class PostRoom(models.Model):
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=200, verbose_name='설명', )
-    address = models.OneToOneField(
+    address = models.ForeignKey(
         'posts.PostAddress',
         on_delete=models.CASCADE,
     )
