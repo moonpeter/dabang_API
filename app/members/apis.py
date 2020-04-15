@@ -1,3 +1,5 @@
+import json
+
 import requests
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
@@ -207,7 +209,6 @@ class KakaoSignInCallbackView(View):
     def get(self, request):
         url = 'https://kauth.kakao.com/oauth/token'
 
-
         code = request.GET.get("code")
         client_id = KAKAO_APP_ID
         headers = {
@@ -225,4 +226,25 @@ class KakaoSignInCallbackView(View):
         access_token = data['access_token']
         print(access_token)
 
-        pass
+
+class testSoical(APIView):
+    def post(self, request):
+        client_id = KAKAO_APP_ID
+        social = request.data.get('social')
+        access_token = request.data.get('token')
+        url = 'http://localhost:8000/auth/convert-token'
+        params = {
+            "grant_type": "convert_token",
+            "client_id": f"{client_id}",
+            "backend": f'{social}',
+            "token": f'{access_token}'
+        }
+        response = requests.post(url, params=params)
+
+        res = response.json()
+        token = res["refresh_token"]
+        print('res >>', res)
+        data = {
+            'refresh_token': f'{token}',
+        }
+        return Response(data, status=status.HTTP_200_OK)
