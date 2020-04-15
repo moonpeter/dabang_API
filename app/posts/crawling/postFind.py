@@ -5,7 +5,7 @@ import urllib
 
 from django.core.files import File
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, UnexpectedAlertPresentException
 
 from config.settings import MEDIA_ROOT
 from posts.crawling.find_urls import find_apartment_urls, find_urls
@@ -325,6 +325,7 @@ def postFind():
 
         # 중개인
         # Broker
+        # is_not_private_post= True
         try:
             button = driver.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/ul/li/button")
             driver.execute_script("arguments[0].click();", button)
@@ -346,6 +347,10 @@ def postFind():
 
             tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[2]')
             tel = tel.get_attribute('innerText')
+        except UnexpectedAlertPresentException:
+            # is_not_private_post = False
+            break
+
         button = driver.find_element_by_xpath("/html/body/div[4]/div/div/header/button")
         driver.execute_script("arguments[0].click();", button)
 
