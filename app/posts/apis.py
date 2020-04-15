@@ -1,3 +1,10 @@
+import json
+import urllib.request as ul
+from io import BytesIO
+from xml.etree.ElementTree import XMLParser
+
+import xmltodict
+import requests
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
@@ -57,3 +64,35 @@ class PostImageView(APIView):
         queryset = PostImage.objects.all()
         serializer = PostImageSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+def apiTestCode(request):
+    import urllib
+    from pprint import pprint
+
+    # headers = {
+    #     'serviceKey': 's8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D',
+    #     'roadCode': '263802006002',
+    #     'pageNo': 1,
+    #     'numOfRows': 10
+    # }
+    # =====================================
+    url = 'http://apis.data.go.kr/1611000/AptListService/getRoadnameAptList?serviceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2' \
+          'B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D' \
+          '&roadCode=263802006002&pageNo=1&numOfRows=10'
+    # request = ul.Request(url)
+    # response = ul.urlopen(request)
+    # rescode = response.getcode()
+    #
+    # if (rescode == 200):
+    #     responseData = response.read()
+    #
+    #     rD = xmltodict.parse(responseData)
+    #     # rD = rD.decode('utf-8')
+    #     rDJ = json.dumps(rD)
+    #     rDD = json.dumps(rDJ)
+    #     print(rDD)
+    request = requests.get(url).content
+    xmlObj = xmltodict.parse(request)
+    # allData = xmltodict['response']['body']['items']
+    pass

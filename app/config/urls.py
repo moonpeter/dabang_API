@@ -22,6 +22,8 @@ from members.urls import urlpatterns_members
 from posts.urls import urlpatterns_posts
 
 urlpatterns = [
+    path('auth/', include('rest_framework_social_oauth2.urls')),
+
     path('api/token/', obtain_jwt_token),  # jwt Token get it
     path('api/token/refresh/', refresh_jwt_token),  # jwt Token refresh
     path('api/token/verify/', verify_jwt_token),  # jwt Token verify
