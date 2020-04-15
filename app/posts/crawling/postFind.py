@@ -315,7 +315,7 @@ def postFind():
         'https://www.dabangapp.com/room/5e7c21ceab438338a1b79479',
         'https://www.dabangapp.com/room/5c5d8557e98ed333425a3cb4',
         'https://www.dabangapp.com/room/59f3e67dc6cda31e4c4f8b33',
-        'https://www.dabangapp.com/room/5e69d334d3ac974a856143f1'
+        'https://www.dabangapp.com/room/5e69d334d3ac974a856143f1',
     ]
 
     # 각 게시글 조회 시작

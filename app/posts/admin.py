@@ -23,7 +23,7 @@ class PostAddressAdmin(admin.ModelAdmin):
 
 
 class SecuritySafetyFacilitiesAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name']
+    list_display = ['pk', 'name', 'image']
 
 
 class MaintenanceFeeAdmin(admin.ModelAdmin):
