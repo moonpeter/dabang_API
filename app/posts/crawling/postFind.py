@@ -349,7 +349,7 @@ def postFind():
             tel = tel.get_attribute('innerText')
         except UnexpectedAlertPresentException:
             # is_not_private_post = False
-            break
+            continue
 
         button = driver.find_element_by_xpath("/html/body/div[4]/div/div/header/button")
         driver.execute_script("arguments[0].click();", button)

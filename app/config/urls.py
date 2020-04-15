@@ -18,6 +18,7 @@ from django.urls import path, include
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
 from config import settings
+from members import views
 from members.urls import urlpatterns_members
 from posts.urls import urlpatterns_posts
 
@@ -30,6 +31,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include(urlpatterns_members)),
     path('posts/', include(urlpatterns_posts)),
+    path('login/', views.login_page, name='login-page'),
+
 ]
 
 if settings.DEBUG:

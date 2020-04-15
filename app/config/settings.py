@@ -67,7 +67,6 @@ SOCIAL_AUTH_KAKAO_SCOPE = ['email']
 
 SOCIAL_AUTH_FACEBOOK_KEY = FACEBOOK_APP_ID
 SOCIAL_AUTH_FACEBOOK_SECRET = FACEBOOK_APP_SECRET
-
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
@@ -218,6 +217,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
 
     'social_core.backends.kakao.KakaoOAuth2',
+
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
     'django.contrib.auth.backends.ModelBackend',  # <- 디폴트 모델 백엔드

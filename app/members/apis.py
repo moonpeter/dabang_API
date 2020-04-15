@@ -1,6 +1,9 @@
 import requests
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.views import View
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
@@ -12,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
+from config.settings import KAKAO_APP_ID
 from members.models import SocialLogin
 from members.serializers import UserSerializer, SignUpViewSerializer, UserProfileSerializer
 
@@ -188,3 +192,37 @@ class AuthTokenView(APIView):
             }
             return Response(data)
         raise AuthenticationFailed()
+
+
+class KAKAO(View):
+    def get(self, request):
+        client_id = KAKAO_APP_ID
+        redirect_uri = "http://127.0.0.1:8000/members/sign-in/kakao/callback"
+        return redirect(
+            f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
+        )
+
+
+class KakaoSignInCallbackView(View):
+    def get(self, request):
+        url = 'https://kauth.kakao.com/oauth/token'
+
+
+        code = request.GET.get("code")
+        client_id = KAKAO_APP_ID
+        headers = {
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+        body = {
+            'grant_type': 'authorization_code',
+            'client_id': client_id,
+            'redirect_url': 'https://moonpeter.com/members/kakao-login/',
+            'code': code
+        }
+
+        kakao_reponse = requests.post(url, headers=headers, data=body)
+        data = kakao_reponse.json()
+        access_token = data['access_token']
+        print(access_token)
+
+        pass
