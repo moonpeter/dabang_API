@@ -61,12 +61,28 @@ AWS_S3_REGION_NAME = 'ap-northeast-2'
 
 AUTH_USER_MODEL = 'members.User'
 
+# Djagno Rest Framework OAuth2
+SOCIAL_AUTH_KAKAO_KEY = KAKAO_APP_ID
+SOCIAL_AUTH_KAKAO_SCOPE = ['email']
+
+SOCIAL_AUTH_FACEBOOK_KEY = FACEBOOK_APP_ID
+SOCIAL_AUTH_FACEBOOK_SECRET = FACEBOOK_APP_SECRET
+
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email'
+}
+
 # Application definition
 
 INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'salesinlots.apps.SalesinlotsConfig',
     'members.apps.MembersConfig',
+    # OAuth
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -74,7 +90,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'sentry_sdk',
     'rest_framework',
     'rest_framework.authtoken',
@@ -128,8 +143,18 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_AUTH_COOKIE': None,
 }
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+
+    'social_django.context_processors.backends',
+    'social_django.context_processors.login_redirect',
+)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     )
@@ -150,6 +175,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -187,6 +214,12 @@ sentry_sdk.init(
 )
 
 AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    'social_core.backends.kakao.KakaoOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+
     'django.contrib.auth.backends.ModelBackend',  # <- 디폴트 모델 백엔드
 
 )
