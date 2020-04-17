@@ -14,7 +14,6 @@ import json
 import os
 from datetime import timedelta
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -31,7 +30,6 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
 
-
 # secret.json 불러오기
 SECRETS_FULL = json.load(open(os.path.join(ROOT_DIR, 'secrets.json')))
 SECRETS = SECRETS_FULL['base']
@@ -40,7 +38,6 @@ SECRET_KEY = SECRETS['SECRET_KEY']
 FACEBOOK_APP_ID = SECRETS["FACEBOOK_APP_ID"]
 FACEBOOK_APP_SECRET = SECRETS["FACEBOOK_APP_SECRET"]
 KAKAO_APP_ID = SECRETS['KAKAO_APP_ID']
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -67,7 +64,6 @@ SOCIAL_AUTH_KAKAO_SCOPE = ['email']
 
 SOCIAL_AUTH_FACEBOOK_KEY = FACEBOOK_APP_ID
 SOCIAL_AUTH_FACEBOOK_SECRET = FACEBOOK_APP_SECRET
-
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
@@ -155,6 +151,7 @@ REST_FRAMEWORK = {
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
 
+        #  소셜로그인이 아닌 인증방식에선 해당 authencation 필요
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     )
@@ -187,7 +184,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 DATABASES = {
-     'default': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
@@ -218,6 +215,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
 
     'social_core.backends.kakao.KakaoOAuth2',
+
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
     'django.contrib.auth.backends.ModelBackend',  # <- 디폴트 모델 백엔드

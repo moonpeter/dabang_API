@@ -26,7 +26,7 @@ class PostRoom(models.Model):
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=200, verbose_name='설명', )
-    address = models.OneToOneField(
+    address = models.ForeignKey(
         'posts.PostAddress',
         on_delete=models.CASCADE,
     )
@@ -106,9 +106,8 @@ class MaintenanceFee(models.Model):
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
     totalFee = models.FloatField(verbose_name='관리비 합계')
 
-    def __str__(self):
-        return self.totalFee
 
+#   여기 str을 붙인 이유가??
 
 # 관리비 포함 항목
 class AdministrativeDetail(models.Model):
