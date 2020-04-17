@@ -9,9 +9,8 @@ router.register(r'user', apis.UserModelViewSet, basename='UserModel')
 
 urlpatterns_members = [
     path('kakaoToken/', apis.KakaoJwtTokenView.as_view()),
-    path('facebookToken/', apis.FacebookJwtToken.as_view()),
-    path('authToken/', apis.AuthTokenView.as_view()),
-    path('', apis.SignUpView.as_view()),
+        path('facebookToken/', apis.FacebookJwtToken.as_view()),
+
     path('kakaoTest/', apis.KAKAO.as_view()),
     path('sign-in/kakao/callback/', KakaoSignInCallbackView.as_view()),
 

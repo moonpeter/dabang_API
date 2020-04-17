@@ -106,9 +106,8 @@ class MaintenanceFee(models.Model):
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
     totalFee = models.FloatField(verbose_name='관리비 합계')
 
-    def __str__(self):
-        return self.totalFee
 
+#   여기 str을 붙인 이유가??
 
 # 관리비 포함 항목
 class AdministrativeDetail(models.Model):

@@ -7,11 +7,14 @@ import xmltodict
 import requests
 from django.http import Http404
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from posts.models import PostRoom, PostImage
 from posts.serializers import PostListSerializer, PostImageSerializer
+
+secret = 's8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
 
 
 class PostList(APIView):
@@ -66,33 +69,69 @@ class PostImageView(APIView):
         return Response(serializer.data)
 
 
-def apiTestCode(request):
-    import urllib
-    from pprint import pprint
+def AptListService(request):
+    url_road = \
+        'http://apis.data.go.kr/1611000/AptListService/getRoadnameAptList?' \
+        'roadCode=263802006002' \
+        '&ServiceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
 
-    # headers = {
-    #     'serviceKey': 's8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D',
-    #     'roadCode': '263802006002',
-    #     'pageNo': 1,
-    #     'numOfRows': 10
-    # }
-    # =====================================
-    url = 'http://apis.data.go.kr/1611000/AptListService/getRoadnameAptList?serviceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2' \
-          'B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D' \
-          '&roadCode=263802006002&pageNo=1&numOfRows=10'
-    # request = ul.Request(url)
-    # response = ul.urlopen(request)
-    # rescode = response.getcode()
-    #
-    # if (rescode == 200):
-    #     responseData = response.read()
-    #
-    #     rD = xmltodict.parse(responseData)
-    #     # rD = rD.decode('utf-8')
-    #     rDJ = json.dumps(rD)
-    #     rDD = json.dumps(rDJ)
-    #     print(rDD)
-    request = requests.get(url).content
-    xmlObj = xmltodict.parse(request)
-    # allData = xmltodict['response']['body']['items']
+    url_bjd = \
+        'http://apis.data.go.kr/1611000/AptListService/getLegaldongAptList?' \
+        'bjdCode=2638010100' \
+        '&ServiceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
+    response = requests.get(url_bjd).content
+    xmlObj = xmltodict.parse(response)
+    print(xmlObj)
     pass
+
+
+@api_view()
+def getBorodCityList(request):
+    url = f'http://openapi.epost.go.kr/postal/retrieveLotNumberAdressAreaCdService/' \
+          f'retrieveLotNumberAdressAreaCdService/getBorodCityList?ServiceKey={secret}'
+    response = requests.get(url).content
+    xmlObj = xmltodict.parse(response)
+    json_data = json.dumps(xmlObj, ensure_ascii=False)
+    dict_data = json.loads((json_data))
+    data = dict_data["BorodCityResponse"]["borodCity"]
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view()
+def getSiGunGuList(request):
+    brtcCd = request.data.get('brtcCd')
+    url = f'http://openapi.epost.go.kr/postal/retrieveLotNumberAdressAreaCdService/' \
+          f'retrieveLotNumberAdressAreaCdService/getSiGunGuList?ServiceKey={secret}&brtcCd={brtcCd}'
+    response = requests.get(url).content
+    xmlObj = xmltodict.parse(response)
+    json_data = json.dumps(xmlObj, ensure_ascii=False)
+    dict_data = json.loads((json_data))
+    error = dict_data['SiGunGuListResponse']['cmmMsgHeader']['successYN']
+    if error == 'N':
+        data = {
+            'message': '데이터가 올바르지 않습니다.'
+        }
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+    data = dict_data['SiGunGuListResponse']['siGunGuList']
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view()
+def getEupMyunDongList(request):
+    brtcCd = request.data.get('brtcCd')
+    signguCd = request.data.get('signguCd')
+    url = f'http://openapi.epost.go.kr/postal/retrieveLotNumberAdressAreaCdService/' \
+          f'retrieveLotNumberAdressAreaCdService/getEupMyunDongList?ServiceKey={secret}' \
+          f'&brtcCd={brtcCd}&signguCd={signguCd}'
+    response = requests.get(url).content
+    xmlObj = xmltodict.parse(response)
+    json_data = json.dumps(xmlObj, ensure_ascii=False)
+    dict_data = json.loads((json_data))
+    error = dict_data['EupMyunDongListResponse']['cmmMsgHeader']['successYN']
+    if error == 'N':
+        data = {
+            'message': '데이터가 올바르지 않습니다.'
+        }
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+    data = dict_data['EupMyunDongListResponse']['eupMyunDongList']
+    return Response(data, status=status.HTTP_200_OK)

@@ -20,7 +20,7 @@ def kakao_login(request):
     body = {
         'grant_type': 'authorization_code',
         'client_id': KAKAO_APP_ID,
-        'redirect_url': 'https://moonpeter.com/members/kakao-login/',
+        'redirect_url': 'http://127.0.0.1:8000/members/sign-in/kakao/callback/',
         'code': kakao_access_code
     }
     kakao_reponse = requests.post(url, headers=headers, data=body)
@@ -43,3 +43,4 @@ def kakao_login(request):
     print(type(user_username))
     user_first_name = user_username[1:]
     user_last_name = user_username[0]
+    pass
