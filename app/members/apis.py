@@ -203,11 +203,13 @@ class KakaoSignInCallbackView(View):
         return HttpResponse(access_token)
 
 
-class testSoical(APIView):
+class socialLogin(APIView):
     def post(self, request):
-        url = 'http://localhost:8000/auth/convert-token'
-
-        social_type = request.data.get('social_type')
+        local_host = 'http://localhost:8000'
+        deploy_host = 'https://moonpeter.com'
+        url = f'{deploy_host}/auth/convert-token'
+        token = request.data.get('token')
+        social_type = request.data.get('type')
         if social_type:
             if social_type == 'facebook':
                 client_id = FACEBOOK_APP_ID
@@ -218,8 +220,8 @@ class testSoical(APIView):
         params = {
             "grant_type": "convert_token",
             "client_id": f"{client_id}",
-            "backend": f'{social}',
-            "token": f'{access_token}'
+            "backend": f'{social_type}',
+            "token": f'{token}'
         }
         if social_type == 'facebook':
             params["client_secret"] = client_pass

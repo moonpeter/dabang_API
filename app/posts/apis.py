@@ -80,6 +80,7 @@ def AptListService(request):
         'bjdCode=2638010100' \
         '&ServiceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
     response = requests.get(url_bjd).content
+    # print(response.status_code)
     xmlObj = xmltodict.parse(response)
     print(xmlObj)
     pass
