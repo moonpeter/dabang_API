@@ -1,8 +1,4 @@
 import json
-import urllib.request as ul
-from io import BytesIO
-from xml.etree.ElementTree import XMLParser
-
 import xmltodict
 import requests
 from django.http import Http404, HttpResponse
@@ -72,16 +68,17 @@ class PostImageView(APIView):
 @api_view()
 def getAptListService(request):
     secret_key = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
-    url = "http://apis.data.go.kr/1611000/AptListService/getLegaldongAptList?"
+    url = "http://apis.data.go.kr/1611000/AptListService/getLegaldongAptList"
     bjd_code = request.data.get('bjdCode')
     if bjd_code == '성수동1가':
         bjd_code = '1120011400'
     elif bjd_code == '성수동2가':
         bjd_code = '1120011500'
 
-    url_bjd = f'{url}bjdCode={bjd_code}&ServiceKey={secret_key}'
+    url_bjd = f'{url}?bjdCode={bjd_code}&ServiceKey={secret_key}'
 
     response = requests.get(url_bjd).content
+
     xmlObj = xmltodict.parse(response)
     json_data = json.dumps(xmlObj, ensure_ascii=False)
     dict_data = json.loads((json_data))
