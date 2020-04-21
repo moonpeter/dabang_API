@@ -1,24 +1,26 @@
+import json
+
+import jwt
 import requests
+from django.conf.global_settings import SECRET_KEY
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect
+from django.views import View
 from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
-from rest_framework.exceptions import AuthenticationFailed
+
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
 
-from members.models import SocialLogin
-from members.serializers import UserSerializer, SignUpViewSerializer, UserProfileSerializer
+from config.settings import KAKAO_APP_ID, FACEBOOK_APP_SECRET, FACEBOOK_APP_ID
+from members.serializers import UserSerializer, UserProfileSerializer
 
 User = get_user_model()
-
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -61,25 +63,12 @@ class UserModelViewSet(viewsets.ModelViewSet):
             permission_classes = [AllowAny()]
             return permission_classes
 
-    @action(detail=False, methods=['POST'])
-    def jwt(self, request):
-        username = request.POST.get('email')
-        userpass = request.POST.get('password')
-        user = authenticate(username=username, password=userpass)
-        payload = JWT_PAYLOAD_HANDLER(user)
-        jwt_token = JWT_ENCODE_HANDLER(payload)
-        if user is not None:
-            data = {
-                'jwt': jwt_token,
-                'user': UserSerializer(user).data
-            }
-            return Response(data)
-
 
 class KakaoJwtTokenView(APIView):
     def post(self, request):
-        access_token = request.POST.get('access_token')
+        access_token = request.data.get('access_token')
         url = 'https://kapi.kakao.com/v2/user/me'
+
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -91,20 +80,17 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
+        jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+
         try:
             user = User.objects.get(username=kakao_id)
+
         except User.DoesNotExist:
             user = User.objects.create_user(
                 username=kakao_id,
                 first_name=user_first_name,
                 last_name=user_last_name,
-
             )
-        payload = JWT_PAYLOAD_HANDLER(user)
-        jwt_token = JWT_ENCODE_HANDLER(payload)
-
-        kakao = SocialLogin.objects.filter(type='kakao')[0]
-        user.social.add(kakao)
         data = {
             'token': jwt_token,
             'user': UserSerializer(user).data,
@@ -118,8 +104,7 @@ class FacebookJwtToken(APIView):
     api_get_access_token = f'{api_base}/oauth/access_token'
     api_me = f'{api_base}/me'
 
-    def post(self, request):
-        access_token = request.POST.get('access_token')
+    def post(self, request, access_token):
         params = {
             'access_token': access_token,
             'fields': ','.join([
@@ -136,6 +121,8 @@ class FacebookJwtToken(APIView):
         first_name = data['first_name']
         last_name = data['last_name']
 
+        jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+
         try:
             user = User.objects.get(username=facebook_id)
         except User.DoesNotExist:
@@ -143,11 +130,8 @@ class FacebookJwtToken(APIView):
                 username=facebook_id,
                 first_name=first_name,
                 last_name=last_name,
+                # img_profile=f,
             )
-        payload = JWT_PAYLOAD_HANDLER(user)
-        jwt_token = JWT_ENCODE_HANDLER(payload)
-        facebook = SocialLogin.objects.filter(type='facebook')[0]
-        user.social.add(facebook)
         data = {
             'token': jwt_token,
             'user': UserSerializer(user).data,
@@ -155,36 +139,66 @@ class FacebookJwtToken(APIView):
         return Response(data)
 
 
-class SignUpView(APIView):
-    queryset = User.objects.all()
-    serializer_class = SignUpViewSerializer
+class KAKAO(View):
+    def get(self, request):
+        client_id = KAKAO_APP_ID
+        redirect_uri = "http://127.0.0.1:8000/members/sign-in/kakao/callback/"
+        return redirect(
+            f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
+        )
 
+
+class KakaoSignInCallbackView(View):
+    def get(self, request):
+        url = 'https://kauth.kakao.com/oauth/token'
+
+        code = request.GET.get("code")
+
+        headers = {
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+        data = {
+            'grant_type': 'authorization_code',
+            'client_id': KAKAO_APP_ID,
+            'redirect_url': 'http://127.0.0.1:8000/members/sign-in/kakao/callback/',
+            'code': code
+        }
+
+        kakao_reponse = requests.post(url, headers=headers, data=data)
+        data = kakao_reponse.json()
+        access_token = data['access_token']
+
+        return HttpResponse(access_token)
+
+
+class socialLogin(APIView):
     def post(self, request):
-        serializer = SignUpViewSerializer(data=request.data)
-        if serializer.is_valid():
-            instance = serializer.save()
-            instance.set_password(instance.password)
-            instance.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        local_host = 'http://localhost:8000'
+        deploy_host = 'https://moonpeter.com'
+        url = f'{deploy_host}/auth/convert-token'
+        token = request.data.get('token')
+        social_type = request.data.get('type')
+        if social_type:
+            if social_type == 'facebook':
+                client_id = FACEBOOK_APP_ID
+                client_pass = FACEBOOK_APP_SECRET
+            elif social_type == 'kakao':
+                client_id = KAKAO_APP_ID
 
-    def get(self, request, format=None):
-        queryset = User.objects.all()
-        serializer = SignUpViewSerializer(queryset, many=True)
-        return Response(serializer.data)
+        params = {
+            "grant_type": "convert_token",
+            "client_id": f"{client_id}",
+            "backend": f'{social_type}',
+            "token": f'{token}'
+        }
+        if social_type == 'facebook':
+            params["client_secret"] = client_pass
 
+        response = requests.post(url, params=params)
 
-class AuthTokenView(APIView):
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        user = authenticate(username=username, password=password)
-        if user:
-            token, __ = Token.objects.get_or_create(user=user)
-            data = {
-                # 데이터의 형태로 담아서 보내줌.
-                'token': token.key,
-            }
-            return Response(data)
-        raise AuthenticationFailed()
+        response_json = response.json()
+
+        data = {
+            'res': response_json,
+        }
+        return Response(data, status=status.HTTP_200_OK)

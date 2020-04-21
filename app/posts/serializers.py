@@ -75,6 +75,12 @@ class PostImageSerializer(serializers.ModelSerializer):
         )
 
 
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = '__all__'
+
+
 class PostListSerializer(serializers.ModelSerializer):
     broker = BrokerSerializer(read_only=True)
     management_set = ManagementSerializer(many=True, read_only=True)
@@ -103,7 +109,7 @@ class PostListSerializer(serializers.ModelSerializer):
             'parkingTF',
             'living_expenses',
             'living_expenses_detail',
-            'MoveInChar',
+            'moveInChar',
             'moveInDate',
             'option_set',
             'heatingType',
@@ -117,4 +123,4 @@ class PostListSerializer(serializers.ModelSerializer):
             'complete',
             'securitySafety_set',
             'postimage',
-            ]
+        ]

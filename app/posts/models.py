@@ -26,7 +26,7 @@ class PostRoom(models.Model):
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=500, verbose_name='설명', )
-    address = models.OneToOneField(
+    address = models.ForeignKey(
         'posts.PostAddress',
         on_delete=models.CASCADE, null=True,
     )
@@ -44,16 +44,20 @@ class PostRoom(models.Model):
         'posts.AdministrativeDetail',
         through='MaintenanceFee',
     )
+
     parkingDetail = models.CharField(verbose_name='주차 비용', null=True, max_length=10)
     parkingTF = models.NullBooleanField('주차 가능 유무', default=None)
+    parkingPay = models.FloatField('주차 비용', null=True, )
+
     living_expenses = models.CharField('생활비', null=True, max_length=15, )
     living_expenses_detail = models.CharField('생활비 항목', null=True, max_length=20, )
 
-    MoveInChar = models.CharField('크롤링용 입주날짜', null=True, max_length=10)
+    moveInChar = models.CharField('크롤링용 입주날짜', null=True, max_length=10)
     moveInDate = models.DateTimeField(verbose_name='입주 가능 날짜', null=True, )
+
     option = models.ManyToManyField('OptionItem', through='RoomOption', verbose_name='옵션 항목')
     heatingType = models.CharField('난방 종류', max_length=10)
-    # choice field 쓰는게 지금 좀 애매해서 되나 제가 따로 해볼게요
+
     pet = models.NullBooleanField('반려동물', default=None)
     elevator = models.NullBooleanField('엘레베이터', default=None)
     builtIn = models.NullBooleanField('빌트인', default=None)
@@ -99,7 +103,6 @@ class MaintenanceFee(models.Model):
     postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE, related_name='management_set')
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
     totalFee = models.FloatField(verbose_name='관리비 합계')
-
 
 # 관리비 포함 항목
 class AdministrativeDetail(models.Model):
@@ -154,4 +157,3 @@ class PostImage(models.Model):
 
     def __str__(self):
         return '{}'.format(self.image)
-

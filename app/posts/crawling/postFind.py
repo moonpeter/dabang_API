@@ -5,10 +5,11 @@ import urllib
 
 from django.core.files import File
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, UnexpectedAlertPresentException
 
 from config.settings import MEDIA_ROOT
 from posts.crawling.find_urls import find_apartment_urls, find_urls
+
 from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionItem, \
     MaintenanceFee, RoomOption, RoomSecurity, PostRoom, Broker, PostImage, AdministrativeDetail
 from bs4 import BeautifulSoup
@@ -24,12 +25,14 @@ def postFind():
 
     # 각 게시글 조회 시작
     for post_index, url in enumerate(url_all_list):
-        print('url>>>>>', url, '\n')
+        print('url 입니다.', url, '\n')
         driver.get(url)
+
         time.sleep(2)
 
         # 중개인
         # Broker
+        # is_not_private_post= True
         try:
             button = driver.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/ul/li/button")
             driver.execute_script("arguments[0].click();", button)
@@ -51,6 +54,10 @@ def postFind():
 
             tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[2]')
             tel = tel.get_attribute('innerText')
+        except UnexpectedAlertPresentException:
+            # is_not_private_post = False
+            continue
+
         button = driver.find_element_by_xpath("/html/body/div[4]/div/div/header/button")
         driver.execute_script("arguments[0].click();", button)
 
@@ -127,10 +134,15 @@ def postFind():
             address = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div/div/p')
 
         address = address[0].get_attribute('innerText')
-
-        address_ins = PostAddress.objects.create(
-            loadAddress=address
+        if '※' in address:
+            print('주소값이 이상하게 들어감')
+            address = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[4]/div/p')
+            address = address.get_attribute('innerText')
+        print(address)
+        address_ins, __ = PostAddress.objects.get_or_create(
+            loadAddress=address,
         )
+        print(address_ins)
 
         unrefined_floor = driver.find_elements_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[1]/div')
         total_floor = unrefined_floor[0].get_attribute('innerText')
@@ -229,6 +241,9 @@ def postFind():
 
         # 관리비 마무리
 
+        parkingPay = None
+
+
         try:
             if post_type == "아파트":
                 if salesType == "매매":
@@ -249,12 +264,23 @@ def postFind():
                     unrefined_parking = driver.find_elements_by_xpath(
                         "/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[4]/p")
             parkingDetail = unrefined_parking[0].get_attribute('innerText')
+            if '만' in parkingDetail:
+                parkingPay = parkingDetail
+                parkingPay = parkingPay.split('만')
+                parkingPay = parkingPay[0]
+                parkingPay = float(parkingPay)
+
+                parkingDetail = '문의'
 
         except IndexError:
             unrefined_parking = driver.find_elements_by_xpath(
                 '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p'
             )
             parkingDetail = unrefined_parking[0].get_attribute('innerText')
+            if '만' in parkingDetail:
+                parkingPay = parkingDetail
+                parkingDetail = '문의'
+
         except TypeError:
             parkingDetail = '불가'
 
@@ -319,9 +345,21 @@ def postFind():
                 moveIn = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[9]/div')
             else:
                 moveIn = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[9]/div')
-        MoveInChar = moveIn.get_attribute('innerText')
-        # option & sceurity
 
+        moveinChar = moveIn.get_attribute('innerText')
+        moveInDate = None
+        if '날짜' in moveinChar:
+            pass
+        elif '즉시' in moveinChar:
+            pass
+        else:
+            moveIn = moveIn.replace('.', '-')
+            moveInDate = moveIn
+            moveIn = None
+
+        print(moveIn)
+
+        # option & sceurity
         try:
             option_tag = driver.find_element_by_name('option')
             option_tag = option_tag.get_attribute('innerText')
@@ -513,9 +551,11 @@ def postFind():
             shortRent=shortRent,
             parkingDetail=parkingDetail,
             parkingTF=parkingTF,
+            parkingPay=parkingPay,
             living_expenses=living_expenses,
             living_expenses_detail=living_expenses_detail,
-            MoveInChar=MoveInChar,
+            moveInChar=moveinChar,
+            moveInDate=moveInDate,
             heatingType=heatingType,
             pet=pet,
             elevator=elevator,
