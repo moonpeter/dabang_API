@@ -24,60 +24,8 @@ def postFind():
     # print('url_all_list len >>', type(url_all_list), '\n')
     # print('url_all_list >>', url_all_list, '\n')
     url_all_list = [
-        # 'https://www.dabangapp.com/room/5e42b371a11d530866144078',
-        # 'https://www.dabangapp.com/room/5e1d6b0773d078168238f1e0',
-        # 'https://www.dabangapp.com/room/5e1548a8de8c7b54c2c917dc',
-        # 'https://www.dabangapp.com/room/5e914f0dc38c0c4ce5a8318c',
-        'https://www.dabangapp.com/room/5e8d35bd0cf5a5412d6da2ea',
-        'https://www.dabangapp.com/room/5e914cb3cc41dc1f46a7b6c3',
-        'https://www.dabangapp.com/room/5e79c60d84be5e7ef8e96461',
-        'https://www.dabangapp.com/room/5e914f0455e11d4ce5fbd245',
-        'https://www.dabangapp.com/room/5e8e7cf99d891c3904c57951',
-        'https://www.dabangapp.com/room/5e6c6cced93974472c59c6b8',
-        'https://www.dabangapp.com/room/5e8aa7fcffe08e36cb56b4ce',
-        'https://www.dabangapp.com/room/5e746c5855cade1ff3b2c900',
-        'https://www.dabangapp.com/room/5e72c8819888397a3638a424',
-        'https://www.dabangapp.com/room/5e8c62242dca726fb8181a93',
-        'https://www.dabangapp.com/room/5e7bfd7b290cb26ec37087b2',
-        'https://www.dabangapp.com/room/5e8d248ea8c2115d1680b1ce',
-        'https://www.dabangapp.com/room/5e819e0e2ce1b126d9c88027',
-        'https://www.dabangapp.com/room/5e7ad2422247205b43406c05',
-        'https://www.dabangapp.com/room/5e8ae5dd2a140b19ad1152a0',
-        'https://www.dabangapp.com/room/5e9166c6243bed3a047b44c7',
-        'https://www.dabangapp.com/room/5e7ad24a5809285b43dd6156',
-        'https://www.dabangapp.com/room/5e783d0a32767735792361c6',
-        'https://www.dabangapp.com/room/5e8acea9ce4f3e4ec40793d4',
-        'https://www.dabangapp.com/room/5e7c13ee116bff1a5c1b0fe5',
-        'https://www.dabangapp.com/room/5e7ecdf238420950529b2564',
-        'https://www.dabangapp.com/room/5e9172a37c5daf1246d1e0b8',
-        'https://www.dabangapp.com/room/5e7c7166244673686b638419',
-        'https://www.dabangapp.com/room/5e6b164652c2753d337b4179',
-        'https://www.dabangapp.com/room/5e8aa4778e97eb10a32212da',
-        'https://www.dabangapp.com/room/5e7c36033dc51b7e45ba7b1f',
-        'https://www.dabangapp.com/room/5e8ea6167f954b7088471d4c',
-        'https://www.dabangapp.com/room/5e7c52fea861501550e7e8a3',
-        'https://www.dabangapp.com/room/5e90026d91315870a836a8b2',
-        'https://www.dabangapp.com/room/5e72ec87fdf308458942257f',
-        'https://www.dabangapp.com/room/5e7307f8017a955b71279100',
-        'https://www.dabangapp.com/room/5e7ac6c2cbf0df08eb1d61ff',
-        'https://www.dabangapp.com/room/5e71ab6ddeb6c10f9e935e0a',
-        'https://www.dabangapp.com/room/5e7efa460358215304f057de',
-        'https://www.dabangapp.com/room/5e756335964ed823fc81e0f8',
-        'https://www.dabangapp.com/room/5e7c2481a50ed345f63c82d2',
-        'https://www.dabangapp.com/room/5e7ec95111e1011a7ec7e203',
-        'https://www.dabangapp.com/room/5e81a1b829cfcc06f34d07af',
-        'https://www.dabangapp.com/room/5e8eab2db72bfe784f349eb9',
-        'https://www.dabangapp.com/room/5e72e2cf83e008062fb55d61',
-        'https://www.dabangapp.com/room/5e868a4369367f4ba04cbd9a',
-        'https://www.dabangapp.com/room/5e819d03b701a426d98a42ea',
-        'https://www.dabangapp.com/room/5e914f0ba6d8364ce5f7703e',
-        'https://www.dabangapp.com/room/5e72ea274f0cc61c30fd8f36',
-        'https://www.dabangapp.com/room/5e71de843a4ea4174fa94faa',
-        'https://www.dabangapp.com/room/5e916938513ff8418a568eed',
-        'https://www.dabangapp.com/room/5e8d3248d7b3d87429517725',
-        'https://www.dabangapp.com/room/5e8ac8522eccde46164a92d3',
         'https://www.dabangapp.com/room/5e7acbcb77c7d1101fafdd2f',
-        'https://www.dabangapp.com/room/5e6f1211e8174c468ae971a6',
+
         'https://www.dabangapp.com/room/5e7ae6cdfccb516fda9bd67a',
         'https://www.dabangapp.com/room/5e6f0a419f0dec7f7c305a0f',
         'https://www.dabangapp.com/room/5e72c4a3811444445417df08',
@@ -320,7 +268,9 @@ def postFind():
 
     # 각 게시글 조회 시작
     for post_index, url in enumerate(url_all_list):
+        print('url 입니다.', url, '\n')
         driver.get(url)
+
         time.sleep(2)
 
         # 중개인
@@ -534,6 +484,9 @@ def postFind():
 
         # 관리비 마무리
 
+        parkingPay = None
+
+
         try:
             if post_type == "아파트":
                 if salesType == "매매":
@@ -541,7 +494,6 @@ def postFind():
                 else:
                     unrefined_parking = driver.find_elements_by_xpath(
                         '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
-
             else:
                 if salesType == "매매":
                     # 일반 주택 매매
@@ -555,11 +507,22 @@ def postFind():
                     unrefined_parking = driver.find_elements_by_xpath(
                         "/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[4]/p")
             parkingDetail = unrefined_parking[0].get_attribute('innerText')
+            if '만' in parkingDetail:
+                parkingPay = parkingDetail
+                parkingPay = parkingPay.split('만')
+                parkingPay = parkingPay[0]
+                parkingPay = float(parkingPay)
+
+                parkingDetail = '문의'
         except IndexError:
             unrefined_parking = driver.find_elements_by_xpath(
                 '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p'
             )
             parkingDetail = unrefined_parking[0].get_attribute('innerText')
+            if '만' in parkingDetail:
+                parkingPay = parkingDetail
+                parkingDetail = '문의'
+
         except TypeError:
             parkingDetail = '불가'
 
@@ -624,9 +587,21 @@ def postFind():
                 moveIn = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[9]/div')
             else:
                 moveIn = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/ul/li[9]/div')
-        MoveInChar = moveIn.get_attribute('innerText')
-        # option & sceurity
 
+        moveinChar = moveIn.get_attribute('innerText')
+        moveInDate = None
+        if '날짜' in moveinChar:
+            pass
+        elif '즉시' in moveinChar:
+            pass
+        else:
+            moveIn = moveIn.replace('.', '-')
+            moveInDate = moveIn
+            moveIn = None
+
+        print(moveIn)
+
+        # option & sceurity
         try:
             option_tag = driver.find_element_by_name('option')
             option_tag = option_tag.get_attribute('innerText')
@@ -803,9 +778,11 @@ def postFind():
             shortRent=shortRent,
             parkingDetail=parkingDetail,
             parkingTF=parkingTF,
+            parkingPay=parkingPay,
             living_expenses=living_expenses,
             living_expenses_detail=living_expenses_detail,
-            MoveInChar=MoveInChar,
+            moveInChar=moveinChar,
+            moveInDate=moveInDate,
             heatingType=heatingType,
             pet=pet,
             elevator=elevator,

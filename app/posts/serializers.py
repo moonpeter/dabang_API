@@ -4,6 +4,12 @@ from rest_framework.relations import StringRelatedField
 from .models import PostRoom, PostImage
 
 
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = '__all__'
+
+
 class PostListSerializer(serializers.ModelSerializer):
     broker = StringRelatedField(read_only=True)
     management = StringRelatedField(many=True, read_only=True)
@@ -11,6 +17,7 @@ class PostListSerializer(serializers.ModelSerializer):
     securitySafety = StringRelatedField(many=True, read_only=True)
     address = StringRelatedField(read_only=True)
     salesForm = StringRelatedField(read_only=True)
+    postimages = StringRelatedField(source='postimage_set', many=True)
 
     class Meta:
         model = PostRoom
@@ -19,7 +26,6 @@ class PostListSerializer(serializers.ModelSerializer):
             'description',
             'floor',
             'totalFloor',
-            'areaInt',
             'areaChar',
             'supplyAreaInt',
             'supplyAreaChar',
@@ -28,13 +34,11 @@ class PostListSerializer(serializers.ModelSerializer):
             'parkingTF',
             'living_expenses',
             'living_expenses_detail',
-            'MoveInChar',
+            'moveInChar',
             'moveInDate',
             'heatingType',
             'pet',
             'elevator',
-            'multiFloor',
-            'pointRoom',
             'builtIn',
             'veranda',
             'depositLoan',
@@ -44,10 +48,5 @@ class PostListSerializer(serializers.ModelSerializer):
             'management',  #
             'option',  #
             'securitySafety',  #
+            'postimages',
         ]
-
-
-class PostImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostImage
-        fields = '__all__'
