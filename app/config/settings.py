@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'selenium',
     'pandas',
     'django_extensions',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -132,7 +133,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 ROOT_URLCONF = 'config.urls'

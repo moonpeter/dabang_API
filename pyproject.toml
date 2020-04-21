@@ -23,6 +23,8 @@ pandas = "^1.0.3"
 bs4 = "^0.0.1"
 lxml = "^4.5.0"
 cssutils = "^1.0.2"
+django_filters = "^0.2.1"
+django-filter = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
 
