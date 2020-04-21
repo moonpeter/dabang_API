@@ -1,6 +1,8 @@
 import json
 
+import jwt
 import requests
+from django.conf.global_settings import SECRET_KEY
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
@@ -14,16 +16,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
 
 from config.settings import KAKAO_APP_ID, FACEBOOK_APP_SECRET, FACEBOOK_APP_ID
-from members.models import SocialLogin
-from members.serializers import UserSerializer, SignUpViewSerializer, UserProfileSerializer
+from members.serializers import UserSerializer, UserProfileSerializer
 
 User = get_user_model()
-
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -66,36 +63,12 @@ class UserModelViewSet(viewsets.ModelViewSet):
             permission_classes = [AllowAny()]
             return permission_classes
 
-    @action(detail=False, methods=['POST'])
-    def jwt(self, request):
-        username = request.POST.get('email')
-        userpass = request.POST.get('password')
-        if not User.objects.filter(username=username):
-            data = {
-                'message': "존재하지 않는 유저입니다."
-            }
-            return Response(data, status=status.HTTP_404_NOT_FOUND)
-        try:
-            user = authenticate(username=username, password=userpass)
-            payload = JWT_PAYLOAD_HANDLER(user)
-            jwt_token = JWT_ENCODE_HANDLER(payload)
-            if user is not None:
-                data = {
-                    'jwt': jwt_token,
-                    'user': UserSerializer(user).data
-                }
-                return Response(data)
-        except AttributeError:
-            data = {
-                'message': '인증에 실패하였습니다.'
-            }
-            return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
 
 class KakaoJwtTokenView(APIView):
     def post(self, request):
         access_token = request.data.get('access_token')
         url = 'https://kapi.kakao.com/v2/user/me'
+
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -107,20 +80,17 @@ class KakaoJwtTokenView(APIView):
         user_username = user_data['properties']['nickname']
         user_first_name = user_username[1:]
         user_last_name = user_username[0]
+        jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+
         try:
             user = User.objects.get(username=kakao_id)
+
         except User.DoesNotExist:
             user = User.objects.create_user(
                 username=kakao_id,
                 first_name=user_first_name,
                 last_name=user_last_name,
-
             )
-        payload = JWT_PAYLOAD_HANDLER(user)
-        jwt_token = JWT_ENCODE_HANDLER(payload)
-
-        kakao = SocialLogin.objects.filter(type='kakao')[0]
-        user.social.add(kakao)
         data = {
             'token': jwt_token,
             'user': UserSerializer(user).data,
@@ -134,8 +104,7 @@ class FacebookJwtToken(APIView):
     api_get_access_token = f'{api_base}/oauth/access_token'
     api_me = f'{api_base}/me'
 
-    def post(self, request):
-        access_token = request.POST.get('access_token')
+    def post(self, request, access_token):
         params = {
             'access_token': access_token,
             'fields': ','.join([
@@ -152,6 +121,8 @@ class FacebookJwtToken(APIView):
         first_name = data['first_name']
         last_name = data['last_name']
 
+        jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+
         try:
             user = User.objects.get(username=facebook_id)
         except User.DoesNotExist:
@@ -159,11 +130,8 @@ class FacebookJwtToken(APIView):
                 username=facebook_id,
                 first_name=first_name,
                 last_name=last_name,
+                # img_profile=f,
             )
-        payload = JWT_PAYLOAD_HANDLER(user)
-        jwt_token = JWT_ENCODE_HANDLER(payload)
-        facebook = SocialLogin.objects.filter(type='facebook')[0]
-        user.social.add(facebook)
         data = {
             'token': jwt_token,
             'user': UserSerializer(user).data,
