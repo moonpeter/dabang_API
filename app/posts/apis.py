@@ -1,11 +1,7 @@
 import json
-import urllib.request as ul
-from io import BytesIO
-from xml.etree.ElementTree import XMLParser
-
 import xmltodict
 import requests
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,7 +10,7 @@ from rest_framework.views import APIView
 from posts.models import PostRoom, PostImage
 from posts.serializers import PostListSerializer, PostImageSerializer
 
-secret = 's8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
+secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
 
 
 class PostList(APIView):
@@ -69,21 +65,25 @@ class PostImageView(APIView):
         return Response(serializer.data)
 
 
-def AptListService(request):
-    url_road = \
-        'http://apis.data.go.kr/1611000/AptListService/getRoadnameAptList?' \
-        'roadCode=263802006002' \
-        '&ServiceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
+@api_view()
+def getAptListService(request):
+    secret_key = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
+    url = "http://apis.data.go.kr/1611000/AptListService/getLegaldongAptList"
+    bjd_code = request.data.get('bjdCode')
+    if bjd_code == '성수동1가':
+        bjd_code = '1120011400'
+    elif bjd_code == '성수동2가':
+        bjd_code = '1120011500'
 
-    url_bjd = \
-        'http://apis.data.go.kr/1611000/AptListService/getLegaldongAptList?' \
-        'bjdCode=2638010100' \
-        '&ServiceKey=s8%2FOL9BcK3JUYuSOOnFxFN%2B342crXBDe08GV9iRCN536y1XDkmU4KKKNUaf79BbPODPv9Lj%2BRZ4IYu3ynJ4VWA%3D%3D'
+    url_bjd = f'{url}?bjdCode={bjd_code}&ServiceKey={secret_key}'
+
     response = requests.get(url_bjd).content
-    # print(response.status_code)
+
     xmlObj = xmltodict.parse(response)
-    print(xmlObj)
-    pass
+    json_data = json.dumps(xmlObj, ensure_ascii=False)
+    dict_data = json.loads((json_data))
+    data = dict_data['response']['body']['items']['item']
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view()
