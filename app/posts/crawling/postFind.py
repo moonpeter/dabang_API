@@ -25,10 +25,6 @@ def postFind():
         #  아파트 --------
 
         # ------- 오피스텔
-        'https://www.dabangapp.com/room/5dd4f8a12bda4e34e57d0447',
-        'https://www.dabangapp.com/room/5e967aa03b72e37c4b8e19f4',
-        'https://www.dabangapp.com/room/5ea0030c28c5e945a0dbda93',
-        'https://www.dabangapp.com/room/5e9eb9a7db13d21edb07f96e',
         'https://www.dabangapp.com/room/5e843dc1031dc142631601df',
         'https://www.dabangapp.com/room/5e843a4d99a00c17e3bc85c4',
         'https://www.dabangapp.com/room/5e9fd19bdea9fc5a7d8f5173',
@@ -57,56 +53,19 @@ def postFind():
         'https://www.dabangapp.com/room/5e994fc856dddc1856281d59',
         'https://www.dabangapp.com/room/5e870376f429084ca09bcea6',
         'https://www.dabangapp.com/room/5e4b99581a00fb457ff0ef63',
-        'https://www.dabangapp.com/room/5e9d03b0eb4f8f27a0b1c0a2',
-        'https://www.dabangapp.com/room/5e3845a2d7447c3fabc904e3',
-        'https://www.dabangapp.com/room/5e4a2310faa1647355958b95',
-        'https://www.dabangapp.com/room/5e33bb027bfab713de85a774',
-        'https://www.dabangapp.com/room/5e9d038f618ea701e1304f33',
-        'https://www.dabangapp.com/room/5e9034ed4ef6ae3420ccbfb7',
-        'https://www.dabangapp.com/room/5e94139c0eb4bb3b5f8d29c4',
-        'https://www.dabangapp.com/room/5d652a2654311c3fa94d6ee2',
-        'https://www.dabangapp.com/room/5e9c62555563ac2c0f02f549',
-        'https://www.dabangapp.com/room/5d9af15512468a5ee4605669',
-        'https://www.dabangapp.com/room/5e9e498aaab11a443bfdfee2',
-        'https://www.dabangapp.com/room/5e19204fd1e8ba59c8b5d7f4',
-        'https://www.dabangapp.com/room/5e89aadd49dee06a434e251e',
-        'https://www.dabangapp.com/room/5e577d972d69ed5194f1eefa',
-        'https://www.dabangapp.com/room/5e7866f0485b277642a0bea0',
-        'https://www.dabangapp.com/room/5e3bd8f8a44600193619046c',
-        'https://www.dabangapp.com/room/5d1aaaf7f8675e2ee22fd097',
-        'https://www.dabangapp.com/room/5e8c077fc6addb21400412cb',
-        'https://www.dabangapp.com/room/5e84996da1218276a29e79cc',
-        'https://www.dabangapp.com/room/59f3e67dc6cda31e4c4f8b33',
-        'https://www.dabangapp.com/room/5c8319179435f455bfadb906',
-        'https://www.dabangapp.com/room/5e6132798c88164b71a43b63',
-        'https://www.dabangapp.com/room/5dc282ff3c2c224b0a79097c',
-        'https://www.dabangapp.com/room/5e61de5954444f17b12b891d',
-        'https://www.dabangapp.com/room/5de1e3dcbff13320f9e8c246',
-        'https://www.dabangapp.com/room/5da4831a99f821789dd5a462',
-        'https://www.dabangapp.com/room/5d07c75b3742fe7603630b43',
-        'https://www.dabangapp.com/room/5e659c74f2a3ac415c367599',
-        'https://www.dabangapp.com/room/5e9d038861e7bf04feff40cc',
-        'https://www.dabangapp.com/room/5e958f3d320e1034a235c14c',
-        'https://www.dabangapp.com/room/5e9a9ccf17b6ea61206f3133',
-        'https://www.dabangapp.com/room/5e3cfc049d81167ed198e975',
-        'https://www.dabangapp.com/room/5d89b7deb3be6628c11e79d4',
-        'https://www.dabangapp.com/room/5c5d8557e98ed333425a3cb4',
-        'https://www.dabangapp.com/room/5e8440d00fdecc72da927bf7',
-        'https://www.dabangapp.com/room/5ddd53a496557639e70c825e',
-        'https://www.dabangapp.com/room/5ddf97f4224cdd3567cebf9b',
-        'https://www.dabangapp.com/room/5e843414848c0b61944e50c5',
-        'https://www.dabangapp.com/room/5e9d039eedc091134efbe315',
-        'https://www.dabangapp.com/room/5e7c52a336e37e1fa669f93e',
-        'https://www.dabangapp.com/room/5db78bcdeaa0e9359de71c0f',
-        'https://www.dabangapp.com/room/5e8e89360988e55bd5c27df0',
-        'https://www.dabangapp.com/room/5e7997c5619be26de13760d1',
-        'https://www.dabangapp.com/room/5e996005faf976637565726a',
-        'https://www.dabangapp.com/room/5ddcfaec6e8a987c8a9e65e1',
-        'https://www.dabangapp.com/room/5e9d8475b3a40445cf7fc7e8',
-        'https://www.dabangapp.com/room/582fb3c519e7cb55ecce2534',
-        'https://www.dabangapp.com/room/5e9d2721b233a17b687cb304',
-        'https://www.dabangapp.com/room/5e3ba7b9610c7e1f02caba75',
-        'https://www.dabangapp.com/room/5e9d0381baaea321eaa3e34f'
+        'https://www.dabangapp.com/room/5e93ec571087be6c9d348d9c',
+        'https://www.dabangapp.com/room/5e82ffe2f112a16b1126ca5e',
+        'https://www.dabangapp.com/room/5e61eb268c45fb4368c1a174',
+        'https://www.dabangapp.com/room/5e86edc1914a1d1d7ef51ac2',
+        'https://www.dabangapp.com/room/5e9a7799f2ccbd48e3c5b08f',
+        'https://www.dabangapp.com/room/5e58feb4bab02104722d161f',
+        'https://www.dabangapp.com/room/5e72c6b3f4b5b86fe3c8f385',
+        'https://www.dabangapp.com/room/5d9ec99fc9a3dd4b29e3efcd',
+        'https://www.dabangapp.com/room/5e6f0321aeeb591276221de3',
+        'https://www.dabangapp.com/room/5e996a9b7accce730023773e',
+        'https://www.dabangapp.com/room/5e97be37ebb9bb57a7d35d5f',
+        'https://www.dabangapp.com/room/5e99104de7921f1d798272a3',
+        'https://www.dabangapp.com/room/5e71af111d650303159f0348',
 
         # 아파트 -----------------------------
         'https://www.dabangapp.com/room/5e992d31d9d3a15c88491696',
@@ -271,6 +230,7 @@ def postFind():
         'https://www.dabangapp.com/room/5e6759cdb979bc71e9afeab2',
         'https://www.dabangapp.com/room/5e9fbc3505ff823c392d4d3a',
         'https://www.dabangapp.com/room/5e82f884d770ee57c7f381cf',
+
         'https://www.dabangapp.com/room/5e93ec571087be6c9d348d9c',
         'https://www.dabangapp.com/room/5e82ffe2f112a16b1126ca5e',
         'https://www.dabangapp.com/room/5e61eb268c45fb4368c1a174',
@@ -285,8 +245,64 @@ def postFind():
         'https://www.dabangapp.com/room/5e99104de7921f1d798272a3',
         'https://www.dabangapp.com/room/5e71af111d650303159f0348',
 
-    ]
+        'https://www.dabangapp.com/room/5e9d03b0eb4f8f27a0b1c0a2',
+        'https://www.dabangapp.com/room/5e3845a2d7447c3fabc904e3',
+        'https://www.dabangapp.com/room/5e4a2310faa1647355958b95',
+        'https://www.dabangapp.com/room/5e33bb027bfab713de85a774',
+        'https://www.dabangapp.com/room/5e9d038f618ea701e1304f33',
+        'https://www.dabangapp.com/room/5e9034ed4ef6ae3420ccbfb7',
+        'https://www.dabangapp.com/room/5e94139c0eb4bb3b5f8d29c4',
+        'https://www.dabangapp.com/room/5d652a2654311c3fa94d6ee2',
+        'https://www.dabangapp.com/room/5e9c62555563ac2c0f02f549',
+        'https://www.dabangapp.com/room/5d9af15512468a5ee4605669',
+        'https://www.dabangapp.com/room/5e9e498aaab11a443bfdfee2',
+        'https://www.dabangapp.com/room/5e19204fd1e8ba59c8b5d7f4',
+        'https://www.dabangapp.com/room/5e89aadd49dee06a434e251e',
+        'https://www.dabangapp.com/room/5e577d972d69ed5194f1eefa',
+        'https://www.dabangapp.com/room/5e7866f0485b277642a0bea0',
+        'https://www.dabangapp.com/room/5e3bd8f8a44600193619046c',
+        'https://www.dabangapp.com/room/5d1aaaf7f8675e2ee22fd097',
+        'https://www.dabangapp.com/room/5e8c077fc6addb21400412cb',
+        'https://www.dabangapp.com/room/5e84996da1218276a29e79cc',
+        'https://www.dabangapp.com/room/59f3e67dc6cda31e4c4f8b33',
+        'https://www.dabangapp.com/room/5c8319179435f455bfadb906',
+        'https://www.dabangapp.com/room/5e6132798c88164b71a43b63',
+        'https://www.dabangapp.com/room/5dc282ff3c2c224b0a79097c',
+        'https://www.dabangapp.com/room/5e61de5954444f17b12b891d',
+        'https://www.dabangapp.com/room/5de1e3dcbff13320f9e8c246',
+        'https://www.dabangapp.com/room/5da4831a99f821789dd5a462',
+        'https://www.dabangapp.com/room/5d07c75b3742fe7603630b43',
+        'https://www.dabangapp.com/room/5e659c74f2a3ac415c367599',
+        'https://www.dabangapp.com/room/5e9d038861e7bf04feff40cc',
 
+        'https://www.dabangapp.com/room/5e958f3d320e1034a235c14c',
+        'https://www.dabangapp.com/room/5e9a9ccf17b6ea61206f3133',
+        'https://www.dabangapp.com/room/5e3cfc049d81167ed198e975',
+        'https://www.dabangapp.com/room/5d89b7deb3be6628c11e79d4',
+        'https://www.dabangapp.com/room/5c5d8557e98ed333425a3cb4',
+        'https://www.dabangapp.com/room/5e8440d00fdecc72da927bf7',
+        'https://www.dabangapp.com/room/5ddd53a496557639e70c825e',
+        'https://www.dabangapp.com/room/5ddf97f4224cdd3567cebf9b',
+        'https://www.dabangapp.com/room/5e843414848c0b61944e50c5',
+        'https://www.dabangapp.com/room/5e9d039eedc091134efbe315',
+        'https://www.dabangapp.com/room/5e7c52a336e37e1fa669f93e',
+        'https://www.dabangapp.com/room/5db78bcdeaa0e9359de71c0f',
+        'https://www.dabangapp.com/room/5e8e89360988e55bd5c27df0',
+        'https://www.dabangapp.com/room/5e7997c5619be26de13760d1',
+        'https://www.dabangapp.com/room/5e996005faf976637565726a',
+        'https://www.dabangapp.com/room/5ddcfaec6e8a987c8a9e65e1',
+        'https://www.dabangapp.com/room/5e9d8475b3a40445cf7fc7e8',
+        'https://www.dabangapp.com/room/582fb3c519e7cb55ecce2534',
+        'https://www.dabangapp.com/room/5e9d2721b233a17b687cb304',
+        'https://www.dabangapp.com/room/5e3ba7b9610c7e1f02caba75',
+        'https://www.dabangapp.com/room/5e9d0381baaea321eaa3e34f',
+        'https://www.dabangapp.com/room/5dd4f8a12bda4e34e57d0447',
+        'https://www.dabangapp.com/room/5e967aa03b72e37c4b8e19f4',
+        'https://www.dabangapp.com/room/5ea0030c28c5e945a0dbda93',
+        'https://www.dabangapp.com/room/5e9eb9a7db13d21edb07f96e',
+
+    ]
+    # url_all_list = ['https://www.dabangapp.com/room/5e9d038f618ea701e1304f33']
     # 각 게시글 조회 시작
     for post_index, url in enumerate(url_all_list):
         print('############################################# 다음 url \n')
@@ -297,26 +313,39 @@ def postFind():
 
         # 중개인
         try:
-            button = driver.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/ul/li/button")
-            driver.execute_script("arguments[0].click();", button)
 
-            name = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[1]/div[1]/h1')
-            name = name.get_attribute('innerText')
+            try:
+                button = driver.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/ul/li/button")
+                driver.execute_script("arguments[0].click();", button)
 
-            address = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[1]/div[1]/p')
-            address = address.get_attribute('innerText')
+                name = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[1]/div[1]/h1')
+                name = name.get_attribute('innerText')
 
-            manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/div[2]/p[1]')
-            manager = manager.get_attribute('innerText')
+                address = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[1]/div[1]/p')
+                address = address.get_attribute('innerText')
+                try:
+                    manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/div[2]/p[1]')
+                    manager = manager.get_attribute('innerText')
 
-            tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/div[2]/p[2]')
-            tel = tel.get_attribute('innerText')
-        except NoSuchElementException:
-            manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[1]')
-            manager = manager.get_attribute('innerText')
+                    tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[3]/div[2]/p[2]')
+                    tel = tel.get_attribute('innerText')
+                except NoSuchElementException:
+                    # address = None
+                    # name = None
+                    manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[1]')
+                    manager = manager.get_attribute('innerText')
 
-            tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[2]')
-            tel = tel.get_attribute('innerText')
+                    tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[2]')
+                    tel = tel.get_attribute('innerText')
+            except NoSuchElementException:
+                # address = None
+                # name = None
+                manager = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[1]')
+                manager = manager.get_attribute('innerText')
+
+                tel = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div/div[2]/p[2]')
+                tel = tel.get_attribute('innerText')
+
         except UnexpectedAlertPresentException:
             # is_not_private_post = False
             continue
@@ -437,34 +466,29 @@ def postFind():
 
         supplyAreaInt = int(supplyAreaInt)
 
-        try:
-
-            if post_type == '아파트':
-                if salesType == '매매':
-                    shortRent = False
-                else:
-                    unrefined_shortRent = driver.find_elements_by_xpath(
-                        '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[5]/p')
-            else:
-                if salesType == '매매':
-                    shortRent = False
-                else:
-                    unrefined_shortRent = driver.find_elements_by_xpath(
-                        '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[5]/p')
-                    if not unrefined_shortRent:
-                        unrefined_shortRent = driver.find_elements_by_xpath(
-                            '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
-
-            shortRent = unrefined_shortRent[0].get_attribute('innerText')
-
-            if shortRent == '불가능':
+        if post_type == '아파트':
+            if salesType == '매매':
                 shortRent = False
             else:
-                shortRent = True
+                shortRent = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[5]/p')
+                shortRent = shortRent[0].get_attribute('innerText')
+        else:
+            if salesType == '매매':
+                shortRent = False
+            else:
+                shortRent = driver.find_elements_by_xpath(
+                    '/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[5]/p')
+                if not shortRent:
+                    shortRent = driver.find_elements_by_xpath(
+                        '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
+                shortRent = shortRent[0].get_attribute('innerText')
+        print('shortRent is >>', shortRent)
 
-        except IndexError:
-            # 매매에서는 단기임대가 없음.
+        if shortRent == '불가능':
             shortRent = False
+        else:
+            shortRent = True
 
         # 관리비 클래스
         try:
@@ -517,19 +541,16 @@ def postFind():
         # 관리비 마무리
 
         parkingPay = None
-
+        # 주차비 관련
         try:
-            print(post_type)
             if post_type == "아파트":
                 if salesType == "매매":
                     unrefined_parking = None
                 else:
                     unrefined_parking = driver.find_elements_by_xpath(
                         '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
-
             else:
                 if salesType == "매매":
-                    # 일반 주택 매매
                     try:
                         unrefined_parking = driver.find_elements_by_xpath(
                             "/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[3]")
@@ -540,9 +561,14 @@ def postFind():
                     unrefined_parking = driver.find_elements_by_xpath(
                         "/html/body/div[1]/div/div[5]/div[2]/div/table/tbody/tr/td[4]/p")
             if not unrefined_parking:
-                parkingDetail = driver.find_element_by_xpath(
-                    '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
-                parkingDetail = parkingDetail.get_attribute('innerText')
+                print('없')
+                try:
+                    parkingDetail = driver.find_element_by_xpath(
+                        '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
+                    parkingDetail = parkingDetail.get_attribute('innerText')
+                except NoSuchElementException:
+                    unrefined_parking = driver.find_elements_by_xpath(
+                        '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[3]/p')
 
             if unrefined_parking:
                 parkingDetail = unrefined_parking[0].get_attribute('innerText')

@@ -5,4 +5,5 @@ from django.db import models
 # Create your models here.
 class User(AbstractUser):
     introduce = models.TextField(max_length=100)
+    # phonenumber = models.Char
 
