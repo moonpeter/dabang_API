@@ -4,7 +4,7 @@ from config import settings
 
 
 def post_image_path(instance, filename):
-    a = f'https://wpsdabangapi.s3.amazonaws.com/{filename}'
+    a = f'https://wpsdabangapi.s3.amazonaws.com//{filename}'
     return a
 
 
@@ -178,7 +178,3 @@ class PostImage(models.Model):
 
     def __str__(self):
         return '{}'.format(self.image)
-
-
-class Test(models.Model):
-    date = models.DateTimeField(null=True)

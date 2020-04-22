@@ -23,7 +23,6 @@ STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
 STATIC_URL = '/static/'
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
-
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
 
@@ -42,6 +41,16 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
 ]
+
+# django-storages
+# Django의 FileStorage로 S3Boto3Storage(AWS의 S3)를 사용
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_SECRETS = SECRETS_FULL['AWS']
+AWS_ACCESS_KEY_ID = AWS_SECRETS['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = AWS_SECRETS['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = 'wpsdabangapi'
+AWS_AUTO_CREATE_BUCKET = True
+AWS_S3_REGION_NAME = 'ap-northeast-2'
 
 AUTH_USER_MODEL = 'members.User'
 
@@ -76,6 +85,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sentry_sdk',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -99,7 +109,6 @@ JWT_AUTH = {
     # refresh token 만료 기간 28일 설정, Access token이 만료 되기 전까지 계속하여 갱신이 가능하지만, 28일이 지나면 갱신 불가.
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
 }
-
 
 TEMPLATE_CONTEXT_PROCESSORS = (
 
