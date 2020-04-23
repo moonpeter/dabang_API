@@ -16,11 +16,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.settings import api_settings
 
 from config.settings import KAKAO_APP_ID, FACEBOOK_APP_SECRET, FACEBOOK_APP_ID
+from members.models import SocialLogin
 from members.serializers import UserSerializer, UserProfileSerializer
 
 User = get_user_model()
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -63,35 +67,127 @@ class UserModelViewSet(viewsets.ModelViewSet):
             permission_classes = [AllowAny()]
             return permission_classes
 
+    @action(detail=False, methods=['POST'])
+    def jwt(self, request):
+        username = request.POST.get('email')
+        userpass = request.POST.get('password')
+        user = authenticate(username=username, password=userpass)
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
+        if user is not None:
+            data = {
+                'jwt': jwt_token,
+                'user': UserSerializer(user).data
+            }
+            return Response(data)
 
-class socialLogin(APIView):
+
+class KakaoJwtTokenView(APIView):
     def post(self, request):
-        local_host = 'http://localhost:8000'
-        deploy_host = 'https://moonpeter.com'
-        url = f'{local_host}/auth/convert-token'
-        token = request.data.get('token')
-        social_type = request.data.get('type')
-        if social_type:
-            if social_type == 'facebook':
-                client_id = FACEBOOK_APP_ID
-                client_pass = FACEBOOK_APP_SECRET
-            elif social_type == 'kakao':
-                client_id = KAKAO_APP_ID
-
-        params = {
-            "grant_type": "convert_token",
-            "client_id": f"{client_id}",
-            "backend": f'{social_type}',
-            "token": f'{token}'
+        access_token = request.POST.get('access_token')
+        url = 'https://kapi.kakao.com/v2/user/me'
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
-        if social_type == 'facebook':
-            params["client_secret"] = client_pass
+        kakao_response = requests.post(url, headers=headers)
 
-        response = requests.post(url, params=params)
+        user_data = kakao_response.json()
+        kakao_id = user_data['id']
+        user_username = user_data['properties']['nickname']
+        user_first_name = user_username[1:]
+        user_last_name = user_username[0]
+        try:
+            user = User.objects.get(username=kakao_id)
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                username=kakao_id,
+                first_name=user_first_name,
+                last_name=user_last_name,
 
-        response_json = response.json()
+            )
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
 
+        kakao = SocialLogin.objects.filter(type='kakao')[0]
+        user.social.add(kakao)
         data = {
-            'res': response_json,
+            'token': jwt_token,
+            'user': UserSerializer(user).data,
         }
-        return Response(data, status=status.HTTP_200_OK)
+
+        return Response(data)
+
+
+class FacebookJwtToken(APIView):
+    api_base = 'https://graph.facebook.com/v3.2'
+    api_get_access_token = f'{api_base}/oauth/access_token'
+    api_me = f'{api_base}/me'
+
+    def post(self, request):
+        access_token = request.POST.get('access_token')
+        params = {
+            'access_token': access_token,
+            'fields': ','.join([
+                'id',
+                'first_name',
+                'last_name',
+                'picture.type(large)',
+            ])
+        }
+        response = requests.get(self.api_me, params)
+        data = response.json()
+
+        facebook_id = data['id']
+        first_name = data['first_name']
+        last_name = data['last_name']
+
+        try:
+            user = User.objects.get(username=facebook_id)
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                username=facebook_id,
+                first_name=first_name,
+                last_name=last_name,
+            )
+        payload = JWT_PAYLOAD_HANDLER(user)
+        jwt_token = JWT_ENCODE_HANDLER(payload)
+        facebook = SocialLogin.objects.filter(type='facebook')[0]
+        user.social.add(facebook)
+        data = {
+            'token': jwt_token,
+            'user': UserSerializer(user).data,
+        }
+        return Response(data)
+
+# class socialLogin(APIView):
+#     def post(self, request):
+#         local_host = 'http://localhost:8000'
+#         deploy_host = 'https://moonpeter.com'
+#         url = f'{local_host}/auth/convert-token'
+#         token = request.data.get('token')
+#         social_type = request.data.get('type')
+#         if social_type:
+#             if social_type == 'facebook':
+#                 client_id = FACEBOOK_APP_ID
+#                 client_pass = FACEBOOK_APP_SECRET
+#             elif social_type == 'kakao':
+#                 client_id = KAKAO_APP_ID
+#
+#         params = {
+#             "grant_type": "convert_token",
+#             "client_id": f"{client_id}",
+#             "backend": f'{social_type}',
+#             "token": f'{token}'
+#         }
+#         if social_type == 'facebook':
+#             params["client_secret"] = client_pass
+#
+#         response = requests.post(url, params=params)
+#
+#         response_json = response.json()
+#
+#         data = {
+#             'res': response_json,
+#         }
+#         return Response(data, status=status.HTTP_200_OK)
