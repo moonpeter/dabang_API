@@ -15,7 +15,7 @@ class User(AbstractUser):
     social = models.ManyToManyField(
         'members.SocialLogin',
     )
-    phone = models.CharField('핸드폰', max_length=15, null=True, default=True)
+    phone = models.CharField('핸드폰', max_length=15, null=True)
     profileImage = models.ImageField(
         '유저 이미지',
         null=True,

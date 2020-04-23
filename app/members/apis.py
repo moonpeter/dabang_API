@@ -78,7 +78,6 @@ class UserModelViewSet(viewsets.ModelViewSet):
             return Response(data)
 
 
-
 class KakaoJwtTokenView(APIView):
     def post(self, request):
         access_token = request.data.get('accessToken')
@@ -160,31 +159,36 @@ class FacebookJwtToken(APIView):
 
 class recentlyPostListView(APIView):
     def get(self, request):
-        postList = request.data.get('postList')
-        postList = postList.split(',')
-        user_post_list = []
+        post = request.data.get('post')
 
-        for i in postList:
-            i = int(i)
-            post = PostRoom.objects.get(pk=i)
-            user_post_list.append(post)
-
-        social_user = RecentlyPostList.objects.filter(user=request.user.pk)
-        social_user_list = []
-        for post in social_user:
-            social_user_list.append(post)
-
-        user_count = len(social_user_list)
-
-        if user_count >= 5:
-            social_user_list[0].delete()
-            social_user = RecentlyPostList.objects.filter(user=request.user.pk)
-            social_user_list = []
-            for post in social_user:
-                social_user_list.append(post)
-
+        post = int(post)
+        post = PostRoom.objects.get(pk=post)
+        dump = RecentlyPostList.objects.filter(user=request.user, post=post)
         data = {
+            'message': "이미 최신글 리스트에 존재하는 게시글 입니다."
+        }
+        if dump:
+            # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+            # print(social_user)
+            return Response(
+                data, status=status.HTTP_400_BAD_REQUEST
+            )
+        while True:
+            social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+            user_post_count = len(social_user)
 
+            if user_post_count >= 5:
+                social_user[0].delete()
+            else:
+                break
+        RecentlyPostList.objects.get_or_create(
+            user=request.user,
+            post=post,
+        )
+        # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+        # print(social_user)
+        data = {
+            "message": "최근 유저 정보 리스트에 추가되었습니다."
         }
         return Response(data, status=status.HTTP_200_OK)
 # class socialLogin(APIView):
