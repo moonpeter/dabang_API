@@ -4,6 +4,7 @@ import requests
 from django.http import Http404, HttpResponse
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -29,6 +30,7 @@ class PostList(generics.ListCreateAPIView):
     model = PostRoom
     serializer_class = PostListSerializer
     queryset = PostRoom.objects.all()
+    parser_class = (FileUploadParser,)
 
     # 게시물 생성 : /posts/
     def post(self, request, format=None):

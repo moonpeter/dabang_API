@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework.relations import StringRelatedField
 
-from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm
+from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
+    OptionItem, SecuritySafetyFacilities
 
 
 class BrokerSerializer(serializers.ModelSerializer):
@@ -37,17 +38,17 @@ class ManagementSerializer(serializers.ModelSerializer):
 
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RoomOption
+        model = OptionItem
         fields = (
-            'postRoom', 'option', 'created_at',
+            'name',
         )
 
 
 class SecuritySafetySerializer(serializers.ModelSerializer):
     class Meta:
-        model = RoomSecurity
+        model = SecuritySafetyFacilities
         fields = (
-            'postRoom', 'security', 'created_at',
+            'name',
         )
 
 
@@ -75,17 +76,11 @@ class PostImageSerializer(serializers.ModelSerializer):
         )
 
 
-class PostImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostImage
-        fields = '__all__'
-
-
 class PostListSerializer(serializers.ModelSerializer):
     broker = BrokerSerializer(read_only=True)
-    management_set = ManagementSerializer(many=True, read_only=True)
-    option_set = OptionSerializer(many=True, read_only=True)
-    securitySafety_set = SecuritySafetySerializer(many=True, read_only=True)
+    management_set = serializers.StringRelatedField(source='management', many=True, read_only=True)
+    option_set = serializers.StringRelatedField(source='option' ,many=True, read_only=True)
+    securitySafety_set = serializers.StringRelatedField(source='securitySafety' ,many=True, read_only=True)
     address = AddressSerializer(read_only=True, allow_null=True)
     salesForm = SalesFormSerializer(read_only=True)
     postimage = serializers.StringRelatedField(source='postimage_set', many=True)

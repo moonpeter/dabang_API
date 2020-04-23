@@ -4,7 +4,7 @@ from config import settings
 
 
 def post_image_path(instance, filename):
-    a = f'https://wpsdabangapi.s3.amazonaws.com/{filename}'
+    a = f'{instance.id}/{filename}'
     return a
 
 
@@ -54,7 +54,7 @@ class PostRoom(models.Model):
 
     moveInChar = models.CharField('크롤링용 입주날짜', null=True, max_length=10)
     moveInDate = models.DateTimeField(verbose_name='입주 가능 날짜', null=True, )
-
+    #
     option = models.ManyToManyField('OptionItem', through='RoomOption', verbose_name='옵션 항목')
     heatingType = models.CharField('난방 종류', max_length=10)
 
@@ -66,6 +66,7 @@ class PostRoom(models.Model):
     totalCitizen = models.CharField('총 세대 수', max_length=10, null=True, )
     totalPark = models.CharField('세대당 주차 대수', max_length=10, null=True, )
     complete = models.CharField('준공 년 월', max_length=10, null=True, )
+    #
     securitySafety = models.ManyToManyField(
         'posts.SecuritySafetyFacilities',
         through='RoomSecurity',
@@ -104,19 +105,29 @@ class MaintenanceFee(models.Model):
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
     totalFee = models.FloatField(verbose_name='관리비 합계')
 
+
 # 관리비 포함 항목
 class AdministrativeDetail(models.Model):
     name = models.CharField(max_length=10, verbose_name='포함 항목 물품')
 
+    def __str__(self):
+        return '{}'.format(self.name)
+
 
 class OptionItem(models.Model):
-    name = models.CharField('옵션 항목 아이템', max_length=10)
+    name = models.CharField('옵션 항목 아이템', max_length=10, )
     image = models.ImageField('옵션 이미지', null=True, )
+
+    def __str__(self):
+        return '{}'.format(self.name)
 
 
 class SecuritySafetyFacilities(models.Model):
     name = models.CharField('보안/안전 시설 아이템', max_length=10, null=True)
     image = models.ImageField('시설 이미지', null=True, upload_to=security_image_path, )
+
+    def __str__(self):
+        return '{}'.format(self.name)
 
 
 class PostLike(models.Model):
@@ -130,7 +141,7 @@ class PostLike(models.Model):
 
 class RoomOption(models.Model):
     postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE, related_name='option_set')
-    option = models.ForeignKey(OptionItem, verbose_name='해당 옵션', on_delete=models.CASCADE, )
+    option = models.ForeignKey('OptionItem', verbose_name='해당 옵션', on_delete=models.CASCADE, related_name='optionname_set')
     created_at = models.DateTimeField(auto_now_add=True, )
 
 
