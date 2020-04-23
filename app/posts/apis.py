@@ -2,18 +2,36 @@ import json
 import xmltodict
 import requests
 from django.http import Http404, HttpResponse
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.decorators import api_view
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from posts.models import PostRoom, PostImage
-from posts.serializers import PostListSerializer, PostImageSerializer
+# from posts.filters import PostRoomFilter
+from posts.models import PostRoom, PostImage, PostAddress
+from posts.serializers import PostListSerializer, PostImageSerializer, AddressSerializer
 
 secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
 
 
-class PostList(APIView):
+# class PostRoomViewSet(viewsets.ModelViewSet):
+#     serializer_class = PostListSerializer
+#     queryset = PostRoom.objects.all()
+#     print(PostListSerializer)
+#
+#
+# class PostAddressViewSet(viewsets.ModelViewSet):
+#     serializer_class = AddressSerializer
+#     queryset = PostAddress.objects.all()
+
+
+class PostList(generics.ListCreateAPIView):
+    model = PostRoom
+    serializer_class = PostListSerializer
+    queryset = PostRoom.objects.all()
+    parser_class = (FileUploadParser,)
+
     # 게시물 생성 : /posts/
     def post(self, request, format=None):
         serializer = PostListSerializer(data=request.data)
@@ -43,7 +61,7 @@ class PostDetail(APIView):
         return Response(serializer.data)
 
     # 특정 게시물 수정 : /posts/{pk}/
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         postroom = self.get_object(pk)
         serializer = PostListSerializer(postroom, data=request.data)
         if serializer.is_valid():

@@ -15,11 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 from config import settings
 from members import views
 from members.urls import urlpatterns_members
+from posts import apis
+# from posts.apis import PostRoomViewSet, PostAddressViewSet
 from posts.urls import urlpatterns_posts
+
+# router = routers.DefaultRouter()
+# router.register(r'postroom', PostRoomViewSet)
+# router.register(r'postaddress', PostAddressViewSet)
 
 urlpatterns = [
     path('auth/', include('rest_framework_social_oauth2.urls')),
@@ -30,8 +37,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include(urlpatterns_members)),
     path('posts/', include(urlpatterns_posts)),
-    path('login/', views.login_page, name='login-page'),
-
+    # path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:

@@ -43,6 +43,16 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
+# django-storages
+# Django의 FileStorage로 S3Boto3Storage(AWS의 S3)를 사용
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_SECRETS = SECRETS_FULL['AWS']
+AWS_ACCESS_KEY_ID = AWS_SECRETS['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = AWS_SECRETS['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = 'wpsdabangapi'
+AWS_AUTO_CREATE_BUCKET = True
+AWS_S3_REGION_NAME = 'ap-northeast-2'
+
 AUTH_USER_MODEL = 'members.User'
 
 # Djagno Rest Framework OAuth2
@@ -61,7 +71,6 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 INSTALLED_APPS = [
 
     'posts.apps.PostsConfig',
-    'salesinlots.apps.SalesinlotsConfig',
     'members.apps.MembersConfig',
     # OAuth
     'oauth2_provider',
@@ -74,8 +83,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'sentry_sdk',
     'rest_framework',
+    'rest_framework.authtoken',
+    'debug_toolbar',
+    'psycopg2',
+    'selenium',
+    'pandas',
+    'django_extensions',
+    'boto3',
+    'storages',
 ]
 
 MIDDLEWARE = [
