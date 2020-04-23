@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, UnexpectedAlertPresentException
 
 from config.settings import MEDIA_ROOT
+from members.models import SocialLogin
 from posts.crawling.find_urls import find_apartment_urls, find_urls
 
 from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionItem, \
@@ -17,7 +18,7 @@ from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionIte
 def postFind():
     driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
     # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
-
+    SocialLogin.start()
     # 다방 성수동 매물 url
     # url_all_list = find_apartment_urls()
     # url_all_list += find_urls()
@@ -389,7 +390,7 @@ def postFind():
         try:
             salesmonthlyChar = salesForm[2]
 
-            salesmonthlyInt = salesmonthlyChar.replace('만원', '0000')
+            salesmonthlyInt = salesmonthlyChar.replace('만원', '')
             salesmonthlyInt = int(salesmonthlyInt)
 
             if salesType == '전세':

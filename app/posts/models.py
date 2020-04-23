@@ -4,7 +4,7 @@ from config import settings
 
 
 def post_image_path(instance, filename):
-    a = f'https://wpsdabangapi.s3.amazonaws.com//{filename}'
+    a = f'{instance.id}/{filename}'
     return a
 
 

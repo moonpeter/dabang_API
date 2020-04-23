@@ -2,15 +2,22 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-# Create your models here.
-class User(AbstractUser):
-    introduce = models.TextField(max_length=100)
+def user_image_path(instance, filename):
+    a = f'{instance.id}/{filename}'
+    return a
 
+
+# Create your models he re.
+class User(AbstractUser):
     social = models.ManyToManyField(
         'members.SocialLogin',
     )
-    phone = models.CharField('핸드폰', max_length=10)
-
+    phone = models.CharField('핸드폰', max_length=15, null=True, default=True)
+    profileImage = models.ImageField(
+        '유저 이미지',
+        null=True,
+        default='userImages.png'
+    )
 
 
 class SocialLogin(models.Model):

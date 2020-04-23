@@ -1,14 +1,6 @@
-import json
-
-import jwt
 import requests
-from django.conf.global_settings import SECRET_KEY
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect
-from django.views import View
-from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 
@@ -18,7 +10,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
-from config.settings import KAKAO_APP_ID, FACEBOOK_APP_SECRET, FACEBOOK_APP_ID
 from members.models import SocialLogin
 from members.serializers import UserSerializer, UserProfileSerializer
 
@@ -69,7 +60,7 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def jwt(self, request):
-        username = request.POST.get('email')
+        username = request.POST.get('username')
         userpass = request.POST.get('password')
         user = authenticate(username=username, password=userpass)
         payload = JWT_PAYLOAD_HANDLER(user)
@@ -84,7 +75,7 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
 class KakaoJwtTokenView(APIView):
     def post(self, request):
-        access_token = request.POST.get('access_token')
+        access_token = request.data.get('accessToken')
         url = 'https://kapi.kakao.com/v2/user/me'
         headers = {
             'Authorization': f'Bearer {access_token}',
@@ -125,7 +116,7 @@ class FacebookJwtToken(APIView):
     api_me = f'{api_base}/me'
 
     def post(self, request):
-        access_token = request.POST.get('access_token')
+        access_token = request.data.get('accessToken')
         params = {
             'access_token': access_token,
             'fields': ','.join([
@@ -160,6 +151,9 @@ class FacebookJwtToken(APIView):
         }
         return Response(data)
 
+
+class recentlyPostListView(APIView):
+    pass
 # class socialLogin(APIView):
 #     def post(self, request):
 #         local_host = 'http://localhost:8000'
