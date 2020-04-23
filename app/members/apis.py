@@ -160,10 +160,12 @@ class FacebookJwtToken(APIView):
 class recentlyPostListView(APIView):
     def get(self, request):
         post = request.data.get('post')
-        
+
         post = int(post)
         post = PostRoom.objects.get(pk=post)
-
+        relation = RecentlyPostList.objects.get(
+            
+        )
         while True:
             social_user = RecentlyPostList.objects.filter(user=request.user.pk)
             user_post_count = len(social_user)
@@ -179,6 +181,7 @@ class recentlyPostListView(APIView):
         social_user = RecentlyPostList.objects.filter(user=request.user.pk)
         print(social_user)
         data = {
+            # "User & Post relation": social_user,
             "message": "최근 유저 정보 리스트에 추가되었습니다."
         }
         return Response(data, status=status.HTTP_200_OK)

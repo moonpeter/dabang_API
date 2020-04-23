@@ -88,6 +88,7 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostRoom
         fields = [
+            'pk',
             'broker',
             'type',
             'description',
