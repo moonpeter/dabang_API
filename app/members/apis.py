@@ -1,15 +1,10 @@
 import json
 
-import jwt
 import requests
-from django.conf.global_settings import SECRET_KEY
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect
-from django.views import View
-from rest_framework import status
-from rest_framework import viewsets
+from django.http import HttpResponse
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 
 from rest_framework.permissions import AllowAny
@@ -18,9 +13,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
-from config.settings import KAKAO_APP_ID, FACEBOOK_APP_SECRET, FACEBOOK_APP_ID
-from members.models import SocialLogin
+from members.models import SocialLogin, RecentlyPostList
 from members.serializers import UserSerializer, UserProfileSerializer
+from posts.models import PostRoom
+from posts.serializers import PostListSerializer
 
 User = get_user_model()
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
@@ -69,7 +65,7 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def jwt(self, request):
-        username = request.POST.get('email')
+        username = request.POST.get('username')
         userpass = request.POST.get('password')
         user = authenticate(username=username, password=userpass)
         payload = JWT_PAYLOAD_HANDLER(user)
@@ -84,7 +80,7 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
 class KakaoJwtTokenView(APIView):
     def post(self, request):
-        access_token = request.POST.get('access_token')
+        access_token = request.data.get('accessToken')
         url = 'https://kapi.kakao.com/v2/user/me'
         headers = {
             'Authorization': f'Bearer {access_token}',
@@ -125,7 +121,7 @@ class FacebookJwtToken(APIView):
     api_me = f'{api_base}/me'
 
     def post(self, request):
-        access_token = request.POST.get('access_token')
+        access_token = request.data.get('accessToken')
         params = {
             'access_token': access_token,
             'fields': ','.join([
@@ -160,6 +156,33 @@ class FacebookJwtToken(APIView):
         }
         return Response(data)
 
+
+class recentlyPostListView(APIView):
+    def get(self, request):
+        postList = request.data.get('postList')
+        postList = postList.split(',')
+        user_post_list = []
+
+        for i in postList:
+            i = int(i)
+            post = PostRoom.objects.get(pk=i)
+            user_post_list.append(post)
+
+        social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+        social_user_list = []
+        for post in social_user:
+            social_user_list.append(post)
+
+        user_count = len(social_user_list)
+
+        if user_count >= 5:
+            social_user_list[0].delete()
+            social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+            social_user_list = []
+            for post in social_user:
+                social_user_list.append(post)
+
+        return Response(data, status=status.HTTP_200_OK)
 # class socialLogin(APIView):
 #     def post(self, request):
 #         local_host = 'http://localhost:8000'
