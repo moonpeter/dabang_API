@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from config import settings
-from posts.models import PostRoom
+from posts.models import PostRoom, Broker
 
 
 def user_image_path(instance, filename):
@@ -24,6 +24,10 @@ class User(AbstractUser):
     posts = models.ManyToManyField(
         PostRoom,
         through='RecentlyPostList',
+    )
+    brokers = models.ManyToManyField(
+        Broker,
+        through='ContactToBroker'
     )
 
 
@@ -54,6 +58,20 @@ class RecentlyPostList(models.Model):
     post = models.ForeignKey(
         PostRoom,
         verbose_name='게시글',
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(auto_now_add=True, )
+
+
+class ContactToBroker(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name='유저',
+        on_delete=models.CASCADE,
+    )
+    broker = models.ForeignKey(
+        Broker,
+        verbose_name='공인중개사',
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True, )

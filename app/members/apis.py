@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -13,9 +13,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
-from members.models import SocialLogin, RecentlyPostList
+from members.models import SocialLogin, RecentlyPostList, ContactToBroker
 from members.serializers import UserSerializer, UserProfileSerializer
-from posts.models import PostRoom
+from posts.models import PostRoom, Broker
 from posts.serializers import PostListSerializer
 
 User = get_user_model()
@@ -157,68 +157,71 @@ class FacebookJwtToken(APIView):
         return Response(data)
 
 
-class recentlyPostListView(APIView):
-    def get(self, request):
-        post = request.data.get('post')
+@api_view()
+def getRecentlyPostListView(request):
+    post = request.data.get('post')
 
-        post = int(post)
-        post = PostRoom.objects.get(pk=post)
-        dump = RecentlyPostList.objects.filter(user=request.user, post=post)
-        data = {
-            'message': "이미 최신글 리스트에 존재하는 게시글 입니다."
-        }
-        if dump:
-            # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
-            # print(social_user)
-            return Response(
-                data, status=status.HTTP_400_BAD_REQUEST
-            )
-        while True:
-            social_user = RecentlyPostList.objects.filter(user=request.user.pk)
-            user_post_count = len(social_user)
-
-            if user_post_count >= 5:
-                social_user[0].delete()
-            else:
-                break
-        RecentlyPostList.objects.get_or_create(
-            user=request.user,
-            post=post,
-        )
+    post = int(post)
+    post = PostRoom.objects.get(pk=post)
+    dump = RecentlyPostList.objects.filter(user=request.user, post=post)
+    data = {
+        'message': "이미 최신글 리스트에 존재하는 게시글 입니다."
+    }
+    if dump:
         # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
         # print(social_user)
+        return Response(
+            data, status=status.HTTP_400_BAD_REQUEST
+        )
+    while True:
+        social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+        user_post_count = len(social_user)
+
+        if user_post_count >= 5:
+            social_user[0].delete()
+        else:
+            break
+    RecentlyPostList.objects.get_or_create(
+        user=request.user,
+        post=post,
+    )
+    # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+    # print(social_user)
+    data = {
+        "message": "최근 유저 정보 리스트에 추가되었습니다."
+    }
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view()
+def getContactToBroker(request):
+    broker = request.data.get('broker')
+    broker = int(broker)
+    broker = Broker.objects.get(pk=broker)
+    record = ContactToBroker.objects.filter(user=request.user, broker=broker)
+    if record:
         data = {
-            "message": "최근 유저 정보 리스트에 추가되었습니다."
+            'message': '이미 연락했던 부동산 입니다.'
         }
-        return Response(data, status=status.HTTP_200_OK)
-# class socialLogin(APIView):
-#     def post(self, request):
-#         local_host = 'http://localhost:8000'
-#         deploy_host = 'https://moonpeter.com'
-#         url = f'{local_host}/auth/convert-token'
-#         token = request.data.get('token')
-#         social_type = request.data.get('type')
-#         if social_type:
-#             if social_type == 'facebook':
-#                 client_id = FACEBOOK_APP_ID
-#                 client_pass = FACEBOOK_APP_SECRET
-#             elif social_type == 'kakao':
-#                 client_id = KAKAO_APP_ID
-#
-#         params = {
-#             "grant_type": "convert_token",
-#             "client_id": f"{client_id}",
-#             "backend": f'{social_type}',
-#             "token": f'{token}'
-#         }
-#         if social_type == 'facebook':
-#             params["client_secret"] = client_pass
-#
-#         response = requests.post(url, params=params)
-#
-#         response_json = response.json()
-#
-#         data = {
-#             'res': response_json,
-#         }
-#         return Response(data, status=status.HTTP_200_OK)
+        user_list = ContactToBroker.objects.filter(user=request.user.pk)
+        print(user_list)
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+    while True:
+        user_list = ContactToBroker.objects.filter(user=request.user.pk)
+        user_count_list = len(user_list)
+
+        if user_count_list >= 5:
+            user_list[0].delete()
+        else:
+            break
+
+    ContactToBroker.objects.get_or_create(
+        user=request.user,
+        broker=broker,
+    )
+    data = {
+        "message": "연락한 부동산 리스트에 추가되었습니다."
+    }
+    user_list = ContactToBroker.objects.filter(user=request.user.pk)
+    print(user_list)
+    return Response(data, status=status.HTTP_200_OK)
