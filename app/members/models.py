@@ -5,10 +5,12 @@ from django.db import models
 # Create your models here.
 class User(AbstractUser):
     introduce = models.TextField(max_length=100)
+
     social = models.ManyToManyField(
         'members.SocialLogin',
     )
     phone = models.CharField('핸드폰', max_length=10)
+
 
 
 class SocialLogin(models.Model):
