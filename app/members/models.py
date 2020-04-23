@@ -8,6 +8,7 @@ class User(AbstractUser):
     social = models.ManyToManyField(
         'members.SocialLogin',
     )
+    phone = models.CharField('핸드폰', max_length=10)
 
 
 class SocialLogin(models.Model):
