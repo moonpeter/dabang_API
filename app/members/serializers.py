@@ -36,5 +36,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'pk',
             'introduce'
         ]
