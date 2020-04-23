@@ -163,9 +163,16 @@ class recentlyPostListView(APIView):
 
         post = int(post)
         post = PostRoom.objects.get(pk=post)
-        relation = RecentlyPostList.objects.get(
-            
-        )
+        dump = RecentlyPostList.objects.filter(user=request.user, post=post)
+        data = {
+            'message': "이미 최신글 리스트에 존재하는 게시글 입니다."
+        }
+        if dump:
+            # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+            # print(social_user)
+            return Response(
+                data, status=status.HTTP_400_BAD_REQUEST
+            )
         while True:
             social_user = RecentlyPostList.objects.filter(user=request.user.pk)
             user_post_count = len(social_user)
@@ -174,14 +181,13 @@ class recentlyPostListView(APIView):
                 social_user[0].delete()
             else:
                 break
-        RecentlyPostList.objects.create(
+        RecentlyPostList.objects.get_or_create(
             user=request.user,
             post=post,
         )
-        social_user = RecentlyPostList.objects.filter(user=request.user.pk)
-        print(social_user)
+        # social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+        # print(social_user)
         data = {
-            # "User & Post relation": social_user,
             "message": "최근 유저 정보 리스트에 추가되었습니다."
         }
         return Response(data, status=status.HTTP_200_OK)
