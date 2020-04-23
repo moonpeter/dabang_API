@@ -1,7 +1,10 @@
+import json
+
 import requests
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User
-from rest_framework import viewsets
+from django.http import HttpResponse
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 
 from rest_framework.permissions import AllowAny
@@ -10,8 +13,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
-from members.models import SocialLogin
+from members.models import SocialLogin, RecentlyPostList
 from members.serializers import UserSerializer, UserProfileSerializer
+from posts.models import PostRoom
+from posts.serializers import PostListSerializer
 
 User = get_user_model()
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
@@ -153,7 +158,31 @@ class FacebookJwtToken(APIView):
 
 
 class recentlyPostListView(APIView):
-    pass
+    def get(self, request):
+        postList = request.data.get('postList')
+        postList = postList.split(',')
+        user_post_list = []
+
+        for i in postList:
+            i = int(i)
+            post = PostRoom.objects.get(pk=i)
+            user_post_list.append(post)
+
+        social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+        social_user_list = []
+        for post in social_user:
+            social_user_list.append(post)
+
+        user_count = len(social_user_list)
+
+        if user_count >= 5:
+            social_user_list[0].delete()
+            social_user = RecentlyPostList.objects.filter(user=request.user.pk)
+            social_user_list = []
+            for post in social_user:
+                social_user_list.append(post)
+
+        return Response(data, status=status.HTTP_200_OK)
 # class socialLogin(APIView):
 #     def post(self, request):
 #         local_host = 'http://localhost:8000'
