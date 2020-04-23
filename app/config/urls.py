@@ -29,15 +29,16 @@ from posts.urls import urlpatterns_posts
 # router.register(r'postaddress', PostAddressViewSet)
 
 urlpatterns = [
-    path('auth/', include('rest_framework_social_oauth2.urls')),
+    # path('auth/', include('rest_framework_social_oauth2.urls')), # rest_framework_social_oauth2
 
-    path('api/token/', obtain_jwt_token),  # jwt Token get it
-    path('api/token/refresh/', refresh_jwt_token),  # jwt Token refresh
-    path('api/token/verify/', verify_jwt_token),  # jwt Token verify
+    path('api/token/', obtain_jwt_token),  # djangorestframework-jwt
+    path('api/token/verify/', verify_jwt_token),  # djangorestframework-jwt
+    path('api/token/refresh/', refresh_jwt_token),  # djangorestframework-jwt
+
     path('admin/', admin.site.urls),
     path('members/', include(urlpatterns_members)),
     path('posts/', include(urlpatterns_posts)),
-    # path('api/', include(router.urls)),
+    path('login/', views.login_page, name='login-page'),  # kakao access token 받기 위한 template
 ]
 
 if settings.DEBUG:

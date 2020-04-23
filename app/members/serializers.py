@@ -26,15 +26,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'pk',
-            'username',
-            'password',
-            'introduce',
-        ]
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            'introduce'
+            'phone',
+            'profileImage',
         ]
