@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
+from posts.serializers import PostListSerializer, BrokerSerializer
+
 User = get_user_model()
 
 
@@ -22,10 +24,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    posts = PostListSerializer(many=True, read_only=True)
+    brokers = BrokerSerializer(many=True, read_only=True, )
+
     class Meta:
         model = User
         fields = [
             'pk',
             'phone',
             'profileImage',
+            'posts',
+            'brokers',
         ]

@@ -9,7 +9,7 @@ class BrokerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Broker
         fields = (
-            'name', 'address', 'manager', 'tel',
+            'pk', 'name', 'address', 'manager', 'tel',
         )
 
     # def create(self, validated_data):
@@ -88,6 +88,7 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostRoom
         fields = [
+            'pk',
             'broker',
             'type',
             'description',
