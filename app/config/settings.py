@@ -60,7 +60,6 @@ AUTH_USER_MODEL = 'members.User'
 INSTALLED_APPS = [
 
     'posts.apps.PostsConfig',
-    'salesinlots.apps.SalesinlotsConfig',
     'members.apps.MembersConfig',
 
     'django.contrib.admin',
@@ -69,9 +68,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'sentry_sdk',
     'rest_framework',
+
     'django_extensions',
+    'rest_framework.authtoken',
+    'debug_toolbar',
+    'psycopg2',
+    'selenium',
+    'pandas',
+    'django_extensions',
+    'boto3',
+    'storages',
 ]
 # djangorestframework-jwt
 JWT_AUTH = {

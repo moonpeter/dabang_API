@@ -16,8 +16,8 @@ from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionIte
 
 
 def postFind():
-    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     SocialLogin.start()
     # 다방 성수동 매물 url
     # url_all_list = find_apartment_urls()
@@ -293,6 +293,7 @@ def postFind():
                     'https://www.dabangapp.com/room/5e958f3d320e1034a235c14c',
                     'https://www.dabangapp.com/room/5e9c0e2aa154f95c0ef1cd3a',
                     'https://www.dabangapp.com/room/5e9d0377c07c9e12a226f2bb']
+
     # 각 게시글 조회 시작
     for post_index, url in enumerate(url_all_list):
         print('############################################# 다음 url \n')
@@ -941,4 +942,5 @@ def postFind():
 
         # print('이미지 업로드 끝')
         print('게시글 하나 크롤링 완성 pk:', post_index, '-========================================== \n ')
+
     driver.close()

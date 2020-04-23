@@ -78,6 +78,7 @@ class UserModelViewSet(viewsets.ModelViewSet):
             return Response(data)
 
 
+
 class KakaoJwtTokenView(APIView):
     def post(self, request):
         access_token = request.data.get('accessToken')
@@ -182,6 +183,9 @@ class recentlyPostListView(APIView):
             for post in social_user:
                 social_user_list.append(post)
 
+        data = {
+
+        }
         return Response(data, status=status.HTTP_200_OK)
 # class socialLogin(APIView):
 #     def post(self, request):
