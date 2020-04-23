@@ -1,7 +1,7 @@
 import json
 import xmltodict
 import requests
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, request
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
@@ -56,7 +56,7 @@ class PostDetail(APIView):
 
     # 특정 게시물 조회 : /posts/{pk}/
     def get(self, request, pk):
-        postroom = self.get_object(pk)
+        postroom = request.GET.get('pk')
         serializer = PostListSerializer(postroom)
         return Response(serializer.data)
 

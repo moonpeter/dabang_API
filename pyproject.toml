@@ -28,6 +28,7 @@ django-rest-framework-social-oauth2 = "^1.1.0"
 xmltodict = "^0.12.0"
 boto3 = "^1.12.43"
 django-storages = "^1.9.1"
+django-extensions = "^2.2.9"
 
 [tool.poetry.dev-dependencies]
 

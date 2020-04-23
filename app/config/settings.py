@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     'psycopg2',
     'selenium',
     'pandas',
-    'django_extensions',
+    # 'django_extensions',
     'boto3',
     'storages',
 ]
