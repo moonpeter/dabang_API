@@ -8,7 +8,7 @@ from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostR
 
 
 class PostRoomAdmin(admin.ModelAdmin):
-    list_display = ['pk']
+    list_display = ['pk', 'type']
 
 
 class SalesFormAdmin(admin.ModelAdmin):
@@ -40,7 +40,7 @@ class RoomSecurityAdmin(admin.ModelAdmin):
 
 
 class BrokerAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name', 'address', 'manager', 'tel']
+    list_display = ['pk', 'companyName', 'address', 'managerName', 'tel', 'image']
 
 
 class PostImageAdmin(admin.ModelAdmin):
