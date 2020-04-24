@@ -10,7 +10,8 @@ class BrokerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Broker
         fields = (
-            'pk', 'name', 'address', 'manager', 'tel',
+            'pk', 'companyName', 'address', 'managerName', 'tel', 'image', 'companyNumber', 'brokerage',
+            'dabangCreated_at', 'successCount'
         )
 
     # def create(self, validated_data):
