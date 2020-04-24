@@ -16,8 +16,8 @@ from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionIte
 
 
 def postFind():
-    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     SocialLogin.start()
     # 다방 성수동 매물 url
     # url_all_list = find_apartment_urls()

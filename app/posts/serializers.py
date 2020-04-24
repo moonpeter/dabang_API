@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import DictField, CharField, ListField
 from rest_framework.relations import StringRelatedField
 
 from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
@@ -78,12 +79,12 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 
 class PostListSerializer(serializers.ModelSerializer):
-    broker = BrokerSerializer(read_only=True)
-    management_set = serializers.StringRelatedField(source='management', many=True, read_only=True)
-    option_set = serializers.StringRelatedField(source='option' ,many=True, read_only=True)
-    securitySafety_set = serializers.StringRelatedField(source='securitySafety' ,many=True, read_only=True)
-    address = AddressSerializer(read_only=True, allow_null=True)
-    salesForm = SalesFormSerializer(read_only=True)
+    broker = BrokerSerializer()
+    management_set = serializers.StringRelatedField(source='management', many=True)
+    option_set = serializers.StringRelatedField(source='option' ,many=True)
+    securitySafety_set = serializers.StringRelatedField(source='securitySafety', many=True,)
+    address = AddressSerializer(allow_null=True)
+    salesForm = SalesFormSerializer()
     postimage = serializers.StringRelatedField(source='postimage_set', many=True)
 
     class Meta:
@@ -120,4 +121,49 @@ class PostListSerializer(serializers.ModelSerializer):
             'complete',
             'securitySafety_set',
             'postimage',
+        ]
+
+
+class PostCreateSerializer(serializers.ModelSerializer):
+    address = DictField(child=CharField(), allow_empty=True,)
+    salesForm = DictField(child=CharField(),)
+    management_set = ListField()
+    option_set = ListField()
+    securitySafety_set = ListField()
+
+    class Meta:
+        model = PostRoom
+        # fields = '__all__'
+        fields = [
+            'pk',
+            'broker',
+            'type',
+            'description',
+            'salesForm',
+            'floor',
+            'totalFloor',
+            'areaChar',
+            'supplyAreaInt',
+            'supplyAreaChar',
+            'shortRent',
+            'management_set',
+            'parkingDetail',
+            'parkingTF',
+            'living_expenses',
+            'living_expenses_detail',
+            'moveInChar',
+            'moveInDate',
+            'option_set',
+            'heatingType',
+            'pet',
+            'elevator',
+            'builtIn',
+            'veranda',
+            'depositLoan',
+            'totalCitizen',
+            'totalPark',
+            'complete',
+            'securitySafety_set',
+            'address',
+            # 'postimage',
         ]

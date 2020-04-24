@@ -84,8 +84,8 @@ class PostRoom(models.Model):
 
 
 class PostAddress(models.Model):
-    address_id = models.ForeignKey('posts.PostRoom', on_delete=models.CASCADE, null=True)
-    loadAddress = models.CharField(max_length=50)
+    # address = models.ForeignKey('posts.PostRoom', on_delete=models.CASCADE, null=True)
+    loadAddress = models.CharField(max_length=50, null=True,)
     detailAddress = models.CharField(max_length=30, null=True, )
 
 
