@@ -13,6 +13,11 @@ def security_image_path(instance, filename):
     return a
 
 
+def broker_image_path(instance, filename):
+    a = f'{instance.id}/{filename}'
+    return a
+
+
 class PostRoom(models.Model):
     broker = models.ForeignKey(
         'posts.Broker',
@@ -101,7 +106,8 @@ class SalesForm(models.Model):
 
 
 class MaintenanceFee(models.Model):
-    postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE, related_name='management_set')
+    postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE,
+                                 related_name='management_set')
     admin = models.ForeignKey('posts.AdministrativeDetail', verbose_name='포함 항목', on_delete=models.CASCADE, )
     totalFee = models.FloatField(verbose_name='관리비 합계')
 
@@ -140,22 +146,30 @@ class PostLike(models.Model):
 
 
 class RoomOption(models.Model):
-    postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE, related_name='option_set')
-    option = models.ForeignKey('OptionItem', verbose_name='해당 옵션', on_delete=models.CASCADE, related_name='optionname_set')
+    postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE,
+                                 related_name='option_set')
+    option = models.ForeignKey('OptionItem', verbose_name='해당 옵션', on_delete=models.CASCADE,
+                               related_name='optionname_set')
     created_at = models.DateTimeField(auto_now_add=True, )
 
 
 class RoomSecurity(models.Model):
-    postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE, related_name='securitySafety_set')
+    postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE,
+                                 related_name='securitySafety_set')
     security = models.ForeignKey('posts.SecuritySafetyFacilities', verbose_name='보안 안전 시설', on_delete=models.CASCADE, )
     created_at = models.DateTimeField(auto_now_add=True, )
 
 
 class Broker(models.Model):
-    name = models.CharField('회사 명', max_length=30, null=True, )
+    companyName = models.CharField('회사 명', max_length=30, null=True, )
     address = models.CharField('주소', max_length=50, null=True, )
-    manager = models.CharField('중개인', max_length=30, null=True, )
+    managerName = models.CharField('중개인', max_length=30, null=True, )
     tel = models.CharField('전화번호', max_length=13, null=True, )
+    image = models.ImageField('이미지', upload_to=broker_image_path, null=True, )
+    companyNumber = models.CharField('사업자 번호', max_length=20, null=True, )
+    brokerage = models.CharField('중개등록번호', max_length=30, null=True, )
+    dabangCreated_at = models.CharField('다방 가입일', max_length=20, null=True, )
+    successCount = models.CharField('거래 성공 횟수', max_length=20, null=True, )
 
 
 class PostImage(models.Model):
@@ -167,5 +181,4 @@ class PostImage(models.Model):
     )
 
     def __str__(self):
-
         return '{}'.format(self.image)
