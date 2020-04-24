@@ -8,7 +8,7 @@ from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostR
 
 
 class PostRoomAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'type']
+    list_display = ['pk', 'type', 'parkingDetail', 'parkingTF', 'parkingPay']
 
 
 class SalesFormAdmin(admin.ModelAdmin):

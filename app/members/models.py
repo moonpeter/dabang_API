@@ -44,7 +44,7 @@ class SocialLogin(models.Model):
     def start():
         socials = ['kakao', 'facebook', 'apple']
         for i in socials:
-            SocialLogin.objects.create(
+            SocialLogin.objects.get_or_create(
                 type=i,
             )
 
