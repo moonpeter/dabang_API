@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import DictField, CharField, ListField
 from rest_framework.relations import StringRelatedField
 
 from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
@@ -9,7 +10,7 @@ class BrokerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Broker
         fields = (
-            'name', 'address', 'manager', 'tel',
+            'pk', 'name', 'address', 'manager', 'tel',
         )
 
     # def create(self, validated_data):
@@ -119,4 +120,49 @@ class PostListSerializer(serializers.ModelSerializer):
             'complete',
             'securitySafety_set',
             'postimage',
+        ]
+
+
+class PostCreateSerializer(serializers.ModelSerializer):
+    address = DictField(child=CharField(), allow_empty=True,)
+    salesForm = DictField(child=CharField(),)
+    management_set = ListField()
+    option_set = ListField()
+    securitySafety_set = ListField()
+
+    class Meta:
+        model = PostRoom
+        # fields = '__all__'
+        fields = [
+            'pk',
+            'broker',
+            'type',
+            'description',
+            'salesForm',
+            'floor',
+            'totalFloor',
+            'areaChar',
+            'supplyAreaInt',
+            'supplyAreaChar',
+            'shortRent',
+            'management_set',
+            'parkingDetail',
+            'parkingTF',
+            'living_expenses',
+            'living_expenses_detail',
+            'moveInChar',
+            'moveInDate',
+            'option_set',
+            'heatingType',
+            'pet',
+            'elevator',
+            'builtIn',
+            'veranda',
+            'depositLoan',
+            'totalCitizen',
+            'totalPark',
+            'complete',
+            'securitySafety_set',
+            'address',
+            # 'postimage',
         ]

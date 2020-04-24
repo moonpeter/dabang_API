@@ -4,13 +4,14 @@ import requests
 from django.http import Http404, HttpResponse, request
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # from posts.filters import PostRoomFilter
 from posts.models import PostRoom, PostImage, PostAddress
-from posts.serializers import PostListSerializer, PostImageSerializer, AddressSerializer
+from posts.serializers import PostListSerializer, PostImageSerializer, AddressSerializer, PostCreateSerializer
 
 secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
 
@@ -32,13 +33,13 @@ class PostList(generics.ListCreateAPIView):
     queryset = PostRoom.objects.all()
     parser_class = (FileUploadParser,)
 
-    # 게시물 생성 : /posts/
-    def post(self, request, format=None):
-        serializer = PostListSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # # 게시물 생성 : /posts/
+    # def post(self, request, format=None):
+    #     serializer = PostListSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 게시물 조회 : /posts/
     def get(self, request, format=None):
@@ -47,18 +48,24 @@ class PostList(generics.ListCreateAPIView):
         return Response(serializer.data)
 
 
-class PostDetail(APIView):
-    def get_object(self, pk):
+class PostDetail(RetrieveAPIView):
+    serializer_class = PostListSerializer
+
+    def get_object(self):
+        pk = self.request.query_params.get('pk', None)
         try:
             return PostRoom.objects.get(pk=pk)
         except PostRoom.DoesNotExist:
             raise Http404
 
-    # 특정 게시물 조회 : /posts/{pk}/
-    def get(self, request, pk):
-        postroom = request.GET.get('pk')
-        serializer = PostListSerializer(postroom)
-        return Response(serializer.data)
+    def get_queryset(self):
+        self.request.query_params.get()
+
+    # # 특정 게시물 조회 : /posts/{pk}/
+    # def get(self, request, pk):
+    #     postroom = self.get_object(pk)
+    #     serializer = PostListSerializer(postroom)
+    #     return Response(serializer.data)
 
     # 특정 게시물 수정 : /posts/{pk}/
     def patch(self, request, pk, format=None):
@@ -154,3 +161,11 @@ def getEupMyunDongList(request):
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
     data = dict_data['EupMyunDongListResponse']['eupMyunDongList']
     return Response(data, status=status.HTTP_200_OK)
+
+
+class PostCreateAPIView(generics.CreateAPIView):
+    queryset = PostRoom.objects.all()
+    serializer_class = PostCreateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(data=self.request.data)
