@@ -1,18 +1,23 @@
+import json
 import os
 import re
 import time
 import urllib
 
+import requests
 from django.core.files import File
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, UnexpectedAlertPresentException
 
+from config import settings
 from config.settings import MEDIA_ROOT
 from members.models import SocialLogin
 from posts.crawling.find_urls import find_apartment_urls, find_urls
 
 from ..models import SalesForm, PostAddress, SecuritySafetyFacilities, OptionItem, \
     MaintenanceFee, RoomOption, RoomSecurity, PostRoom, Broker, PostImage, AdministrativeDetail
+
+KAKAO_APP_ID = settings.KAKAO_APP_ID
 
 
 def postFind():
@@ -631,6 +636,14 @@ def postFind():
             address = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[5]/div/p')
             address = address.get_attribute('innerText')
 
+        # kakao Local API
+        url = f'https://dapi.kakao.com/v2/local/search/address.json?query={address}'
+        res = requests.get(url, headers={'Authorization': f'KakaoAK {KAKAO_APP_ID}'})
+        str_data = res.text
+        json_data = json.loads(str_data)
+        lat = json_data['documents'][0]['x']
+        lng = json_data['documents'][0]['y']
+
         address_ins, __ = PostAddress.objects.get_or_create(
             loadAddress=address,
         )
@@ -768,7 +781,6 @@ def postFind():
                         parkingDetail = driver.find_element_by_xpath(
                             '/html/body/div[1]/div/div[5]/div[3]/div/table/tbody/tr/td[4]/p')
                         parkingDetail = parkingDetail.get_attribute('innerText')
-
 
         except IndexError:
             unrefined_parking = driver.find_element_by_xpath(
@@ -1033,6 +1045,8 @@ def postFind():
             description=description,
             address=address_ins,
             salesForm=salesform_ins,
+            lat=lat,
+            lng=lng,
             floor=floor,
             totalFloor=totalFloor,
             areaChar=areaChar,
