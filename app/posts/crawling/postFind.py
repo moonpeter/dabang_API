@@ -643,7 +643,7 @@ def postFind():
         json_data = json.loads(str_data)
         lat = json_data['documents'][0]['x']
         lng = json_data['documents'][0]['y']
-
+        print(f'lat, lng >>  {lat} {lng}')
         address_ins, __ = PostAddress.objects.get_or_create(
             loadAddress=address,
         )

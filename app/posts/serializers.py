@@ -80,8 +80,8 @@ class PostImageSerializer(serializers.ModelSerializer):
 class PostListSerializer(serializers.ModelSerializer):
     broker = BrokerSerializer(read_only=True)
     management_set = serializers.StringRelatedField(source='management', many=True, read_only=True)
-    option_set = serializers.StringRelatedField(source='option' ,many=True, read_only=True)
-    securitySafety_set = serializers.StringRelatedField(source='securitySafety' ,many=True, read_only=True)
+    option_set = serializers.StringRelatedField(source='option', many=True, read_only=True)
+    securitySafety_set = serializers.StringRelatedField(source='securitySafety', many=True, read_only=True)
     address = AddressSerializer(read_only=True, allow_null=True)
     salesForm = SalesFormSerializer(read_only=True)
     postimage = serializers.StringRelatedField(source='postimage_set', many=True)
@@ -94,6 +94,8 @@ class PostListSerializer(serializers.ModelSerializer):
             'type',
             'description',
             'address',
+            'lng',
+            'lat',
             'salesForm',
             'floor',
             'totalFloor',
