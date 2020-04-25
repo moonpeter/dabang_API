@@ -39,6 +39,10 @@ class PostRoom(models.Model):
         'posts.SalesForm',
         on_delete=models.CASCADE, null=True,
     )
+    # 위도 경도
+    lat = models.FloatField('x축', null=True, )
+    lng = models.FloatField('y축', null=True, )
+
     floor = models.CharField(null=True, verbose_name='층 수', max_length=5)
     totalFloor = models.CharField(null=True, verbose_name='건물 층 수', max_length=5)
     areaChar = models.CharField(verbose_name='문자형 전용 면적', max_length=20, null=True, )
