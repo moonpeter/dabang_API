@@ -17,4 +17,3 @@ from posts.models import PostRoom
 
 def test(request):
     host = 'dapi.kakao.com'
-   
