@@ -65,8 +65,8 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def jwt(self, request):
-        username = request.POST.get('username')
-        userpass = request.POST.get('password')
+        username = request.data.get('username')
+        userpass = request.data.get('password')
         user = authenticate(username=username, password=userpass)
         payload = JWT_PAYLOAD_HANDLER(user)
         jwt_token = JWT_ENCODE_HANDLER(payload)
