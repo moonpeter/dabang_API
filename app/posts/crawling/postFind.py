@@ -687,6 +687,158 @@ def postFind():
         else:
             complete = None
 
+        # 아파트 단지정보 크롤링 시작
+        if post_type == '아파트':
+            complex_detail_url = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[2]/div/a')
+            complex_detail_url = complex_detail_url.get_attribute('href')
+            driver.get(complex_detail_url)
+            apart_name = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/div/h1')
+            apart_name = apart_name.get_attribute('innerText')
+            print('apart_name', apart_name)
+
+            made = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[1]/p[2]')
+            made = made.get_attribute('innerText')
+            print('made', made)
+
+            total_citizen = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[2]/p[2]')
+            total_citizen = total_citizen.get_attribute('innerText')
+            print('total_citizen', total_citizen)
+
+            personal_park = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[3]/p[2]')
+            personal_park = personal_park.get_attribute('innerText')
+            if ' ' in personal_park:
+                personal_park = personal_park.split(' ')
+                personal_park = personal_park[1]
+            print('personal_park', personal_park)
+
+            # 총 동 수
+            total_number = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[4]/p[2]')
+            total_number = total_number.get_attribute('innerText')
+            print('total_number', total_number)
+
+            heating_system = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[5]/p[2]')
+            heating_system = heating_system.get_attribute('innerText')
+            print('heating_system', heating_system)
+
+            min_max_floor = driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div/ul/li[6]/p[2]')
+            min_max_floor = min_max_floor.get_attribute('innerText')
+            print('min_max_floor', min_max_floor)
+
+            buildingType = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/table/tbody/tr[1]/td[1]')
+            buildingType = buildingType.get_attribute('innerText')
+            print('buildingType', buildingType)
+
+            constructionCompany = driver.find_element_by_xpath(
+                '/html/body/div[1]/div/div[2]/div/table/tbody/tr[1]/td[2]')
+            constructionCompany = constructionCompany.get_attribute('innerText')
+            print('constructionCompany', constructionCompany)
+
+            fuel = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/table/tbody/tr[1]/td[4]')
+            fuel = fuel.get_attribute('innerText')
+            print('fuel', fuel)
+
+            complex_type = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/table/tbody/tr[2]/td[1]')
+            complex_type = complex_type.get_attribute('innerText')
+            print('complex_type', complex_type)
+
+            # 용적률
+            floorAreaRatio = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/table/tbody/tr[2]/td[2]')
+            floorAreaRatio = floorAreaRatio.get_attribute('innerText')
+            print('floorAreaRatio', floorAreaRatio)
+
+            # 건폐율
+            dryWasteRate = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/table/tbody/tr[2]/td[3]')
+            dryWasteRate = dryWasteRate.get_attribute('innerText')
+            print('dryWasteRate', dryWasteRate)
+
+            # 단지평당가 매매
+            complexSale = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[1]/div/div/div/div[1]/p[3]')
+            complexSale = complexSale.get_attribute('innerText')
+            print('complexSale', complexSale)
+
+            # 단지평당가 전세
+            complexPrice = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[1]/div/div/div/div[1]/p[5]')
+            complexPrice = complexPrice.get_attribute('innerText')
+            print('complexPrice', complexPrice)
+
+            areaSale = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[1]/div/div/div/div[2]/p[3]')
+            areaSale = areaSale.get_attribute('innerText')
+            print('areaSale', areaSale)
+
+            areaPrice = driver.find_element_by_xpath('/html/body/div[1]/div/div[5]/div[1]/div/div/div/div[2]/p[5]')
+            areaPrice = areaPrice.get_attribute('innerText')
+            print('areaPrice', areaPrice)
+
+            div_list = driver.find_elements_by_xpath('/html/body/div[1]/div/div[3]/div/div/div')
+
+            recommend_image_list = []
+
+            div_list = driver.find_elements_by_xpath('/html/body/div[1]/div/div[3]/div/div/div')
+
+            recommend_image_list = []
+
+            for i, url in enumerate(div_list):
+                try:
+                    cls_name = url.get_attribute('class')
+                    cls_name = cls_name.split(' ')
+                    cls_name = cls_name[1]
+                    photo = driver.execute_script(
+                        f'return window.getComputedStyle(document.querySelector(".{cls_name}"),":after").getPropertyValue("background")')
+                    recommend_image = re.findall(r'"(.*?)"', photo)
+                    recommend_image_list.append(recommend_image[0])
+                except IndexError:
+                    pass
+
+            print('recommned_image_list >>', recommend_image_list)
+
+            # 아파트 단지 이미지 div
+            div_list = driver.find_elements_by_xpath('/html/body/div[1]/div/div[5]/div[8]/div/ul/li/div/a/div')
+            # 추천 단지 아파트 이름
+            recommend_apat_name_list = driver.find_elements_by_xpath(
+                '/html/body/div[1]/div/div[5]/div[8]/div/ul/li/div/a/p[1]')
+            # 추천 단지 아파트
+            recommend_apat_type_list = driver.find_elements_by_xpath(
+                '/html/body/div[1]/div/div[5]/div[8]/div/ul/li/div/a/p[2]/span[1]')
+            # 추천 단지 총 세대 수
+            recommend_apat_total_citizen_list = driver.find_elements_by_xpath(
+                '/html/body/div[1]/div/div[5]/div[8]/div/ul/li/div/a/p[2]/span[2]')
+            # 추천 단지 설립일자 리스트
+            recommend_apat_build_date_list = driver.find_elements_by_xpath(
+                '/html/body/div[1]/div/div[5]/div[8]/div/ul/li/div/a/p[2]/span[3]')
+            # 추천 단지 주소 리스트
+            recommend_apat_address_list = driver.find_elements_by_xpath(
+                '/html/body/div[1]/div/div[5]/div[8]/div/ul/li/div/a/p[3]')
+            # 추천 단지 정보 링크 리스트
+            recommend_apat_link_list = driver.find_elements_by_xpath(
+                '/html/body/div[1]/div/div[5]/div[8]/div/ul/li/ul/li/a')
+
+            for i, url in enumerate(div_list):
+                cls_name = url.get_attribute('class')
+                cls_name = cls_name.split(' ')
+                cls_name = cls_name[1]
+
+                photo = driver.execute_script(
+                    f'return window.getComputedStyle(document.querySelector(".{cls_name}"),":before").getPropertyValue("background")')
+                recommend_image_url = re.findall(r'"(.*?)"', photo)
+                print('추천단지 이미지', recommend_image_url[0])
+                recommend_apat_name = recommend_apat_name_list[i].get_attribute('innerText')
+                print('추천단지 아파트 이름', recommend_apat_name)
+                recommend_apat_type = recommend_apat_type_list[i].get_attribute('innerText')
+                print('추천단지 아파트 타입', recommend_apat_type)
+                recommend_apat_total_citizen = recommend_apat_total_citizen_list[i].get_attribute('innerText')
+                print('추천 단지 총 세대 수', recommend_apat_total_citizen)
+                recommend_apat_build_date = recommend_apat_build_date_list[i].get_attribute('innerText')
+                print('추천 단지 설립 일자', recommend_apat_build_date)
+                recommend_apat_address = recommend_apat_address_list[i].get_attribute('innerText')
+                print('추천 단지 주소', recommend_apat_address)
+                recommend_apat_link = recommend_apat_link_list[i].get_attribute('href')
+                print('추천 단지 해당 링크', recommend_apat_link)
+
+                print('\n')
+
+
+            # 아파트 단지 정보 종료.
+
         post = PostRoom.objects.get_or_create(
             broker=broker_ins[0],
             type=post_type,
