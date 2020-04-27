@@ -209,7 +209,7 @@ class ComplexInformation(models.Model):
     buildingType = models.CharField('건물 유형', max_length=10, null=True, )
     constructionCompany = models.CharField('건설사', max_length=30, null=True, )
     fuel = models.CharField('연로', max_length=10, null=True, )
-    complex_type = models.CharField('단지 타입', max_length=10, null=True, )
+    complexType = models.CharField('단지 타입', max_length=10, null=True, )
     floorAreaRatio = models.CharField('용적률', max_length=10, null=True, )
     dryWasteRate = models.CharField('건폐율', max_length=10, null=True, )
     complexSale = models.CharField('단지 평당가 매매 ', max_length=10, null=True, )
@@ -217,12 +217,15 @@ class ComplexInformation(models.Model):
     areaSale = models.CharField('이 지역 평당가 매매', max_length=30, null=True, )
     areaPrice = models.CharField('이 지역 평당가 전세', max_length=30, null=True, )
 
+    def __str__(self):
+        return f'{self.complexName}'
+
 
 class ComplexImage(models.Model):
     image = models.ImageField(upload_to=complex_image_path, verbose_name='방 이미지', null=True, )
-    post = models.ForeignKey(
+    complex = models.ForeignKey(
         'posts.ComplexInformation',
-        verbose_name='추천 단지',
+        verbose_name='단지 정보',
         on_delete=models.CASCADE,
     )
 
