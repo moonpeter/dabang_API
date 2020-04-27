@@ -836,7 +836,6 @@ def postFind():
 
                 print('\n')
 
-
             # 아파트 단지 정보 종료.
 
         post = PostRoom.objects.get_or_create(
