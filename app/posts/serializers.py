@@ -5,6 +5,8 @@ from rest_framework.relations import StringRelatedField
 from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
     OptionItem, SecuritySafetyFacilities, ComplexInformation, ComplexImage, RecommendComplex, PostLike, UploadImage
 
+from django.db.models import Max
+
 
 class BrokerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -92,18 +94,28 @@ class ComplexImageSerializer(serializers.ModelSerializer):
 
 class ComplexInformationSerializer(serializers.ModelSerializer):
     image = serializers.StringRelatedField(source='compleximage_set', many=True, )
-    # list = serializers.SerializerMethodField()RecommendComplex
-    recommend = RecommendComplexSerializer(many=True, source='recommendcomplex_set')
+    list = serializers.SerializerMethodField()
+    countPost = serializers.SerializerMethodField(read_only=True)
+
+    def get_countPost(self, obj):
+        return obj.postroom_set.count()
 
     def get_list(self, obj):
         import random
-        return_list = []
-        TNF = False
-        query_set_len = ComplexInformation.objects.all()
-        query_set_len = len(query_set_len)
-        rand_pk = random.randint(1, query_set_len)
-        complex_pk = ComplexInformation.objects.get(pk=query_set_len)
-        # if i in list
+
+        pk_list = []
+        while True:
+            max_id = ComplexInformation.objects.all()
+            max_id = len(max_id)
+            pk = random.randint(1, max_id)
+            ins = ComplexInformation.objects.get(pk=pk)
+            if ins.pk in pk_list:
+                pass
+            else:
+                pk_list.append(ins.pk)
+            if len(pk_list) >= 4:
+                break
+        return pk_list
 
     class Meta:
         model = ComplexInformation
@@ -127,8 +139,8 @@ class ComplexInformationSerializer(serializers.ModelSerializer):
             'areaSale',
             'areaPrice',
             'image',
-            # 'list',
-            'recommend',
+            'list',
+            'countPost',
         )
 
 
@@ -141,7 +153,6 @@ class PostListSerializer(serializers.ModelSerializer):
     salesForm = SalesFormSerializer(read_only=True)
     postimage = serializers.StringRelatedField(source='postimage_set', many=True)
     complex = ComplexInformationSerializer(read_only=True, )
-
 
     class Meta:
         model = PostRoom

@@ -41,12 +41,8 @@ class PostRoom(models.Model):
     complex = models.ForeignKey(
         'ComplexInformation',
         on_delete=models.CASCADE,
-<<<<<<< HEAD
         verbose_name='단지',
         null=True,
-=======
-        verbose_name='단지', null=True,
->>>>>>> d44de9db31896d08a4c5f47ca57eee4ff2fb0a1d
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=500, verbose_name='설명', )
