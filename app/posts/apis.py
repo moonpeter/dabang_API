@@ -3,7 +3,7 @@ import json
 import requests
 import xmltodict
 from django.http import Http404
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import APIException
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
@@ -211,3 +211,15 @@ class ImageUploadView(APIView):
             return Response(image_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class PostCreateViewSet(viewsets.ModelViewSet):
+#     # your declare serializers and others thing
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         season_instance = self.perform_create(serializer)
+#         # creating Absence's instance and you need to add other fields as necessary
+#         Absence.objects.create(season=season_instance)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

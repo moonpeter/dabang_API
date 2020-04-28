@@ -12,6 +12,16 @@ def post_image_path(instance, filename):
     return a
 
 
+def complex_image_path(instance, filename):
+    a = f'{instance.id}/{filename}'
+    return a
+
+
+def recommend_image_path(instance, filename):
+    a = f'{instance.id}/{filename}'
+    return a
+
+
 def security_image_path(instance, filename):
     a = f'{instance.id}/{filename}'
     return a
@@ -28,10 +38,10 @@ class PostRoom(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
-    HEATING_ZONE = (
-        ('Center', '중앙'),
-        ('Division', '개별'),
-        ('Area', '지역'),
+    complex = models.ForeignKey(
+        'ComplexInformation',
+        on_delete=models.CASCADE,
+        verbose_name='단지', null=True,
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=500, verbose_name='설명', )
@@ -93,7 +103,7 @@ class PostRoom(models.Model):
 
 class PostAddress(models.Model):
     # address = models.ForeignKey('posts.PostRoom', on_delete=models.CASCADE, null=True)
-    loadAddress = models.CharField(max_length=50, null=True,)
+    loadAddress = models.CharField(max_length=50, null=True, )
     detailAddress = models.CharField(max_length=30, null=True, )
 
 
@@ -199,7 +209,6 @@ def uploadpost_image_path(instance, filename):
     # return f'posts/{instance.content}/{filename}'
     return f'uplaodposts/{instance.content}/{instance.content}.jpg'
 
-
 class UploadImage(models.Model):
     content = models.CharField(max_length=1000)
     image = ProcessedImageField(
@@ -208,3 +217,49 @@ class UploadImage(models.Model):
         format='JPEG',  # 저장 포맷(확장자)
         options={'quality': 90},  # 저장 포맷 관련 옵션 (JPEG 압축률 설정)
     )
+
+
+class ComplexInformation(models.Model):
+    complexName = models.CharField('단지 이름', max_length=30, null=True, )
+    buildDate = models.CharField('설립 날짜', max_length=20, null=True, )
+    totalCitizen = models.CharField('총 세대 수', max_length=20, null=True, )
+    personalPark = models.CharField('주차 대수', max_length=10, null=True, )
+    totalNumber = models.CharField('총 동 수', max_length=10, null=True, )
+    heatingSystem = models.CharField('난방 방식', max_length=15, null=True, )
+    minMaxFloor = models.CharField('최저-최고 층', max_length=10, null=True, )
+    buildingType = models.CharField('건물 유형', max_length=10, null=True, )
+    constructionCompany = models.CharField('건설사', max_length=30, null=True, )
+    fuel = models.CharField('연로', max_length=10, null=True, )
+    complexType = models.CharField('단지 타입', max_length=10, null=True, )
+    floorAreaRatio = models.CharField('용적률', max_length=10, null=True, )
+    dryWasteRate = models.CharField('건폐율', max_length=10, null=True, )
+    complexSale = models.CharField('단지 평당가 매매 ', max_length=10, null=True, )
+    complexPrice = models.CharField('단지 평당가 전세 ', max_length=10, null=True, )
+    areaSale = models.CharField('이 지역 평당가 매매', max_length=30, null=True, )
+    areaPrice = models.CharField('이 지역 평당가 전세', max_length=30, null=True, )
+
+    def __str__(self):
+        return f'{self.complexName}'
+
+
+class ComplexImage(models.Model):
+    image = models.ImageField(upload_to=complex_image_path, verbose_name='방 이미지', null=True, )
+    complex = models.ForeignKey(
+        'posts.ComplexInformation',
+        verbose_name='단지 정보',
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return '{}'.format(self.image)
+
+
+class RecommendComplex(models.Model):
+    complex = models.ForeignKey(ComplexInformation, verbose_name='단지', on_delete=models.CASCADE, )
+    image = models.ImageField('추천 단지 이미지', upload_to=recommend_image_path, null=True, )
+    name = models.CharField('추천 단지 명', null=True, max_length=30, )
+    type = models.CharField('추천 단지 아파트 타입', null=True, max_length=20, )
+    totalCitizen = models.CharField('추천 단지 총 세대 수', null=True, max_length=30, )
+    buildDate = models.CharField('추천 단지 설립일자', null=True, max_length=20, )
+    address = models.CharField('추천 단지 주소', null=True, max_length=20, )
+    link = models.CharField('추천 단지 링크', max_length=100, null=True, )

@@ -3,7 +3,7 @@ from rest_framework.fields import DictField, CharField, ListField
 from rest_framework.relations import StringRelatedField
 
 from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
-    OptionItem, SecuritySafetyFacilities, PostLike, UploadImage
+    OptionItem, SecuritySafetyFacilities, ComplexInformation, ComplexImage, RecommendComplex, PostLike, UploadImage
 
 
 class BrokerSerializer(serializers.ModelSerializer):
@@ -78,6 +78,47 @@ class PostImageSerializer(serializers.ModelSerializer):
         )
 
 
+class RecommendComplexSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecommendComplex
+        fields = '__all__'
+
+
+class ComplexImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComplexImage
+        field = 'image'
+
+
+class ComplexInformationSerializer(serializers.ModelSerializer):
+    image = serializers.StringRelatedField(source='compleximage_set', many=True, )
+    recommend = serializers.StringRelatedField(source='recommendcomplex_set', many=True, )
+
+    class Meta:
+        model = ComplexInformation
+        fields = (
+            'complexName',
+            'buildDate',
+            'totalCitizen',
+            'personalPark',
+            'totalNumber',
+            'heatingSystem',
+            'minMaxFloor',
+            'buildingType',
+            'constructionCompany',
+            'fuel',
+            'complexType',
+            'floorAreaRatio',
+            'dryWasteRate',
+            'complexSale',
+            'complexPrice',
+            'areaSale',
+            'areaPrice',
+            'image',
+            'recommend',
+        )
+
+
 class PostListSerializer(serializers.ModelSerializer):
     broker = BrokerSerializer(read_only=True)
     management_set = serializers.StringRelatedField(source='management', many=True, read_only=True)
@@ -85,7 +126,9 @@ class PostListSerializer(serializers.ModelSerializer):
     securitySafety_set = serializers.StringRelatedField(source='securitySafety', many=True, read_only=True)
     address = AddressSerializer(read_only=True, allow_null=True)
     salesForm = SalesFormSerializer(read_only=True)
-    postimage = serializers.StringRelatedField(read_only=True, source='postimage_set', many=True)
+    postimage = serializers.StringRelatedField(source='postimage_set', many=True)
+    complex = ComplexInformationSerializer(read_only=True, )
+
 
     class Meta:
         model = PostRoom
@@ -123,6 +166,7 @@ class PostListSerializer(serializers.ModelSerializer):
             'complete',
             'securitySafety_set',
             'postimage',
+            'complex',
         ]
 
 
