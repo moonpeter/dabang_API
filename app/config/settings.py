@@ -47,6 +47,7 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
+
 # django-storages
 # Django의 FileStorage로 S3Boto3Storage(AWS의 S3)를 사용
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

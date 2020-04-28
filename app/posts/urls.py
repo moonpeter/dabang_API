@@ -2,7 +2,6 @@ from django.conf.urls import url
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-
 from posts import apis
 from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList, ComplexAPIView, ComplexDetail
 from posts import apis, views
