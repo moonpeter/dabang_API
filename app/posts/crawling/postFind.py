@@ -36,7 +36,6 @@ def postFind():
     officetels = find_urls()
     url_all_list += officetels
     print('오피스텔 매물', officetels)
-    #
 
     # 각 게시글 조회 시작
     for post_index, dabang_url in enumerate(url_all_list):
