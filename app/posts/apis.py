@@ -13,22 +13,9 @@ from rest_framework.views import APIView
 
 from posts.models import PostRoom, PostImage, PostLike, SalesForm
 from posts.serializers import PostListSerializer, PostImageSerializer, PostCreateSerializer, \
-    PostLIkeSerializer, UploadImageSerializer
-
-# from posts.filters import PostRoomFilter
+    PostLIkeSerializer, UploadImageSerializer, PostListSerializer, AddressSerializer, SalesFormSerializer
 
 secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
-
-
-# class PostRoomViewSet(viewsets.ModelViewSet):
-#     serializer_class = PostListSerializer
-#     queryset = PostRoom.objects.all()
-#     print(PostListSerializer)
-#
-#
-# class PostAddressViewSet(viewsets.ModelViewSet):
-#     serializer_class = AddressSerializer
-#     queryset = PostAddress.objects.all()
 
 
 class PostList(generics.ListCreateAPIView):
@@ -186,21 +173,6 @@ class PostLikeView(RetrieveAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class PostCreateView(APIView):
-#
-#     # 게시물 생성 : /posts/create/
-#     def post(self, request, format=None):
-#         serializer = PostCreateSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class PostCreateView(generics.CreateAPIView):
-    queryset = PostRoom.objects.all()
-    serializer_class = PostCreateSerializer
-
-
 class ImageUploadView(APIView):
     # parser_class = (FileUploadParser,)
 
@@ -213,13 +185,25 @@ class ImageUploadView(APIView):
             return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class PostCreateViewSet(viewsets.ModelViewSet):
-#     # your declare serializers and others thing
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         season_instance = self.perform_create(serializer)
-#         # creating Absence's instance and you need to add other fields as necessary
-#         Absence.objects.create(season=season_instance)
-#         headers = self.get_success_headers(serializer.data)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+class PostCreateView(generics.CreateAPIView):
+    serializer_class = PostCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+
+            # address 객체 생성
+            address_serializer = AddressSerializer(data=request.data.get('address'))
+            if address_serializer.is_valid():
+                address = address_serializer.save()
+
+            # salesform 객체 생성
+            salesform_serializer = SalesFormSerializer(data=request.data.get('salesForm'))
+            if salesform_serializer.is_valid():
+                salesForm = salesform_serializer.save()
+
+            serializer.save(address=address, salesForm=salesForm)
+
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -14,21 +14,6 @@ class BrokerSerializer(serializers.ModelSerializer):
             'dabangCreated_at', 'successCount'
         )
 
-    # def create(self, validated_data):
-    #     broker = validated_data.pop('broker')
-    #     instance = Broker.objects.create(**validated_data)
-    #     return instance
-    # def create(self, validated_data):
-    #     return Broker.objects.get_or_create(**validated_data)
-
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.address = validated_data.get('address', instance.address)
-    #     instance.manager = validated_data.get('manager', instance.manager)
-    #     instance.tel = validated_data.get('tel', instance.tel)
-    #     instance.save()
-    #     return instance
-
 
 class ManagementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -171,17 +156,14 @@ class PostListSerializer(serializers.ModelSerializer):
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
-    # address = DictField(child=CharField(), allow_empty=True, )
     address = AddressSerializer(read_only=True)
-    salesForm = DictField(source='salesform_set', child=CharField(), read_only=True)
-    # salesForm = SalesFormSerializer(source='salesform_set', required=False, many=True)
+    salesForm = SalesFormSerializer(read_only=True)
     management_set = ListField()
     option_set = ListField()
     securitySafety_set = ListField()
 
     class Meta:
         model = PostRoom
-        # fields = '__all__'
         fields = [
             'pk',
             'broker',
