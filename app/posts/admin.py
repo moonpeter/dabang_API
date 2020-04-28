@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from posts.models import SalesForm, PostAddress, SecuritySafetyFacilities, PostRoom, AdministrativeDetail, \
     MaintenanceFee, RoomOption, RoomSecurity, Broker, PostImage, OptionItem, ComplexInformation, ComplexImage, \
-    RecommendComplex, PostLike
+    RecommendComplex, PostLike, UploadImage
 
 
 # Register your models here.
@@ -67,6 +67,12 @@ class ComplexImageAdmin(admin.ModelAdmin):
 class RecommendComplexAdmin(admin.ModelAdmin):
     list_display = ['pk', 'image', 'complex']
 
+
+class UploadImageAdmin(admin.ModelAdmin):
+    list_display = ['image',]
+
+
+admin.site.register(UploadImage, UploadImageAdmin)
 
 admin.site.register(PostRoom, PostRoomAdmin)
 admin.site.register(SalesForm, SalesFormAdmin)

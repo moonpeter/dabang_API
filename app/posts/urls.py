@@ -7,16 +7,10 @@ from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList, Com
 from posts import apis, views
 from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList
 
-# from posts.views import PostCreateViewSet
-#
-# router = DefaultRouter()
-# router.register('create', views.PostCreateViewSet)
-
 urlpatterns_posts = [
     path('list/', apis.PostList.as_view()),
     path('', apis.PostDetail.as_view()),
 
-    # path('', include(router.urls)),
     path('create/', apis.PostCreateView.as_view()),
     path('imageupload/', apis.ImageUploadView.as_view()),
 

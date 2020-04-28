@@ -31,6 +31,11 @@ def broker_image_path(instance, filename):
     return a
 
 
+def uploadpost_image_path(instance, filename):
+    a =f'{instance.id}/{filename}'
+    return a
+
+
 class PostRoom(models.Model):
     broker = models.ForeignKey(
         'posts.Broker',
@@ -203,11 +208,6 @@ class PostImage(models.Model):
 
     def __str__(self):
         return '{}'.format(self.image)
-
-
-def uploadpost_image_path(instance, filename):
-    # return f'posts/{instance.content}/{filename}'
-    return f'uplaodposts/{instance.content}/{instance.content}.jpg'
 
 
 class UploadImage(models.Model):

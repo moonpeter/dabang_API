@@ -27,8 +27,8 @@ def postFind():
     if not os.path.exists(POSTS_DIR):
         os.makedirs(POSTS_DIR, exist_ok=True)
 
-    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     SocialLogin.start()
     # 다방 성수동 매물 url
     url_all_list = find_apartment_urls()
