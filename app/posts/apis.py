@@ -1,15 +1,22 @@
 import json
-import xmltodict
+
 import requests
-from django.http import Http404, HttpResponse, request
-from rest_framework import status, generics
+import xmltodict
+from django.http import Http404
+from rest_framework import status, generics, permissions, viewsets
 from rest_framework.decorators import api_view
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.exceptions import APIException
+from rest_framework.generics import RetrieveAPIView, get_object_or_404
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from posts.models import PostRoom, PostImage, PostLike, SalesForm
+from posts.serializers import PostListSerializer, PostImageSerializer, PostCreateSerializer, \
+    PostLIkeSerializer, UploadImageSerializer
+
 # from posts.filters import PostRoomFilter
+
 from posts.models import PostRoom, PostImage, PostAddress, ComplexInformation
 from posts.serializers import PostListSerializer, PostImageSerializer, AddressSerializer, PostCreateSerializer, \
     ComplexInformationSerializer
@@ -39,14 +46,6 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostListSerializer
     queryset = PostRoom.objects.all()
     parser_class = (FileUploadParser,)
-
-    # # 게시물 생성 : /posts/
-    # def post(self, request, format=None):
-    #     serializer = PostListSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 게시물 조회 : /posts/
     def get(self, request, format=None):
@@ -170,9 +169,67 @@ def getEupMyunDongList(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-class PostCreateAPIView(generics.CreateAPIView):
+class PostLikeView(RetrieveAPIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+
+    def post(self, request, post_pk):
+        post = get_object_or_404(PostRoom, pk=post_pk)
+        serializer = PostLIkeSerializer(
+            data={**request.data, 'post': post_pk}
+        )
+        if serializer.is_valid():
+            if PostLike.objects.filter(
+                    post=serializer.validated_data['post'],
+                    user=request.user,
+            ).exists():
+                raise APIException('이미 좋아요 한 포스트 입니다.')
+            serializer.save(user=request.user, post=post)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, post_pk):
+        post = get_object_or_404(PostRoom, pk=post_pk)
+        post_like = get_object_or_404(PostLike, post=post, user=request.user)
+        post_like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class PostCreateView(APIView):
+#
+#     # 게시물 생성 : /posts/create/
+#     def post(self, request, format=None):
+#         serializer = PostCreateSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostCreateView(generics.CreateAPIView):
     queryset = PostRoom.objects.all()
     serializer_class = PostCreateSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(data=self.request.data)
+
+class ImageUploadView(APIView):
+    # parser_class = (FileUploadParser,)
+
+    def post(self, request, *args, **kwargs):
+        image_serializer = UploadImageSerializer(data=request.data)
+        if image_serializer.is_valid():
+            image_serializer.save()
+            return Response(image_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class PostCreateViewSet(viewsets.ModelViewSet):
+#     # your declare serializers and others thing
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         season_instance = self.perform_create(serializer)
+#         # creating Absence's instance and you need to add other fields as necessary
+#         Absence.objects.create(season=season_instance)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
