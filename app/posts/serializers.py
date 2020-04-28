@@ -92,7 +92,8 @@ class ComplexImageSerializer(serializers.ModelSerializer):
 
 class ComplexInformationSerializer(serializers.ModelSerializer):
     image = serializers.StringRelatedField(source='compleximage_set', many=True, )
-    list = serializers.SerializerMethodField()
+    # list = serializers.SerializerMethodField()RecommendComplex
+    recommend = RecommendComplexSerializer(many=True, source='recommendcomplex_set')
 
     def get_list(self, obj):
         import random
@@ -102,10 +103,7 @@ class ComplexInformationSerializer(serializers.ModelSerializer):
         query_set_len = len(query_set_len)
         rand_pk = random.randint(1, query_set_len)
         complex_pk = ComplexInformation.objects.get(pk=query_set_len)
-        if i in list:
-            
-
-
+        # if i in list
 
     class Meta:
         model = ComplexInformation
@@ -129,7 +127,8 @@ class ComplexInformationSerializer(serializers.ModelSerializer):
             'areaSale',
             'areaPrice',
             'image',
-            'list',
+            # 'list',
+            'recommend',
         )
 
 
