@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from posts.serializers import PostListSerializer, BrokerSerializer
+from posts.serializers import PostListSerializer, BrokerSerializer, PostLIkeSerializer
 
 User = get_user_model()
 
@@ -25,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     posts = PostListSerializer(many=True, read_only=True)
     brokers = BrokerSerializer(many=True, read_only=True, )
+    postLike = PostLIkeSerializer(source='postlike_set', many=True, read_only=True, )
 
     class Meta:
         model = User
@@ -34,4 +35,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'profileImage',
             'posts',
             'brokers',
+            'postLike',
         ]
