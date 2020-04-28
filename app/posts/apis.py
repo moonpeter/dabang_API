@@ -26,6 +26,19 @@ def ComplexAPIView(request):
     serializer = ComplexInformationSerializer(queryset, many=True, )
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view()
+def ComplexDetail(request):
+    pk = request.query_params.get('pk')
+    if pk:
+        complex_ins = ComplexInformation.objects.get(pk=pk)
+        serializer = ComplexInformationSerializer(complex_ins)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        data = {
+            'message': '존재하지 않는 단지 정보 입니다.'
+        }
+        return Response(data, status=status.HTTP_404_NOT_FOUND)
+
 
 class PostList(generics.ListCreateAPIView):
     model = PostRoom

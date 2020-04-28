@@ -32,6 +32,11 @@ def broker_image_path(instance, filename):
     return a
 
 
+def uploadpost_image_path(instance, filename):
+    a =f'{instance.id}/{filename}'
+    return a
+
+
 class PostRoom(models.Model):
     broker = models.ForeignKey(
         'posts.Broker',
@@ -41,7 +46,8 @@ class PostRoom(models.Model):
     complex = models.ForeignKey(
         'ComplexInformation',
         on_delete=models.CASCADE,
-        verbose_name='단지', null=True,
+        verbose_name='단지',
+        null=True,
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=500, verbose_name='설명', )
@@ -204,10 +210,6 @@ class PostImage(models.Model):
     def __str__(self):
         return '{}'.format(self.image)
 
-
-def uploadpost_image_path(instance, filename):
-    # return f'posts/{instance.content}/{filename}'
-    return f'uplaodposts/{instance.content}/{instance.content}.jpg'
 
 class UploadImage(models.Model):
     content = models.CharField(max_length=1000)

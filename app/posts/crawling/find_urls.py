@@ -4,8 +4,8 @@ from selenium import webdriver
 
 
 def find_apartment_urls():
-    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     driver.get('https://www.dabangapp.com/search#/map')
 
     driver.find_element_by_name('keyword').send_keys('성수동1가')
@@ -61,8 +61,8 @@ def find_apartment_urls():
 
 
 def find_urls():
-    # driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
-    driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
+    driver = webdriver.Chrome('/Users/mac/projects/ChromeWebDriver/chromedriver')
+    # driver = webdriver.Chrome('/Users/moonpeter/Desktop/Selenium/chromedriver')
     driver.implicitly_wait(3)
     driver.get('https://www.dabangapp.com/search#/map')
     driver.find_element_by_name('keyword').send_keys('성수동1가')

@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 
 from posts import apis
-from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList, ComplexAPIView
+from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList, ComplexAPIView, ComplexDetail
 from posts import apis, views
 from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList
 
@@ -22,6 +22,7 @@ urlpatterns_posts = [
     # path('postFiltering/', apis.PostFiltering.as_view()),
 
     # 전영훈 urls -----
+    path('complexDetail/', ComplexDetail),
     path('complex/', ComplexAPIView),
     path('bjd/', apis.getAptListService),
     path('bc/', getBorodCityList),

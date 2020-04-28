@@ -72,7 +72,7 @@ class UserModelViewSet(viewsets.ModelViewSet):
         jwt_token = JWT_ENCODE_HANDLER(payload)
         if user is not None:
             data = {
-                'jwt': jwt_token,
+                'token': jwt_token,
                 'user': UserSerializer(user).data
             }
             return Response(data)
