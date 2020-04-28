@@ -112,6 +112,10 @@ class SalesForm(models.Model):
                 type=i,
             )
 
+    @staticmethod
+    def make_obj():
+        SalesForm.objects.create()
+
 
 class MaintenanceFee(models.Model):
     postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE,

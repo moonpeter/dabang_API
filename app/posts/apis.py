@@ -11,7 +11,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from posts.models import PostRoom, PostImage, PostLike
+from posts.models import PostRoom, PostImage, PostLike, SalesForm
 from posts.serializers import PostListSerializer, PostImageSerializer, PostCreateSerializer, \
     PostLIkeSerializer, UploadImageSerializer
 
@@ -186,7 +186,6 @@ class PostLikeView(RetrieveAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-#
 # class PostCreateView(APIView):
 #
 #     # 게시물 생성 : /posts/create/
@@ -196,7 +195,6 @@ class PostLikeView(RetrieveAPIView):
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class PostCreateView(generics.CreateAPIView):
     queryset = PostRoom.objects.all()

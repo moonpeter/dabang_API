@@ -129,8 +129,8 @@ class PostListSerializer(serializers.ModelSerializer):
 class PostCreateSerializer(serializers.ModelSerializer):
     # address = DictField(child=CharField(), allow_empty=True, )
     address = AddressSerializer(read_only=True)
-    salesForm = DictField(child=CharField())
-    # salesForm = SalesFormSerializer(required=False, many=True)
+    salesForm = DictField(source='salesform_set', child=CharField(), read_only=True)
+    # salesForm = SalesFormSerializer(source='salesform_set', required=False, many=True)
     management_set = ListField()
     option_set = ListField()
     securitySafety_set = ListField()
