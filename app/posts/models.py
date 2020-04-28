@@ -38,6 +38,7 @@ class PostRoom(models.Model):
         'ComplexInformation',
         on_delete=models.CASCADE,
         verbose_name='단지',
+        null=True,
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=500, verbose_name='설명', )
@@ -242,3 +243,6 @@ class RecommendComplex(models.Model):
     buildDate = models.CharField('추천 단지 설립일자', null=True, max_length=20, )
     address = models.CharField('추천 단지 주소', null=True, max_length=20, )
     link = models.CharField('추천 단지 링크', max_length=100, null=True, )
+
+    # def __str__(self):
+    #     return f'{self.pk}, {self.image}'

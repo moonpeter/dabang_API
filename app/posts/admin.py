@@ -79,3 +79,5 @@ admin.site.register(OptionItem, OptionItemAdmin)
 admin.site.register(ComplexInformation, ComplexInformationAdmin)
 admin.site.register(ComplexImage, ComplexImageAdmin)
 admin.site.register(RecommendComplex, RecommendComplexAdmin)
+
+import json as simplejson

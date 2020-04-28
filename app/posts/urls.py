@@ -1,7 +1,7 @@
 from django.urls import path
 
 from posts import apis
-from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList
+from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList, ComplexAPIView
 from posts.views import test
 
 urlpatterns_posts = [
@@ -15,6 +15,7 @@ urlpatterns_posts = [
     # path('postFiltering/', apis.PostFiltering.as_view()),
 
     # 전영훈 urls -----
+    path('complex/', ComplexAPIView),
     path('bjd/', apis.getAptListService),
     path('bc/', getBorodCityList),
     path('sg/', getSiGunGuList),
