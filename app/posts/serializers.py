@@ -242,11 +242,12 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 
 class PostLIkeSerializer(serializers.ModelSerializer):
+    post = PostListSerializer()
+
     class Meta:
         model = PostLike
         fields = [
             'post',
-            'user',
         ]
 
 

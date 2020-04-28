@@ -1,6 +1,5 @@
 from django.db import models
 
-
 from config import settings
 
 from imagekit.models import ProcessedImageField
@@ -209,6 +208,7 @@ class PostImage(models.Model):
 def uploadpost_image_path(instance, filename):
     # return f'posts/{instance.content}/{filename}'
     return f'uplaodposts/{instance.content}/{instance.content}.jpg'
+
 
 class UploadImage(models.Model):
     content = models.CharField(max_length=1000)
