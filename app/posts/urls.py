@@ -2,6 +2,9 @@ from django.conf.urls import url
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+
+from posts import apis
+from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList, ComplexAPIView
 from posts import apis, views
 from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList
 # from posts.views import PostCreateViewSet
@@ -24,6 +27,7 @@ urlpatterns_posts = [
     # path('postFiltering/', apis.PostFiltering.as_view()),
 
     # 전영훈 urls -----
+    path('complex/', ComplexAPIView),
     path('bjd/', apis.getAptListService),
     path('bc/', getBorodCityList),
     path('sg/', getSiGunGuList),

@@ -17,6 +17,10 @@ from posts.serializers import PostListSerializer, PostImageSerializer, PostCreat
 
 # from posts.filters import PostRoomFilter
 
+from posts.models import PostRoom, PostImage, PostAddress, ComplexInformation
+from posts.serializers import PostListSerializer, PostImageSerializer, AddressSerializer, PostCreateSerializer, \
+    ComplexInformationSerializer
+
 secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
 
 
@@ -29,6 +33,12 @@ secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUc
 # class PostAddressViewSet(viewsets.ModelViewSet):
 #     serializer_class = AddressSerializer
 #     queryset = PostAddress.objects.all()
+
+@api_view()
+def ComplexAPIView(request):
+    queryset = ComplexInformation.objects.all()
+    serializer = ComplexInformationSerializer(queryset, many=True, )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class PostList(generics.ListCreateAPIView):
