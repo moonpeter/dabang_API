@@ -3,7 +3,7 @@ from rest_framework.fields import DictField, CharField, ListField
 from rest_framework.relations import StringRelatedField
 
 from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
-    OptionItem, SecuritySafetyFacilities
+    OptionItem, SecuritySafetyFacilities, PostLike, UploadImage
 
 
 class BrokerSerializer(serializers.ModelSerializer):
@@ -79,13 +79,13 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 
 class PostListSerializer(serializers.ModelSerializer):
-    broker = BrokerSerializer()
-    management_set = serializers.StringRelatedField(source='management', many=True)
-    option_set = serializers.StringRelatedField(source='option' ,many=True)
-    securitySafety_set = serializers.StringRelatedField(source='securitySafety', many=True,)
-    address = AddressSerializer(allow_null=True)
-    salesForm = SalesFormSerializer()
-    postimage = serializers.StringRelatedField(source='postimage_set', many=True)
+    broker = BrokerSerializer(read_only=True)
+    management_set = serializers.StringRelatedField(source='management', many=True, read_only=True)
+    option_set = serializers.StringRelatedField(source='option', many=True, read_only=True)
+    securitySafety_set = serializers.StringRelatedField(source='securitySafety', many=True, read_only=True)
+    address = AddressSerializer(read_only=True, allow_null=True)
+    salesForm = SalesFormSerializer(read_only=True)
+    postimage = serializers.StringRelatedField(read_only=True, source='postimage_set', many=True)
 
     class Meta:
         model = PostRoom
@@ -95,6 +95,8 @@ class PostListSerializer(serializers.ModelSerializer):
             'type',
             'description',
             'address',
+            'lng',
+            'lat',
             'salesForm',
             'floor',
             'totalFloor',
@@ -125,8 +127,10 @@ class PostListSerializer(serializers.ModelSerializer):
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
-    address = DictField(child=CharField(), allow_empty=True,)
-    salesForm = DictField(child=CharField(),)
+    # address = DictField(child=CharField(), allow_empty=True, )
+    address = AddressSerializer(read_only=True)
+    salesForm = DictField(child=CharField())
+    # salesForm = SalesFormSerializer(required=False, many=True)
     management_set = ListField()
     option_set = ListField()
     securitySafety_set = ListField()
@@ -167,3 +171,20 @@ class PostCreateSerializer(serializers.ModelSerializer):
             'address',
             # 'postimage',
         ]
+
+
+class PostLIkeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostLike
+        fields = [
+            'post',
+            'user',
+        ]
+
+
+class UploadImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UploadImage
+        fields = (
+            'image',
+        )

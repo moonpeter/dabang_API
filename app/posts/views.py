@@ -1,20 +1,13 @@
 # from rest_framework import viewsets
 #
 # from posts.models import PostRoom
-# from posts.serializers import PostListSerializer
+# from posts.serializers import PostCreateSerializer
 #
 #
-# class PostRoomViewSet(viewsets.ModelViewSet):
-#     serializer_class = PostListSerializer
+# class PostCreateViewSet(viewsets.ModelVeiwSet):
+#     queryset = PostRoom.objects.all()
+#     serializer_class = PostCreateSerializer
 #
 #     def get_queryset(self):
-#         return PostRoom.objects.all()
+#         qs = super().get_queryset()
 #
-#     def perform_create(self, serializer):
-#         serializer.save()
-from posts.models import PostRoom
-
-
-def test(request):
-    host = 'dapi.kakao.com'
-   

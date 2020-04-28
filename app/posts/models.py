@@ -1,6 +1,10 @@
 from django.db import models
 
+
 from config import settings
+
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 def post_image_path(instance, filename):
@@ -37,8 +41,12 @@ class PostRoom(models.Model):
     )
     salesForm = models.OneToOneField(
         'posts.SalesForm',
-        on_delete=models.CASCADE, null=True,
+        on_delete=models.CASCADE, null=True, related_name='salesform_set',
     )
+    # 위도 경도
+    lat = models.FloatField('x축', null=True, )
+    lng = models.FloatField('y축', null=True, )
+
     floor = models.CharField(null=True, verbose_name='층 수', max_length=5)
     totalFloor = models.CharField(null=True, verbose_name='건물 층 수', max_length=5)
     areaChar = models.CharField(verbose_name='문자형 전용 면적', max_length=20, null=True, )
@@ -142,7 +150,6 @@ class PostLike(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    created_at = models.DateTimeField(auto_now_add=True, )
 
 
 class RoomOption(models.Model):
@@ -182,3 +189,18 @@ class PostImage(models.Model):
 
     def __str__(self):
         return '{}'.format(self.image)
+
+
+def uploadpost_image_path(instance, filename):
+    # return f'posts/{instance.content}/{filename}'
+    return f'uplaodposts/{instance.content}/{instance.content}.jpg'
+
+
+class UploadImage(models.Model):
+    content = models.CharField(max_length=1000)
+    image = ProcessedImageField(
+        upload_to=uploadpost_image_path,  # 저장 위치
+        # processors=[ResizeToFill(600, 600)],  # 처리할 작업 목록
+        format='JPEG',  # 저장 포맷(확장자)
+        options={'quality': 90},  # 저장 포맷 관련 옵션 (JPEG 압축률 설정)
+    )
