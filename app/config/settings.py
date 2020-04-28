@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-import datetime
 import json
 import os
 from datetime import timedelta
@@ -78,9 +77,9 @@ INSTALLED_APPS = [
     'psycopg2',
     'selenium',
     'pandas',
-    # 'django_extensions',
     'boto3',
     'storages',
+    'imagekit',
 ]
 # djangorestframework-jwt
 JWT_AUTH = {
@@ -128,6 +127,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
 }
 
 ROOT_URLCONF = 'config.urls'
@@ -168,6 +170,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'wpsdabangapi',
+#         'USER': 'moonpeter',
+#         'PASSWORD': 'admin123',
+#         'HOST': 'wps12th-dabang.cahxsb1yyuko.ap-northeast-2.rds.amazonaws.com',
+#         'PORT': 5432,
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

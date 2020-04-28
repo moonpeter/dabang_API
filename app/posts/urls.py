@@ -1,14 +1,23 @@
-from django.urls import path
+from django.conf.urls import url
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from posts import apis
+from posts import apis, views
 from posts.apis import getBorodCityList, getEupMyunDongList, getSiGunGuList
-from posts.views import test
+# from posts.views import PostCreateViewSet
+#
+# router = DefaultRouter()
+# router.register('create', views.PostCreateViewSet)
 
 urlpatterns_posts = [
     path('list/', apis.PostList.as_view()),
     path('', apis.PostDetail.as_view()),
 
-    path('create/', apis.PostCreateAPIView.as_view()),
+    # path('', include(router.urls)),
+    path('create/', apis.PostCreateView.as_view()),
+    path('imageupload/', apis.ImageUploadView.as_view()),
+
+    path('postLike/<int:post_pk>/', apis.PostLikeView.as_view()),
 
     path('image/', apis.PostImageView.as_view()),
     # path('deberg-test/', views.deberg_test),
@@ -19,5 +28,4 @@ urlpatterns_posts = [
     path('bc/', getBorodCityList),
     path('sg/', getSiGunGuList),
     path('emd/', getEupMyunDongList),
-    path('test/', test),
 ]

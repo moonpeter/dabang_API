@@ -1,6 +1,10 @@
 from django.db import models
 
+
 from config import settings
+
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 def post_image_path(instance, filename):
@@ -37,7 +41,7 @@ class PostRoom(models.Model):
     complex = models.ForeignKey(
         'ComplexInformation',
         on_delete=models.CASCADE,
-        verbose_name='단지',
+        verbose_name='단지', null=True,
     )
     type = models.CharField('매물 종류', max_length=10, null=True, )
     description = models.TextField(max_length=500, verbose_name='설명', )
@@ -47,7 +51,7 @@ class PostRoom(models.Model):
     )
     salesForm = models.OneToOneField(
         'posts.SalesForm',
-        on_delete=models.CASCADE, null=True,
+        on_delete=models.CASCADE, null=True, related_name='salesform_set',
     )
     # 위도 경도
     lat = models.FloatField('x축', null=True, )
@@ -118,6 +122,10 @@ class SalesForm(models.Model):
                 type=i,
             )
 
+    @staticmethod
+    def make_obj():
+        SalesForm.objects.create()
+
 
 class MaintenanceFee(models.Model):
     postRoom = models.ForeignKey('posts.PostRoom', verbose_name='해당 매물', on_delete=models.CASCADE,
@@ -156,7 +164,6 @@ class PostLike(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    created_at = models.DateTimeField(auto_now_add=True, )
 
 
 class RoomOption(models.Model):
@@ -196,6 +203,20 @@ class PostImage(models.Model):
 
     def __str__(self):
         return '{}'.format(self.image)
+
+
+def uploadpost_image_path(instance, filename):
+    # return f'posts/{instance.content}/{filename}'
+    return f'uplaodposts/{instance.content}/{instance.content}.jpg'
+
+class UploadImage(models.Model):
+    content = models.CharField(max_length=1000)
+    image = ProcessedImageField(
+        upload_to=uploadpost_image_path,  # 저장 위치
+        # processors=[ResizeToFill(600, 600)],  # 처리할 작업 목록
+        format='JPEG',  # 저장 포맷(확장자)
+        options={'quality': 90},  # 저장 포맷 관련 옵션 (JPEG 압축률 설정)
+    )
 
 
 class ComplexInformation(models.Model):
