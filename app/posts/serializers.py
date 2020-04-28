@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.fields import DictField, CharField, ListField
+from rest_framework.fields import DictField, CharField, ListField, SerializerMethodField
 from rest_framework.relations import StringRelatedField
 
 from .models import PostRoom, PostImage, Broker, MaintenanceFee, RoomOption, PostAddress, RoomSecurity, SalesForm, \
@@ -77,11 +77,26 @@ class ComplexImageSerializer(serializers.ModelSerializer):
 
 class ComplexInformationSerializer(serializers.ModelSerializer):
     image = serializers.StringRelatedField(source='compleximage_set', many=True, )
-    recommend = serializers.StringRelatedField(source='recommendcomplex_set', many=True, )
+    # list = serializers.SerializerMethodField()RecommendComplex
+    recommend = RecommendComplexSerializer(many=True, source='recommendcomplex_set')
+    countPost = serializers.SerializerMethodField()
+    def get_countPost(self, obj):
+        return obj.postroom_set.count()
+    #
+    # def get_list(self, obj):
+    #     import random
+    #     return_list = []
+    #     TNF = False
+    #     query_set_len = ComplexInformation.objects.all()
+    #     query_set_len = len(query_set_len)
+    #     rand_pk = random.randint(1, query_set_len)
+    #     complex_pk = ComplexInformation.objects.get(pk=query_set_len)
+    #     # if i in list
 
     class Meta:
         model = ComplexInformation
         fields = (
+            'pk',
             'complexName',
             'buildDate',
             'totalCitizen',
@@ -100,7 +115,9 @@ class ComplexInformationSerializer(serializers.ModelSerializer):
             'areaSale',
             'areaPrice',
             'image',
+            # 'list',
             'recommend',
+            'countPost',
         )
 
 

@@ -18,10 +18,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ROOT_DIR = os.path.dirname(BASE_DIR)
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
+# STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIRS = [
+#     STATIC_DIR,
+# ]
 # 각 applications들의 static/폴더, STATICFILE_DIRS의 폴더들이 가진 정적파일들을 모을 폴더
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
 STATIC_URL = '/static/'
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'

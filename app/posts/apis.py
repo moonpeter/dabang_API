@@ -3,7 +3,7 @@ import json
 import requests
 import xmltodict
 from django.http import Http404
-from rest_framework import status, generics, permissions, viewsets
+from rest_framework import status, generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import APIException
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
@@ -11,11 +11,20 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from posts.models import PostRoom, PostImage, PostLike, SalesForm
-from posts.serializers import PostListSerializer, PostImageSerializer, PostCreateSerializer, \
-    PostLIkeSerializer, UploadImageSerializer, PostListSerializer, AddressSerializer, SalesFormSerializer
+from posts.models import PostLike
+from posts.models import PostRoom, PostImage, ComplexInformation
+from posts.serializers import PostLIkeSerializer, UploadImageSerializer, SalesFormSerializer
+from posts.serializers import PostListSerializer, PostImageSerializer, AddressSerializer, PostCreateSerializer, \
+    ComplexInformationSerializer
 
 secret = 'V8giduxGZ%2BU463maB552xw3jULhTVPrv%2B7m2qSqu4w8el9fk8bnMD9i6rjUQz7gcUcFnDKyOmcCBztcbVx3Ljg%3D%3D'
+
+
+@api_view()
+def ComplexAPIView(request):
+    queryset = ComplexInformation.objects.all()
+    serializer = ComplexInformationSerializer(queryset, many=True, )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class PostList(generics.ListCreateAPIView):
@@ -207,3 +216,16 @@ class PostCreateView(generics.CreateAPIView):
 
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
+
+
+
